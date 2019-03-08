@@ -210,8 +210,8 @@ void Gas_StateLayer(void )
 	for(i=0;i<6;i++)
 	{
 		//if()
-			gui_circle(180,168+i*20,ColorTab[3],6,1);
-		gui_circle(50,168+i*20,ColorTab[3],6,1);
+			gui_circle(180,168+i*20,ColorTab[1],6,1);
+		gui_circle(50,168+i*20,ColorTab[1],6,1);
 		
 	}
 	

@@ -56,6 +56,7 @@ int main()
 	//////////////////////////////////////////////////////////////
 		
 	LED_Init();
+	
 	adc_init();	 //ADC初始化
 	printf_init(); //printf初始化
 	
@@ -67,10 +68,12 @@ int main()
 	GridLayer();
 
 	Gas_StateLayer();
+	ValveState_Init();
 		
 	while(1)
 	{
 		
+		ValueStateChange();
 		//Gas_StateLayerUpdate();
 		/*
 		//////////////////////屏幕tests 部分/////////////////////////////

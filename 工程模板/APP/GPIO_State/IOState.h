@@ -5,12 +5,21 @@
 #include "stm32f10x.h"
 //#define LED GPIO_Pin_14	 	//管脚宏定义
 
+void ValueStateChange(void);
+void ValveState_Init(void);  //端口初始化
+	
 
-//#define Value_GPIOC  GPIO_Pin_3|  GPIO_Pin_4 |
+#define Valve_GPIOA  GPIO_Pin_0|  GPIO_Pin_1 |GPIO_Pin_6 |GPIO_Pin_7
+
+#define Valve_GPIOB  GPIO_Pin_0|  GPIO_Pin_6 |GPIO_Pin_7
+
+
+#define Valve_GPIOC  GPIO_Pin_3|  GPIO_Pin_4 |GPIO_Pin_13 |GPIO_Pin_14|GPIO_Pin_15
+
 
 //Gas Valve State端口定义  从左到右 依次 
 #define Valve_1 PCout(13)		// Valve1  singal 1   PC13    ----------P7排线
-#define Valve_2 PCout(14)//Valve2  singal 2   PC14    ----------P7排线
+#define Valve_2 PCout(15)//Valve2  singal 2   PC15    ----------P7排线
 #define Valve_3 PCout(3)// Valve3  singal 3   PC3    ----------P7排线
 #define Valve_4 PAout(1)//Valve4  singal 4   PA1    ----------P7排线
 #define Valve_5 PAout(0)// Valve5  singal 11   PA0    ----------P7排线
@@ -79,4 +88,4 @@
 
 #endif 
 
-#endif
+

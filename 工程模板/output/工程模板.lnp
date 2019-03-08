@@ -34,6 +34,7 @@
 ".\output\lcd.o"
 ".\output\test.o"
 ".\output\spi.o"
+".\output\iostate.o"
 --library_type=microlib --strict --scatter ".\output\¹¤³ÌÄ£°å.sct"
 --summary_stderr --info summarysizes --map --xref --callgraph --symbols
 --info sizes --info totals --info unused --info veneers
