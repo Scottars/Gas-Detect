@@ -54,9 +54,14 @@
 **************************************************************************************************/	
 #ifndef __TEST_H__
 #define __TEST_H__
-void Gas_State(void);
+
+
+
+void Gas_StateLayerUpdate(u8 Value_State[12] );
+void Gas_StateLayer(void);
 void GridLayer(void);
-void ADC_Out(float voltage);
+
+void ADC_Out(float voltage[3]);
 void DrawTestPage(u8 *str);
 void Test_Color(void);
 void Test_FillRec(void);

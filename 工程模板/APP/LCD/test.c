@@ -92,17 +92,30 @@ Gui_StrCenter(0,lcddev.height-18,WHITE,BLUE,"http://www.lcdwiki.com",16,1);//¾ÓÖ
 }
 
 
-void ADC_Out(float voltage)
+void ADC_Out(float voltage[3])
 {
 		//u8 TEXT_Buffer[19]={"FLASH SPI TEST OK!"};
 //	DrawTestPage("È«¶¯µç×Ó×ÛºÏ²âÊÔ³ÌĞò");	
 //	Gui_StrCenter(0,30,RED,BLUE,"È«¶¯µç×Ó",16,1);//¾ÓÖĞÏÔÊ¾
 //	Gui_StrCenter(0,60,RED,BLUE,"×ÛºÏ²âÊÔ³ÌĞò",16,1);//¾ÓÖĞÏÔÊ¾	
 	char str[40];
-//	u8 i;
+	u8 i;
 	char description[19] = {"V"};
 
+	for(i=0;i<3;i++)
+	{
+
+	sprintf(str,"%f%.20s",voltage[i],description);
 	
+
+	//sprintf(str,"%.3s%.3s",s1,s2); ½«¶à¸ö×Ö·û´®Á¬½ÓÆğÀ´
+	//Gui_StrCenter(0,90,WHITE,RED,str,16,1);//¾ÓÖĞÏÔÊ¾
+	Show_Str(60,56+i*20,BLACK,WHITE,str,12,0);
+	delay_ms(10);		
+	delay_ms(10);
+	
+	}
+	/*
 	//LCD_Clear(WHITE);
 	//LCD_Fill(0,0,lcddev.width,lcddev.height-20,BLACK);  // ÏàÖªµÀ Õâ¸ö¶şheight ºÍ widtf  ÊÇÔÚÄÄÀï¶¨ÒåµÄ
 	//LCD_Fill(0,90,lcddev.width,lcddev.height-20,BLACK);  // ÏàÖªµÀ Õâ¸ö¶şheight ºÍ widtf  ÊÇÔÚÄÄÀï¶¨ÒåµÄ
@@ -124,7 +137,7 @@ void ADC_Out(float voltage)
 	Show_Str(60,56,BLACK,WHITE,str,12,0);
 //Gui_StrCenter(0,120,BLUE,BLUE,"Pzx@QDtech 2018-08-20",16,1);//¾ÓÖĞÏÔÊ¾
 	delay_ms(10);		
-	delay_ms(10);
+	delay_ms(10);*/
 	
 }
 
@@ -159,15 +172,15 @@ void GridLayer()
 	
 	//Main menu set
 	//Gas Supply And Dectection System
-		Show_Str(10,5,BLACK,WHITE,"Gas Suppply And Dectection System",12,0);//ÏÔÊ¾   mdde 0  ±íÊ¾ no overlay
+	Show_Str(10,5,BLACK,WHITE,"Gas Suppply And Dectection System",12,0);//ÏÔÊ¾   mdde 0  ±íÊ¾ no overlay
 	//Set Value   Measure
-		Show_Str(60,33,BLACK,WHITE,"Set Value",12,1);
-		Show_Str(140,33,BLACK,WHITE,"Measure Value",12,1);
+	Show_Str(60,33,BLACK,WHITE,"Set Value",12,1);
+	Show_Str(140,33,BLACK,WHITE,"Measure Value",12,1);
 	//Device  Show
 	Show_Str(0,56,BLACK,YELLOW," 1479A :",12,0);
-	Show_Str(0,78,BLACK,YELLOW,"   PV  :",12,0);
+	Show_Str(0,78,BLACK,YELLOW," 627D  :",12,0);
 	Show_Str(0,98,BLACK,YELLOW,"CDG025D:",12,0);
-	Show_Str(0,118,BLACK,YELLOW," 627D  :",12,0);
+	Show_Str(0,118,BLACK,YELLOW,"   PV  :",12,0);
 
 ///////////////GAS Value State	/////////////////////////
 	Show_Str(80,139,BLACK,WHITE,"Gas Value State",12,0);
@@ -189,7 +202,7 @@ void GridLayer()
 }
 
 
-void Gas_State()
+void Gas_StateLayer(void )
 {
 	//´«ÈëÒ»¸öÊı×é£¬ÓÃÀ´Ö¸Ê¾¸üĞÂ¸÷¸öµÆµÄ×´Ì¬
 	u8 i=0;
@@ -197,17 +210,52 @@ void Gas_State()
 	for(i=0;i<6;i++)
 	{
 		//if()
-			gui_circle(180,168+i*20,ColorTab[1],6,1);
+			gui_circle(180,168+i*20,ColorTab[3],6,1);
 		gui_circle(50,168+i*20,ColorTab[3],6,1);
 		
 	}
 	
-	;
+	
 	
 	
 	delay_ms(1500);
 }
+void Gas_StateLayerUpdate(u8 Value_State[12] )
+{
+	//´«ÈëÒ»¸öÊı×é£¬ÓÃÀ´Ö¸Ê¾¸üĞÂ¸÷¸öµÆµÄ×´Ì¬
+	u8 i=0;
+	//LCD_Fill(0,20,lcddev.width,lcddev.height-20,WHITE);
+	for(i=0;i<6;i++)
+	{
+		if(Value_State[i]==1)
+		{
+			gui_circle(180,168+i*20,ColorTab[1],6,1);
+		}
+		else
+		{
+			gui_circle(180,168+i*20,ColorTab[0],6,1);
+		}
+			
+	}
+		for(i=6;i<13;i++)
+	{
+		if(Value_State[i]==1)
+		{
+			gui_circle(50,168+(i-5)*20,ColorTab[1],6,1);
+		}
+		else
+		{
+			gui_circle(50,168+(i-5)*20,ColorTab[0],6,1);
+		}
 
+		
+	}
+	
+	
+	
+	
+	delay_ms(1500);
+}
 
 
 

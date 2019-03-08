@@ -369,7 +369,7 @@
               <MiscControls></MiscControls>
               <Define>USE_STDPERIPH_DRIVER,STM32F10X_HD</Define>
               <Undefine></Undefine>
-              <IncludePath>.\user;.\Libraries\STM32F10x_StdPeriph_Driver\inc;.\Libraries\CMSIS\CM3\CoreSupport;.\Libraries\CMSIS\CM3\DeviceSupport\ST\STM32F10x;.\APP\LED;.\APP\SysTick;.\APP\PWM;.\APP\RS485;.\APP\printf;.\APP\IIC(24C02);.\APP\AT24Cxx;.\APP\DS18B20;.\APP\ADC;.\APP\beep;.\APP\exit;.\APP\key;.\APP\smg;.\APP\time;.\APP\usart;.\APP\dac;.\APP\SPI;.\APP\sys;.\APP\LCD</IncludePath>
+              <IncludePath>.\user;.\Libraries\STM32F10x_StdPeriph_Driver\inc;.\Libraries\CMSIS\CM3\CoreSupport;.\Libraries\CMSIS\CM3\DeviceSupport\ST\STM32F10x;.\APP\LED;.\APP\SysTick;.\APP\PWM;.\APP\RS485;.\APP\printf;.\APP\IIC(24C02);.\APP\AT24Cxx;.\APP\DS18B20;.\APP\ADC;.\APP\beep;.\APP\exit;.\APP\key;.\APP\smg;.\APP\time;.\APP\usart;.\APP\dac;.\APP\SPI;.\APP\sys;.\APP\LCD;.\APP\touch</IncludePath>
             </VariousControls>
           </Cads>
           <Aads>

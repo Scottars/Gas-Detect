@@ -41,7 +41,10 @@ int main()
 	
 	u16 dacval;
 	u16 value;
-	float voltage1;
+	float voltage[3];
+	u16 AD_Channel_Select[3]={ADC_Channel_10,ADC_Channel_11,ADC_Channel_12};//定义通道选择数组
+	u32 AD_Channel_10_Value,AD_Channel_11_Value,AD_Channel_12_Value;
+	
 	u8 i,j;		
 	///////////////////////液晶屏初始化过程///////////////////////
 	
@@ -61,8 +64,14 @@ int main()
 	DAC_SetChannel1Data(DAC_Align_12b_R, 0);//初始值为0	    
 	
 	
+	GridLayer();
+
+	Gas_StateLayer();
+		
 	while(1)
 	{
+		
+		//Gas_StateLayerUpdate();
 		/*
 		//////////////////////屏幕tests 部分/////////////////////////////
 		main_test(); 		//测试主界面
@@ -82,14 +91,18 @@ int main()
 		*/
 		
 		//界面初始化//
-		GridLayer();
-		Gas_State();
-		
+
 		
 		//读取IO口的数据，用来更新我们的状态裂变，或者可以采取中断的方式
+		//简单地方式就是每次走过这个地方把所有的IO的数据全都使用一下，还有一种方案就是通过中断？   中断还是应当采取外部中断吗？  显然不是
+		//
+		//Gas_State_Read();
+			
 		
 		
 		//网络传输
+		
+		
 		
 		
 			j++;
@@ -108,14 +121,20 @@ int main()
 			dacval=i*200;
 			Dac1_Set_Vol(dacval);//设置DAC值	
 		
-			delay_ms(50);
-			delay_ms(500);
 			printf("The target dac boltage is : %f\n",dacval*3.3/3300);	
-			value = Get_ADC_Value(ADC_Channel_10,20);
-			printf("The target adc VALUE is : %d \n",value);
-			voltage1 = (float)value*(3.3/4096);
-			printf("Voltage is %f \n",voltage1);
-			ADC_Out(voltage1);
+			
+			 
+			
+			AD_Channel_10_Value = Get_ADC_Value(ADC_Channel_10,20);
+			AD_Channel_11_Value = Get_ADC_Value(ADC_Channel_11,20);
+			AD_Channel_12_Value = Get_ADC_Value(ADC_Channel_12,20);
+			voltage[0] = (float)AD_Channel_10_Value*(3.3/4096);
+			voltage[1] = (float)AD_Channel_11_Value*(3.3/4096);
+			voltage[2] = (float)AD_Channel_12_Value*(3.3/4096);
+			printf("Voltage0 is %f\n",voltage[0]);
+			printf("Voltage1 is %f\n",voltage[1]);
+			printf("Voltage2 is %f\n",voltage[2]);
+			ADC_Out(voltage);
 		}
 	
 		
