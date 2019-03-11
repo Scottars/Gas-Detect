@@ -5,8 +5,11 @@
 #include "stm32f10x.h"
 //#define LED GPIO_Pin_14	 	//管脚宏定义
 
-void ValueStateChange(void);
+
 void ValveState_Init(void);  //端口初始化
+void ValveStateChange(u8 ValveSet_Value[12]);
+u8 *Gas_State_Read(void);
+
 	
 
 #define Valve_GPIOA  GPIO_Pin_0|  GPIO_Pin_1 |GPIO_Pin_6 |GPIO_Pin_7

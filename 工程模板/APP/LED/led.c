@@ -26,7 +26,7 @@ void LED_Init()	  //端口初始化
 	RCC_APB2PeriphClockCmd(RCC_APB2Periph_GPIOC,ENABLE); /* 开启GPIO时钟 */
 
 	/*  配置GPIO的模式和IO口 */
-	GPIO_InitStructure.GPIO_Pin=GPIO_Pin_14;	 //选择你要设置的IO口
+	GPIO_InitStructure.GPIO_Pin=GPIO_Pin_13 | GPIO_Pin_14 |GPIO_Pin_15;	 //选择你要设置的IO口
 	GPIO_InitStructure.GPIO_Mode=GPIO_Mode_Out_PP;	  //设置推挽输出模式
 	GPIO_InitStructure.GPIO_Speed=GPIO_Speed_50MHz;	  //设置传输速率
 	GPIO_Init(GPIOC,&GPIO_InitStructure); /* 初始化GPIO */	
@@ -40,11 +40,11 @@ void LED_Init()	  //端口初始化
 *******************************************************************************/
 void led_display()	//LED闪烁
 {
-		LED1=1;
+		LED2=1;
 //	GPIO_SetBits(GPIOC,GPIO_Pin_14);	 //IO口输出高电平
 	delay(6000000);//延时约为1s
 //	GPIO_ResetBits(GPIOC,GPIO_Pin_14); //IO口输出低电平
-		LED1=0;
+		LED2=0;
 	delay(6000000);
 }
 

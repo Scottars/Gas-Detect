@@ -61,7 +61,7 @@ void Gas_StateLayerUpdate(u8 Value_State[12] );
 void Gas_StateLayer(void);
 void GridLayer(void);
 
-void ADC_Out(float voltage[3]);
+void ADC_LCD_Out(float voltage[3]);
 void DrawTestPage(u8 *str);
 void Test_Color(void);
 void Test_FillRec(void);

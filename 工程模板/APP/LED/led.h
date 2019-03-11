@@ -9,10 +9,10 @@ void led_huayang(void);
 
 
 //LED¶Ë¿Ú¶¨Òå
-#define LED1 PCout(14)// PC8
-#define LED0 PDout(15)// PD2	
 
-
+#define LED0 PCout(13)// PB5
+#define LED1 PCout(14)// PE5	
+#define LED2 PCout(15)
 
 
 

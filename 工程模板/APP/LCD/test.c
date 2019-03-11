@@ -229,11 +229,12 @@ void Gas_StateLayerUpdate(u8 Value_State[12] )
 	{
 		if(Value_State[i]==1)
 		{
-			gui_circle(180,168+i*20,ColorTab[1],6,1);
+			gui_circle(50,168+(i-5)*20,ColorTab[1],6,1);
+		
 		}
 		else
 		{
-			gui_circle(180,168+i*20,ColorTab[0],6,1);
+		gui_circle(50,168+(i-5)*20,ColorTab[0],6,1);
 		}
 			
 	}
@@ -241,19 +242,17 @@ void Gas_StateLayerUpdate(u8 Value_State[12] )
 	{
 		if(Value_State[i]==1)
 		{
-			gui_circle(50,168+(i-5)*20,ColorTab[1],6,1);
+			gui_circle(180,168+i*20,ColorTab[1],6,1);
 		}
 		else
 		{
-			gui_circle(50,168+(i-5)*20,ColorTab[0],6,1);
+			gui_circle(180,168+i*20,ColorTab[0],6,1);
+		
 		}
 
 		
 	}
-	
-	
-	
-	
+		
 	delay_ms(1500);
 }
 
