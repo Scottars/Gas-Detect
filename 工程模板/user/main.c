@@ -44,13 +44,10 @@ int main()
 {	
 		u8 i,j,k;		
 	////////////////////AD part/////////////////////////
-	u16 dacval;
-	
-	float voltage[3];
-	u16 AD_Channel_Select[3]={ADC_Channel_10,ADC_Channel_11,ADC_Channel_12};//定义通道选择数组
-	u32 AD_Channel_10_Value,AD_Channel_11_Value,AD_Channel_12_Value;
-	
 
+float *voltage;
+	
+	u8 *ValveState_Value;
 	
 
 	///////////////////////液晶屏初始化过程///////////////////////
@@ -168,62 +165,24 @@ int main()
 		}
 		
 		
+		/*****************供气检测部分**************************/
 		
-		
-
+		//IO口的数据回读部分
+		ValveState_Value=Gas_State_Read(); //函数实现读取IO口的高低电平值
+		//IO数据串口显示
+			for(i=0;i<12;i++)
+			{
+				printf("\r\nStatevalue:%d\r\n",ValveState_Value[i]);
+			}
+		//IO数据 显示屏刷新
+			
+		Gas_StateLayerUpdate(ValveState_Value);
 		
 		/*******************************************************************************************************/
 	
-			
-		
-		//读取IO口的数据，用来更新我们的状态裂变，或者可以采取中断的方式
-		//简单地方式就是每次走过这个地方把所有的IO的数据全都使用一下，还有一种方案就是通过中断？   中断还是应当采取外部中断吗？  显然不是
-		//
-		
-		
-
-		
-		
-		
-		
-		
-		
-		//	j++;
-		/*	if(j%20==0)
-		{		led_display(); //LED2 
-			
-			
-		}*/
-
-
-	/*
-		for (i=0;i<10;i=i+1)
-		{
-			led_display();
-	
-			//i=1500;
-			dacval=i*200;
-			Dac1_Set_Vol(dacval);//设置DAC值	
-		
-			printf("The target dac boltage is : %f\n",dacval*3.3/3300);	
-	
-			
-			
-			AD_Channel_10_Value = Get_ADC_Value(ADC_Channel_10,20);
-			AD_Channel_11_Value = Get_ADC_Value(ADC_Channel_11,20);
-			AD_Channel_12_Value = Get_ADC_Value(ADC_Channel_12,20);
-			voltage[0] = (float)AD_Channel_10_Value*(3.3/4096);
-			voltage[1] = (float)AD_Channel_11_Value*(3.3/4096);
-			voltage[2] = (float)AD_Channel_12_Value*(3.3/4096);
-			printf("Voltage0 is %f\n",voltage[0]);
-			printf("Voltage1 is %f\n",voltage[1]);
-			printf("Voltage2 is %f\n",voltage[2]);
+			voltage=AD_Conversion();
 			ADC_LCD_Out(voltage);
-		}
-	
-		
-		
-		*/
+
 		
 		
 		

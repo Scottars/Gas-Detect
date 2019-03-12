@@ -28,25 +28,19 @@ Project File Date:  03/11/2019
 *** Using Compiler 'V5.05 update 1 (build 106)', folder: 'D:\Program Files\Keil5\ARM\ARMCC\Bin'
 Rebuild target 'Target 1'
 compiling main.c...
-user\main.c(45): warning:  #177-D: variable "i" was declared but never referenced
-                u8 i,j,k;               
+user\main.c(113): warning:  #223-D: function "System_Initialization" declared implicitly
+                System_Initialization();        //STM32系统初始化函数(初始化STM32时钟及外设)
+user\main.c(114): warning:  #223-D: function "Load_Net_Parameters" declared implicitly
+                Load_Net_Parameters();          //装载网络参数  
+user\main.c(116): warning:  #223-D: function "W5500_Initialization" declared implicitly
+                W5500_Initialization();         //W5500初始货配置
+user\main.c(152): warning:  #223-D: function "W5500_Socket_Set" declared implicitly
+                W5500_Socket_Set();//W5500端口初始化配置
 user\main.c(45): warning:  #177-D: variable "j" was declared but never referenced
                 u8 i,j,k;               
 user\main.c(45): warning:  #177-D: variable "k" was declared but never referenced
                 u8 i,j,k;               
-user\main.c(47): warning:  #177-D: variable "dacval" was declared but never referenced
-        u16 dacval;
-user\main.c(49): warning:  #177-D: variable "voltage" was declared but never referenced
-        float voltage[3];
-user\main.c(50): warning:  #177-D: variable "AD_Channel_Select" was declared but never referenced
-        u16 AD_Channel_Select[3]={ADC_Channel_10,ADC_Channel_11,ADC_Channel_12};//定义通道选择数组
-user\main.c(51): warning:  #177-D: variable "AD_Channel_10_Value" was declared but never referenced
-        u32 AD_Channel_10_Value,AD_Channel_11_Value,AD_Channel_12_Value;
-user\main.c(51): warning:  #177-D: variable "AD_Channel_11_Value" was declared but never referenced
-        u32 AD_Channel_10_Value,AD_Channel_11_Value,AD_Channel_12_Value;
-user\main.c(51): warning:  #177-D: variable "AD_Channel_12_Value" was declared but never referenced
-        u32 AD_Channel_10_Value,AD_Channel_11_Value,AD_Channel_12_Value;
-user\main.c: 9 warnings, 0 errors
+user\main.c: 6 warnings, 0 errors
 compiling stm32f10x_it.c...
 compiling public.c...
 compiling core_cm3.c...
@@ -81,11 +75,20 @@ compiling time.c...
 compiling usart.c...
 compiling dac.c...
 compiling adc.c...
+APP\ADC\adc.c(154): warning:  #223-D: function "Dac1_Set_Vol" declared implicitly
+                        Dac1_Set_Vol(dacval);//设置DAC值        
+APP\ADC\adc.c(172): warning:  #1166-D: returning pointer to local variable
+                return voltage ;
+APP\ADC\adc.c(174): warning:  #1-D: last line of file ends without a newline
+  }
+APP\ADC\adc.c(145): warning:  #177-D: variable "AD_Channel_Select" was declared but never referenced
+        u16 AD_Channel_Select[3]={ADC_Channel_10,ADC_Channel_11,ADC_Channel_12};//定义通道选择数组
+APP\ADC\adc.c: 4 warnings, 0 errors
 compiling gui.c...
 compiling lcd.c...
 compiling test.c...
 APP\LCD\test.c(114): warning:  #167-D: argument of type "char *" is incompatible with parameter of type "u8 *"
-        Show_Str(60,56+i*20,BLACK,WHITE,str,12,0);
+        Show_Str(130,56+i*20,BLACK,WHITE,str,12,0);
 APP\LCD\test.c: 1 warning, 0 errors
 compiling spi.c...
 compiling IOState.c...
@@ -94,11 +97,9 @@ APP\W5500\w5500.c(367): warning:  #167-D: argument of type "unsigned char *" is 
         printf(Rx_Buffer);
 APP\W5500\w5500.c(398): warning:  #192-D: unrecognized character escape sequence
                         printf("\r\SetValue ok\r\n");
-APP\W5500\w5500.c(355): warning:  #177-D: variable "ValveState_Value" was declared but never referenced
-        u8 *ValveState_Value;
-APP\W5500\w5500.c: 3 warnings, 0 errors
+APP\W5500\w5500.c: 2 warnings, 0 errors
 linking...
-Program Size: Code=22408 RO-data=344 RW-data=104 ZI-data=5152  
+Program Size: Code=30088 RO-data=9440 RW-data=112 ZI-data=5152  
 FromELF: creating hex file...
 ".\output\工程模板.axf" - 0 Error(s), 14 Warning(s).
 

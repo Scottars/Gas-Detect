@@ -111,35 +111,10 @@ void ADC_LCD_Out(float voltage[3])
 
 	//sprintf(str,"%.3s%.3s",s1,s2); 将多个字符串连接起来
 	//Gui_StrCenter(0,90,WHITE,RED,str,16,1);//居中显示
-	Show_Str(60,56+i*20,BLACK,WHITE,str,12,0);
+	Show_Str(130,56+i*20,BLACK,WHITE,str,12,0);
 	delay_ms(10);		
 	delay_ms(10);
-	
 	}
-	/*
-	//LCD_Clear(WHITE);
-	//LCD_Fill(0,0,lcddev.width,lcddev.height-20,BLACK);  // 相知道 这个二height 和 widtf  是在哪里定义的
-	//LCD_Fill(0,90,lcddev.width,lcddev.height-20,BLACK);  // 相知道 这个二height 和 widtf  是在哪里定义的
-	
-	delay_ms(10);		
-	delay_ms(10);
-	
-//	LCD_Fill(0,90,240,lcddev.height-20,RED);  // 相知道 这个二height 和 widtf  是在哪里定义的
-	delay_ms(10);		
-	delay_ms(10);
-	//LCD_Fill(0,90,240,116,BLACK);  // 相知道 这个二height 和 widtf  是在哪里定义的（ x 起始位置，  y 起始位置  x 结束位置  y 结束位置   颜色 ）
-	
-		
-	sprintf(str,"%f%.20s",voltage,description);
-	//printf("LCD_Function Out: %f\n",voltage);
-
-	//sprintf(str,"%.3s%.3s",s1,s2); 将多个字符串连接起来
-	//Gui_StrCenter(0,90,WHITE,RED,str,16,1);//居中显示
-	Show_Str(60,56,BLACK,WHITE,str,12,0);
-//Gui_StrCenter(0,120,BLUE,BLUE,"Pzx@QDtech 2018-08-20",16,1);//居中显示
-	delay_ms(10);		
-	delay_ms(10);*/
-	
 }
 
 
@@ -167,7 +142,7 @@ void GridLayer()
 		}
 		printf("hello");
 	}
-	LCD_DrawLine(120,26, 120, 132);  //画屏幕上的竖线
+	LCD_DrawLine(120,26, 120, 132);  //画屏幕上的竖线  竖线位置 120 从左到右
 	LCD_DrawLine(120,158, 120, 278); //画屏幕上的竖线
 	
 	
@@ -205,14 +180,14 @@ void GridLayer()
 
 void Gas_StateLayer(void )
 {
-	//传入一个数组，用来指示更新各个灯的状态
+	
 	u8 i=0;
 	//LCD_Fill(0,20,lcddev.width,lcddev.height-20,WHITE);
 	for(i=0;i<6;i++)
 	{
 		//if()
-			gui_circle(180,168+i*20,ColorTab[1],6,1);
-		gui_circle(50,168+i*20,ColorTab[1],6,1);
+			gui_circle(180,168+i*20,ColorTab[0],6,1);
+		gui_circle(50,168+i*20,ColorTab[0],6,1);
 		
 	}
 	
@@ -230,25 +205,28 @@ void Gas_StateLayerUpdate(u8 Value_State[12] )
 	{
 		if(Value_State[i]==1)
 		{
-			gui_circle(50,168+(i-5)*20,ColorTab[1],6,1);
+			gui_circle(50,168+i*20,ColorTab[1],6,1);
+			Show_Str(65,162+i*20,BLACK,YELLOW,"ON ",12,0);
 		
 		}
 		else
 		{
-		gui_circle(50,168+(i-5)*20,ColorTab[0],6,1);
+		gui_circle(50,168+i*20,ColorTab[0],6,1);
+			Show_Str(65,162+i*20,BLACK,YELLOW,"OFF",12,0);
 		}
 			
 	}
-		for(i=6;i<13;i++)
+		for(i=6;i<12;i++)
 	{
 		if(Value_State[i]==1)
 		{
-			gui_circle(180,168+i*20,ColorTab[1],6,1);
+			gui_circle(180,168+(i-6)*20,ColorTab[1],6,1);
+			Show_Str(195,162+(i-6)*20,BLACK,YELLOW,"ON ",12,0);
 		}
 		else
 		{
-			gui_circle(180,168+i*20,ColorTab[0],6,1);
-		
+			gui_circle(180,168+(i-6)*20,ColorTab[0],6,1);
+			Show_Str(195,162+(i-6)*20,BLACK,YELLOW,"OFF",12,0);
 		}
 
 		

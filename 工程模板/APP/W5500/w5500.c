@@ -352,7 +352,7 @@ void Process_Socket_Data(SOCKET s)
 {
 	unsigned short size;//接收到的buffer 的大小
 		///////////////////////Valve Gas Part///////	
-	u8 *ValveState_Value;
+
 	u8 ValveSet_Value[12];  //来自网络传入过来的信号
 	u8 i;
 	////////////////////////////////////////////////////////
@@ -387,7 +387,7 @@ void Process_Socket_Data(SOCKET s)
 				//暂定方案： 直接调用相关的函数
 				//这个是Rx_Buffer的定义：unsigned char Rx_Buffer[2048]
 				//对于设定部分有 供气模式 配气柜阀门 1479A流量设定  气体喷出启停 气体喷出模式 
-				//									2xx     3 xx 4xx        5xx      6 xx      7   xx
+				//									2xx     3 xx 4xx     5xx  6 xx      7   xx        8xx 
 				//这个时候专门设定一个函数好了，叫做网络信息处理
 	
 			////////////////////供气模式////////////////////
@@ -423,7 +423,7 @@ void Process_Socket_Data(SOCKET s)
 			ValveStateChange(ValveSet_Value);//网络信号传入过来的开断信息，然后程序实现自动设置对应的IO的高低电平，实际改变IO口设定值
 		
 			
-			//	ValveState_Value=Gas_State_Read(); //函数实现读取IO口的高低电平值
+			
 			///////////////////////////////////////////////////////
 		
 					

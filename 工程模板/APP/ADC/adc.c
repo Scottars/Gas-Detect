@@ -117,7 +117,7 @@ void adc_init()
 
 u16 Get_ADC_Value(u8 channel,u8 times)
 {
-	u8 t;
+	u8 t;  //times 用来实现多次采样的平均值~ 
 	
 	u32 temp=0;
 	
@@ -135,44 +135,40 @@ u16 Get_ADC_Value(u8 channel,u8 times)
 	
 	
 	
-	
-	
-	
-	
-	
-	
-	
-	
-	
-	
-	
-	
-	
-	
-	
-	
-	
-	/*
-	u32 value[3];
-	
-	
-//?采用规则组，怪罪则顺序排列,ADC1   channel0  采用的是规则组
-	for(i=0;i<3;i++) 
-	{
-	ADC_RegularChannelConfig(ADC1,channel(i),1,ADC_SampleTime_239Cycles5);
+}
+float *AD_Conversion()
+{
+			u8 i;		
+	////////////////////AD part/////////////////////////
+	u16 dacval;
+	float voltage[3];
+	u16 AD_Channel_Select[3]={ADC_Channel_10,ADC_Channel_11,ADC_Channel_12};//定义通道选择数组
+	u32 AD_Channel_10_Value,AD_Channel_11_Value,AD_Channel_12_Value;
 
-		for (t=0;t<times;t++)
-		{
-			ADC_SoftwareStartConvCmd(ADC1, ENABLE);// 软件触发
-			while (!ADC_GetFlagStatus(ADC1,ADC_FLAG_EOC));  //??????   本身也有延迟，实际上如果
-			temp += ADC_GetConversionValue(ADC1);		 //用来读取我们的转换值。
-			delay_ms(5);
-
-		}
-		value[i]=temp/(t+1);
-	}
-	return value;
-*/
+		//for (i=0;i<10;i=i+1)
+	//	{
+			
+	
+		
+			dacval=i*200;
+			Dac1_Set_Vol(dacval);//设置DAC值	
+		
+		//	printf("The target dac boltage is : %f\n",dacval*3.3/3300);	
+	
+			
+			
+			AD_Channel_10_Value = Get_ADC_Value(ADC_Channel_10,20); 
+			AD_Channel_11_Value = Get_ADC_Value(ADC_Channel_11,20);
+			AD_Channel_12_Value = Get_ADC_Value(ADC_Channel_12,20);
+			voltage[0] = (float)AD_Channel_10_Value*(3.3/4096);
+			voltage[1] = (float)AD_Channel_11_Value*(3.3/4096);
+			voltage[2] = (float)AD_Channel_12_Value*(3.3/4096);
+		//	printf("Voltage0 is %f\n",voltage[0]);
+		//	printf("Voltage1 is %f\n",voltage[1]);
+	//		printf("Voltage2 is %f\n",voltage[2]);
+			//返回voltage 数组
+		
+	//	}
+		return voltage ;
 	
 }
-
