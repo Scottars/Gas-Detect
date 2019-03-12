@@ -249,21 +249,25 @@ extern unsigned char Tx_Buffer[2048];	//端口发送数据缓冲区
 extern unsigned char W5500_Interrupt;	//W5500中断标志(0:无中断,1:有中断)
 typedef unsigned char SOCKET;			//自定义端口号数据类型
 
-extern void Delay(unsigned int d);//延时函数(ms)
-extern void W5500_GPIO_Configuration(void);//W5500 GPIO初始化配置
-extern void W5500_NVIC_Configuration(void);//W5500 接收引脚中断优先级设置
-extern void SPI_Configuration(void);//W5500 SPI初始化配置(STM32 SPI1)
-extern void W5500_Hardware_Reset(void);//硬件复位W5500
-extern void W5500_Init(void);//初始化W5500寄存器函数
-extern unsigned char Detect_Gateway(void);//检查网关服务器
-extern void Socket_Init(SOCKET s);//指定Socket(0~7)初始化
-extern unsigned char Socket_Connect(SOCKET s);//设置指定Socket(0~7)为客户端与远程服务器连接
-extern unsigned char Socket_Listen(SOCKET s);//设置指定Socket(0~7)作为服务器等待远程主机的连接
-extern unsigned char Socket_UDP(SOCKET s);//设置指定Socket(0~7)为UDP模式
-extern unsigned short Read_SOCK_Data_Buffer(SOCKET s, unsigned char *dat_ptr);//指定Socket(0~7)接收数据处理
-extern void Write_SOCK_Data_Buffer(SOCKET s, unsigned char *dat_ptr, unsigned short size); //指定Socket(0~7)发送数据处理
-extern void W5500_Interrupt_Process(void);//W5500中断处理程序框架
 
+
+
+
+void Delay(unsigned int d);//延时函数(ms)
+void W5500_GPIO_Configuration(void);//W5500 GPIO初始化配置
+void W5500_NVIC_Configuration(void);//W5500 接收引脚中断优先级设置
+void SPI_Configuration(void);//W5500 SPI初始化配置(STM32 SPI1)
+void W5500_Hardware_Reset(void);//硬件复位W5500
+void W5500_Init(void);//初始化W5500寄存器函数
+unsigned char Detect_Gateway(void);//检查网关服务器
+extern void Socket_Init(SOCKET s);//指定Socket(0~7)初始化
+unsigned char Socket_Connect(SOCKET s);//设置指定Socket(0~7)为客户端与远程服务器连接
+unsigned char Socket_Listen(SOCKET s);//设置指定Socket(0~7)作为服务器等待远程主机的连接
+unsigned char Socket_UDP(SOCKET s);//设置指定Socket(0~7)为UDP模式
+unsigned short Read_SOCK_Data_Buffer(SOCKET s, unsigned char *dat_ptr);//指定Socket(0~7)接收数据处理
+void Write_SOCK_Data_Buffer(SOCKET s, unsigned char *dat_ptr, unsigned short size); //指定Socket(0~7)发送数据处理
+void W5500_Interrupt_Process(void);//W5500中断处理程序框架
+void Process_Socket_Data(SOCKET s);
 #endif
 
 

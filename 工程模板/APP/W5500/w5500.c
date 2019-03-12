@@ -9,7 +9,10 @@
 #include "stm32f10x_spi.h"				
 #include "W5500.h"	
 #include <string.h>
-#include "led.h"	
+#include "led.h"
+#include "printf.h" //调试用
+#include "IOState.h"
+
 
 
 
@@ -234,15 +237,6 @@ void Delay(unsigned int d)
 
 
 
-
-
-
-
-
-
-
-
-
 /*******************************************************************************
 * 函数名  : W5500_Initialization
 * 描述    : W5500初始货配置
@@ -256,7 +250,7 @@ void W5500_Initialization(void)
 	W5500_Init();		//初始化W5500寄存器函数
 	Detect_Gateway();	//检查网关服务器 
 	Socket_Init(0);		//指定Socket(0~7)初始化,初始化端口0
-		LED0=1;////////////////////////////////////////////////////////////////////////////////
+	//	LED0=1;/////////////////////给了一个信号用来实现确定是否已经完成了初始化///////////////////////////////////////////////////////////
 
 }
 
@@ -356,10 +350,123 @@ void W5500_Socket_Set(void)
 *******************************************************************************/
 void Process_Socket_Data(SOCKET s)
 {
-	unsigned short size;
+	unsigned short size;//接收到的buffer 的大小
+		///////////////////////Valve Gas Part///////	
+	u8 *ValveState_Value;
+	u8 ValveSet_Value[12];  //来自网络传入过来的信号
+	u8 i;
+	////////////////////////////////////////////////////////
+	
+	
+	
+
 	size=Read_SOCK_Data_Buffer(s, Rx_Buffer);
+	printf("\r\nSIZE:%d\r\n",size);
 	memcpy(Tx_Buffer, Rx_Buffer, size);			
-	Write_SOCK_Data_Buffer(s, Tx_Buffer, size);
+	printf("\r\nRX_BUFFER\r\n");
+	printf(Rx_Buffer);
+
+	//关于RX_Buffer  上位机理论上 应该传入的是一串的数据， 而不是一个单纯的位
+	//可以看到Rx_Buffer 相当于一个数组，16位吧
+	//对于Modbus协议 先举个例子
+
+	
+	if (Rx_Buffer[0]==0x04) //本机的设备地址为0x00 04 
+	{
+		printf("\r\nSLocal Address ok!\r\n");
+			
+		switch (Rx_Buffer[1])
+		{
+			case 0x03:    //读取保持寄存器的状态
+				Write_SOCK_Data_Buffer(s, Tx_Buffer, size);
+				break;
+			
+			case 0x05:    //写入寄存器的状态
+				//设定12光路、设定真空度、设定流量值
+				//设定方案：通过全局变量传送出去，还是最后直接调用相关的函数呢？
+				//暂定方案： 直接调用相关的函数
+				//这个是Rx_Buffer的定义：unsigned char Rx_Buffer[2048]
+				//对于设定部分有 供气模式 配气柜阀门 1479A流量设定  气体喷出启停 气体喷出模式 
+				//									2xx     3 xx 4xx        5xx      6 xx      7   xx
+				//这个时候专门设定一个函数好了，叫做网络信息处理
+	
+			////////////////////供气模式////////////////////
+
+			
+			
+			////////////////////配气柜阀门////////////////////
+			printf("\r\SetValue ok\r\n");
+			for(i=0;i<8;i++)
+			{
+				if(((Rx_Buffer[4]>>i)& 0x01)==0x01)   //设定向右移位，从右到左，分别表示12路光纤的状态   依次取设定的数值
+					ValveSet_Value[i]=1;
+				else
+					ValveSet_Value[i]=0;
+			}
+			for(i=0;i<4;i++)
+			{
+				if(((Rx_Buffer[3]>>i)& 0x01)==0x01)
+					ValveSet_Value[i+8]=1;
+				else
+					ValveSet_Value[i+8]=0;
+			}
+		
+			//测试是否接收成功
+			//测试方法：通过接收网络传送过来的数据，然后通过串口发出设定值，看是否正确
+			for(i=0;i<12;i++)
+			{
+				printf("\r\nSetvalue:%d\r\n",ValveSet_Value[i]);
+			}
+		
+			
+			
+			ValveStateChange(ValveSet_Value);//网络信号传入过来的开断信息，然后程序实现自动设置对应的IO的高低电平，实际改变IO口设定值
+		
+			
+			//	ValveState_Value=Gas_State_Read(); //函数实现读取IO口的高低电平值
+			///////////////////////////////////////////////////////
+		
+					
+		/////////////////////气体喷出启停/////////////////////
+					
+			
+			
+			
+	
+		////////////////////气体喷出模式////////////////////
+				break;
+			
+			
+			default:
+				break;
+		}
+			
+		if (Rx_Buffer[0]==0x01)   //判断寄存器中的内容就通过这个来进行。
+			{
+				Write_SOCK_Data_Buffer(s, Tx_Buffer, size);
+				Write_SOCK_Data_Buffer(0, "\r\n THis is 1\r\n", 23);
+			
+			}
+		
+	}
+	else
+	{
+	}
+
+	
+	/*if (Rx_Buffer[0]==0x11)   //判断寄存器中的内容就通过这个来进行。
+	{
+		Write_SOCK_Data_Buffer(s, Tx_Buffer, size);
+		Write_SOCK_Data_Buffer(0, "\r\n THis is 1\r\n", 23);
+		
+	}*/
+	
+		//
+
+//下面写入关于框架的内容，将我们所得到的整个数据进行分包处理，
+		
+		
+		
 }
 
 

@@ -37,22 +37,22 @@ void ValveStateChange(u8 ValveSet_Value[12] )
 	//为了调试使用
 	//1 2 6
 	
-
+/*
 	Valve_6=0;
 	printf("Wirking on GPIO state test!");
 	delay_ms(1000);
 	
 
 	Valve_6=1;
-	delay_ms(1000);
+	delay_ms(1000);*/
 	////下面正式使用，位带操作对应的按钮///////
 	/*
-#define Valve_1 PCout(13)		// Valve1  singal 1   PC13    ----------P7排线
-#define Valve_2 PCout(15)//Valve2  singal 2   PC15    ----------P7排线
+#define Valve_1 PCout(13)		// Valve1  singal 1   PC13    ----------P7排线   对应LED0
+#define Valve_2 PCout(15)//Valve2  singal 2   PC15    ----------P7排线      对应 LED2
 #define Valve_3 PCout(3)// Valve3  singal 3   PC3    ----------P7排线
 #define Valve_4 PAout(1)//Valve4  singal 4   PA1    ----------P7排线
 #define Valve_5 PAout(0)// Valve5  singal 11   PA0    ----------P7排线
-#define Valve_6 PCout(14)//Valve6  singal 12   PC14    ----------P7排线
+#define Valve_6 PCout(14)//Valve6  singal 12   PC14    ----------P7排线    对应LED1
 
 
 #define Valve_7 PAout(7)// Valve7  singal 5   PA7   ----------P8排线
@@ -78,101 +78,101 @@ void ValveStateChange(u8 ValveSet_Value[12] )
 	}
 		if (ValveSet_Value[1] == 1)
 	{
-		Valve_1=1; //设置高电平为亮
+		Valve_2=1; //设置高电平为亮
 	}
 	else
 	{
-		Valve_1=0;
+		Valve_2=0;
 		
 	}
 		if (ValveSet_Value[2] == 1)
 	{
-		Valve_1=1; //设置高电平为亮
+		Valve_3=1; //设置高电平为亮
 	}
 	else
 	{
-		Valve_1=0;
+		Valve_3=0;
 		
 	}
 		if (ValveSet_Value[3] == 1)
 	{
-		Valve_1=1; //设置高电平为亮
+		Valve_4=1; //设置高电平为亮
 	}
 	else
 	{
-		Valve_1=0;
+		Valve_4=0;
 		
 	}
 		if (ValveSet_Value[4] == 1)
 	{
-		Valve_1=1; //设置高电平为亮
+		Valve_5=1; //设置高电平为亮
 	}
 	else
 	{
-		Valve_1=0;
+		Valve_5=0;
 		
 	}
 		if (ValveSet_Value[5] == 1)
 	{
-		Valve_1=1; //设置高电平为亮
+		Valve_6=1; //设置高电平为亮
 	}
 	else
 	{
-		Valve_1=0;
+		Valve_6=0;
 		
 	}
 		if (ValveSet_Value[6] == 1)
 	{
-		Valve_1=1; //设置高电平为亮
+		Valve_7=1; //设置高电平为亮
 	}
 	else
 	{
-		Valve_1=0;
+		Valve_7=0;
 		
 	}
 		if (ValveSet_Value[7] == 1)
 	{
-		Valve_1=1; //设置高电平为亮
+		Valve_8=1; //设置高电平为亮
 	}
 	else
 	{
-		Valve_1=0;
+		Valve_8=0;
 		
 	}
 		if (ValveSet_Value[8] == 1)
 	{
-		Valve_1=1; //设置高电平为亮
+		Valve_9=1; //设置高电平为亮
 	}
 	else
 	{
-		Valve_1=0;
+		Valve_9=0;
 		
 	}
 		if (ValveSet_Value[9] == 1)
 	{
-		Valve_1=1; //设置高电平为亮
+		Valve_10=1; //设置高电平为亮
 	}
 	else
 	{
-		Valve_1=0;
+		Valve_10=0;
 		
 	}
 			if (ValveSet_Value[10] == 1)
 	{
-		Valve_1=1; //设置高电平为亮
+		Valve_11=1; //设置高电平为亮
 	}
 	else
 	{
-		Valve_1=0;
+		Valve_11=0;
 		
 	}
 		if (ValveSet_Value[11] == 1)
 	{
-		Valve_1=1; //设置高电平为亮
+		Valve_12=1; //设置高电平为亮
 	}
 	else
 	{
-		Valve_1=0;
+		Valve_12=0;
 		
 	}
 

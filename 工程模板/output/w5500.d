@@ -31,3 +31,6 @@
 .\output\w5500.o: APP\W5500\W5500.h
 .\output\w5500.o: D:\Program Files\Keil5\ARM\ARMCC\Bin\..\include\string.h
 .\output\w5500.o: .\APP\LED\led.h
+.\output\w5500.o: .\APP\printf\printf.h
+.\output\w5500.o: D:\Program Files\Keil5\ARM\ARMCC\Bin\..\include\stdio.h
+.\output\w5500.o: .\APP\GPIO_State\IOState.h

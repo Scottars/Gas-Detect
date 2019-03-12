@@ -92,9 +92,10 @@ Gui_StrCenter(0,lcddev.height-18,WHITE,BLUE,"http://www.lcdwiki.com",16,1);//¾ÓÖ
 }
 
 
-void ADC_Out(float voltage[3])
+void ADC_LCD_Out(float voltage[3])
 {
-		//u8 TEXT_Buffer[19]={"FLASH SPI TEST OK!"};
+	
+//u8 TEXT_Buffer[19]={"FLASH SPI TEST OK!"};
 //	DrawTestPage("È«¶¯µç×Ó×ÛºÏ²âÊÔ³ÌĞò");	
 //	Gui_StrCenter(0,30,RED,BLUE,"È«¶¯µç×Ó",16,1);//¾ÓÖĞÏÔÊ¾
 //	Gui_StrCenter(0,60,RED,BLUE,"×ÛºÏ²âÊÔ³ÌĞò",16,1);//¾ÓÖĞÏÔÊ¾	

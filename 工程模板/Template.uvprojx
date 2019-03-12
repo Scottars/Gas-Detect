@@ -369,7 +369,7 @@
               <MiscControls></MiscControls>
               <Define>USE_STDPERIPH_DRIVER,STM32F10X_HD</Define>
               <Undefine></Undefine>
-              <IncludePath>.\user;.\Libraries\STM32F10x_StdPeriph_Driver\inc;.\Libraries\CMSIS\CM3\CoreSupport;.\Libraries\CMSIS\CM3\DeviceSupport\ST\STM32F10x;.\APP\LED;.\APP\SysTick;.\APP\PWM;.\APP\RS485;.\APP\printf;.\APP\IIC(24C02);.\APP\AT24Cxx;.\APP\DS18B20;.\APP\ADC;.\APP\beep;.\APP\exit;.\APP\key;.\APP\smg;.\APP\time;.\APP\usart;.\APP\dac;.\APP\SPI;.\APP\sys;.\APP\LCD;.\APP\touch;.\APP\GPIO_State</IncludePath>
+              <IncludePath>.\user;.\Libraries\STM32F10x_StdPeriph_Driver\inc;.\Libraries\CMSIS\CM3\CoreSupport;.\Libraries\CMSIS\CM3\DeviceSupport\ST\STM32F10x;.\APP\LED;.\APP\SysTick;.\APP\PWM;.\APP\RS485;.\APP\printf;.\APP\IIC(24C02);.\APP\AT24Cxx;.\APP\DS18B20;.\APP\ADC;.\APP\beep;.\APP\exit;.\APP\key;.\APP\smg;.\APP\time;.\APP\usart;.\APP\dac;.\APP\SPI;.\APP\sys;.\APP\LCD;.\APP\touch;.\APP\GPIO_State;.\APP\W5500</IncludePath>
             </VariousControls>
           </Cads>
           <Aads>
@@ -502,6 +502,11 @@
               <FileType>1</FileType>
               <FilePath>.\Libraries\STM32F10x_StdPeriph_Driver\src\stm32f10x_spi.c</FilePath>
             </File>
+            <File>
+              <FileName>stm32f10x_flash.c</FileName>
+              <FileType>1</FileType>
+              <FilePath>.\Libraries\STM32F10x_StdPeriph_Driver\src\stm32f10x_flash.c</FilePath>
+            </File>
           </Files>
         </Group>
         <Group>
@@ -611,6 +616,11 @@
               <FileName>IOState.c</FileName>
               <FileType>1</FileType>
               <FilePath>.\APP\GPIO_State\IOState.c</FilePath>
+            </File>
+            <File>
+              <FileName>w5500.c</FileName>
+              <FileType>1</FileType>
+              <FilePath>.\APP\W5500\w5500.c</FilePath>
             </File>
           </Files>
         </Group>

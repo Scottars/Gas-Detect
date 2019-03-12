@@ -50,9 +50,7 @@ int main()
 	u16 AD_Channel_Select[3]={ADC_Channel_10,ADC_Channel_11,ADC_Channel_12};//定义通道选择数组
 	u32 AD_Channel_10_Value,AD_Channel_11_Value,AD_Channel_12_Value;
 	
-	///////////////////////Valve Gas PArt///////	
-	u8 *ValveState_Value;
-	u8 ValveSet_Value[12]={0,0,0,0,0,0,0,0,0,0,0,0};  //来自网络传入过来的信号
+
 	
 
 	///////////////////////液晶屏初始化过程///////////////////////
@@ -88,6 +86,12 @@ int main()
 	
 	
 	
+//界面初始化//
+
+	GridLayer();  //显示屏的网络框架层
+
+	Gas_StateLayer();//显示屏 供气阀状态初始化部分
+	
 	
 	
 	
@@ -118,12 +122,6 @@ int main()
 	
 	
 
-//界面初始化//
-
-	GridLayer();  //显示屏的网络框架层
-
-	Gas_StateLayer();//显示屏 供气阀状态初始化部分
-	
 		
 	while(1)
 	{
@@ -152,6 +150,30 @@ int main()
 				
 		//网络传输
 		
+		/****************************************网络处理通讯处理********************************************/
+		
+		W5500_Socket_Set();//W5500端口初始化配置
+
+		if(W5500_Interrupt)//处理W5500中断		
+		{
+			//LED0=0;   												//LED0      指示的是网络部分的信号的传输
+			W5500_Interrupt_Process();//W5500中断处理程序框架
+		}
+		if((S0_Data & S_RECEIVE) == S_RECEIVE)//如果Socket0接收到数据
+		{
+			S0_Data&=~S_RECEIVE;
+			Process_Socket_Data(0);//W5500接收并发送接收到的数据
+			//对于传下来的整个的接收的数据包，我们有两种方法进行考虑，考虑1：将寄存器中的数据分出来，然后在主函数中进行各种的调用情况
+			//考虑二：直接在数据处理部分就直接调用我们的进行实际的操作部分。
+		}
+		
+		
+		
+		
+
+		
+		/*******************************************************************************************************/
+	
 			
 		
 		//读取IO口的数据，用来更新我们的状态裂变，或者可以采取中断的方式
@@ -159,57 +181,22 @@ int main()
 		//
 		
 		
-		/*************************供气阀门部分程序处理	**********************************************/
-	
-  		ValveStateChange(ValveSet_Value);//网络信号传入过来的开断信息，然后程序实现自动设置对应的IO的高低电平
-	
-		
-  		ValveState_Value=Gas_State_Read(); //函数实现读取IO口的高低电平值
-		
-				
-		/***********************************************************************************************/
-		
-		
-		
-		/****************************************网络处理通讯处理********************************************/
-		
-		W5500_Socket_Set();//W5500端口初始化配置
 
-		if(W5500_Interrupt)//处理W5500中断		
-		{LED0=0;
-			W5500_Interrupt_Process();//W5500中断处理程序框架
-		}
-		if((S0_Data & S_RECEIVE) == S_RECEIVE)//如果Socket0接收到数据
-		{
-			S0_Data&=~S_RECEIVE;
-			Process_Socket_Data(0);//W5500接收并发送接收到的数据
-		}
-		else if(W5500_Send_Delay_Counter >= 500)//定时发送字符串
-		{
-			if(S0_State == (S_INIT|S_CONN))
-			{
-				S0_Data&=~S_TRANSMITOK;
-				memcpy(Tx_Buffer, "\r\n THis is the data i want to test\r\n", 23);	
-				Write_SOCK_Data_Buffer(0, Tx_Buffer, 23);//指定Socket(0~7)发送数据处理,端口0发送23字节数据
-			}
-			W5500_Send_Delay_Counter=0;
-		}
-		
-		
-		/*******************************************************************************************************/
-	
 		
 		
 		
-			j++;
-			if(j%20==0)
+		
+		
+		
+		//	j++;
+		/*	if(j%20==0)
 		{		led_display(); //LED2 
 			
 			
-		}
+		}*/
 
 
-		
+	/*
 		for (i=0;i<10;i=i+1)
 		{
 			led_display();
@@ -219,11 +206,7 @@ int main()
 			Dac1_Set_Vol(dacval);//设置DAC值	
 		
 			printf("The target dac boltage is : %f\n",dacval*3.3/3300);	
-			
-			
-			
-			
-			
+	
 			
 			
 			AD_Channel_10_Value = Get_ADC_Value(ADC_Channel_10,20);
@@ -240,7 +223,7 @@ int main()
 	
 		
 		
-		
+		*/
 		
 		
 		
