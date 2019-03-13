@@ -357,9 +357,6 @@ void Process_Socket_Data(SOCKET s)
 	u8 i;
 	////////////////////////////////////////////////////////
 	
-	
-	
-
 	size=Read_SOCK_Data_Buffer(s, Rx_Buffer);
 	printf("\r\nSIZE:%d\r\n",size);
 	memcpy(Tx_Buffer, Rx_Buffer, size);			
@@ -378,6 +375,10 @@ void Process_Socket_Data(SOCKET s)
 		switch (Rx_Buffer[1])
 		{
 			case 0x03:    //¶ÁÈ¡±£³Ö¼Ä´æÆ÷µÄ×´Ì¬
+				Tx_Buffer[0]=0x00;
+				Tx_Buffer[1]=0x01;
+				Tx_Buffer[3]=0x02;
+				Tx_Buffer[4]=0x02;
 				Write_SOCK_Data_Buffer(s, Tx_Buffer, size);
 				break;
 			
@@ -391,32 +392,41 @@ void Process_Socket_Data(SOCKET s)
 				//Õâ¸öÊ±ºò×¨ÃÅÉè¶¨Ò»¸öº¯ÊıºÃÁË£¬½Ğ×öÍøÂçĞÅÏ¢´¦Àí
 	
 			////////////////////¹©ÆøÄ£Ê½////////////////////
-
+			/*********************************************
+			*¹©ÆøÄ£Ê½µÃÑ¡ÔñÓĞ2ÖÖ
+			* Ä£Ê½1£ºÉÏÎ»»úÖ±½Ó¿ØÖÆÁ÷Á¿¼Æ £¬ Ã¿´Î¸øÁ÷Á¿¼ÆÉè¶¨µ±Ç°µÃÊıÖµ
+			* Ä£Ê½2£ºÉÏÎ»»ú²»¿ØÖÆÁ÷Á¿£¬ÈÃÆäÍ¨¹ı×Ô¶¯µÃ±Õ»·½øĞĞ¿ØÖÆ
+			*ÊµÏÖµÃ·½°¸£
+			*
+			*
+			*********************************************/
+				
 			
 			
-			////////////////////ÅäÆø¹ñ·§ÃÅ////////////////////
-			printf("\r\SetValue ok\r\n");
-			for(i=0;i<8;i++)
-			{
-				if(((Rx_Buffer[4]>>i)& 0x01)==0x01)   //Éè¶¨ÏòÓÒÒÆÎ»£¬´ÓÓÒµ½×ó£¬·Ö±ğ±íÊ¾12Â·¹âÏËµÄ×´Ì¬   ÒÀ´ÎÈ¡Éè¶¨µÄÊıÖµ
-					ValveSet_Value[i]=1;
-				else
-					ValveSet_Value[i]=0;
-			}
-			for(i=0;i<4;i++)
-			{
-				if(((Rx_Buffer[3]>>i)& 0x01)==0x01)
-					ValveSet_Value[i+8]=1;
-				else
-					ValveSet_Value[i+8]=0;
-			}
-		
-			//²âÊÔÊÇ·ñ½ÓÊÕ³É¹¦
-			//²âÊÔ·½·¨£ºÍ¨¹ı½ÓÊÕÍøÂç´«ËÍ¹ıÀ´µÄÊı¾İ£¬È»ºóÍ¨¹ı´®¿Ú·¢³öÉè¶¨Öµ£¬¿´ÊÇ·ñÕıÈ·
-			for(i=0;i<12;i++)
-			{
-				printf("\r\nSetvalue:%d\r\n",ValveSet_Value[i]);
-			}
+			
+				////////////////////ÅäÆø¹ñ·§ÃÅ////////////////////
+				printf("\r\SetValue ok\r\n");
+				for(i=0;i<8;i++)
+				{
+					if(((Rx_Buffer[4]>>i)& 0x01)==0x01)   //Éè¶¨ÏòÓÒÒÆÎ»£¬´ÓÓÒµ½×ó£¬·Ö±ğ±íÊ¾12Â·¹âÏËµÄ×´Ì¬   ÒÀ´ÎÈ¡Éè¶¨µÄÊıÖµ
+						ValveSet_Value[i]=1;
+					else
+						ValveSet_Value[i]=0;
+				}
+				for(i=0;i<4;i++)
+				{
+					if(((Rx_Buffer[3]>>i)& 0x01)==0x01)
+						ValveSet_Value[i+8]=1;
+					else
+						ValveSet_Value[i+8]=0;
+				}
+			
+				//²âÊÔÊÇ·ñ½ÓÊÕ³É¹¦
+				//²âÊÔ·½·¨£ºÍ¨¹ı½ÓÊÕÍøÂç´«ËÍ¹ıÀ´µÄÊı¾İ£¬È»ºóÍ¨¹ı´®¿Ú·¢³öÉè¶¨Öµ£¬¿´ÊÇ·ñÕıÈ·
+				for(i=0;i<12;i++)
+				{
+					printf("\r\nSetvalue:%d\r\n",ValveSet_Value[i]);
+				}
 		
 			
 			
