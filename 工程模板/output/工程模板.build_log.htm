@@ -28,19 +28,23 @@ Project File Date:  03/11/2019
 *** Using Compiler 'V5.05 update 1 (build 106)', folder: 'D:\Program Files\Keil5\ARM\ARMCC\Bin'
 Rebuild target 'Target 1'
 compiling main.c...
-user\main.c(113): warning:  #223-D: function "System_Initialization" declared implicitly
+user\main.c(114): warning:  #223-D: function "System_Initialization" declared implicitly
                 System_Initialization();        //STM32系统初始化函数(初始化STM32时钟及外设)
-user\main.c(114): warning:  #223-D: function "Load_Net_Parameters" declared implicitly
+user\main.c(115): warning:  #223-D: function "Load_Net_Parameters" declared implicitly
                 Load_Net_Parameters();          //装载网络参数  
-user\main.c(116): warning:  #223-D: function "W5500_Initialization" declared implicitly
+user\main.c(117): warning:  #223-D: function "W5500_Initialization" declared implicitly
                 W5500_Initialization();         //W5500初始货配置
-user\main.c(152): warning:  #223-D: function "W5500_Socket_Set" declared implicitly
+user\main.c(153): warning:  #223-D: function "W5500_Socket_Set" declared implicitly
                 W5500_Socket_Set();//W5500端口初始化配置
+user\main.c(183): warning:  #167-D: argument of type "char *" is incompatible with parameter of type "u8 *"
+                Gas_StateLayerUpdate(ValveValue_Status_LCD);
+user\main.c(45): warning:  #177-D: variable "i" was declared but never referenced
+                u8 i,j,k;               
 user\main.c(45): warning:  #177-D: variable "j" was declared but never referenced
                 u8 i,j,k;               
 user\main.c(45): warning:  #177-D: variable "k" was declared but never referenced
                 u8 i,j,k;               
-user\main.c: 6 warnings, 0 errors
+user\main.c: 8 warnings, 0 errors
 compiling stm32f10x_it.c...
 compiling public.c...
 compiling core_cm3.c...
@@ -92,16 +96,19 @@ APP\LCD\test.c(114): warning:  #167-D: argument of type "char *" is incompatible
 APP\LCD\test.c: 1 warning, 0 errors
 compiling spi.c...
 compiling IOState.c...
+APP\GPIO_State\IOState.c(263): warning:  #120-D: return value type does not match the function type
+        return GPIO_State_return ;
+APP\GPIO_State\IOState.c: 1 warning, 0 errors
 compiling w5500.c...
-APP\W5500\w5500.c(364): warning:  #167-D: argument of type "unsigned char *" is incompatible with parameter of type "const char *restrict"
+APP\W5500\w5500.c(365): warning:  #167-D: argument of type "unsigned char *" is incompatible with parameter of type "const char *restrict"
         printf(Rx_Buffer);
-APP\W5500\w5500.c(408): warning:  #192-D: unrecognized character escape sequence
-                                printf("\r\SetValue ok\r\n");
+APP\W5500\w5500.c(444): warning:  #192-D: unrecognized character escape sequence
+                                                printf("\r\SetValue ok\r\n");
 APP\W5500\w5500.c: 2 warnings, 0 errors
 linking...
-Program Size: Code=30104 RO-data=9440 RW-data=112 ZI-data=5152  
+Program Size: Code=30508 RO-data=9440 RW-data=116 ZI-data=5148  
 FromELF: creating hex file...
-".\output\工程模板.axf" - 0 Error(s), 14 Warning(s).
+".\output\工程模板.axf" - 0 Error(s), 17 Warning(s).
 
 <h2>Collection of Component include folders:</h2>
   E:\研究生工作\Master--1\pcb\5keil程序\Code-sum\2、DAC-ADC-printf LCD  w5500\current-project\工程模板\RTE

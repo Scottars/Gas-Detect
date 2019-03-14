@@ -47,7 +47,8 @@ int main()
 
 float *voltage;
 	
-	u8 *ValveState_Value;
+	char *ValveValue_Status;
+	char *ValveValue_Status_LCD;
 	
 
 	///////////////////////液晶屏初始化过程///////////////////////
@@ -168,20 +169,24 @@ float *voltage;
 		/*****************供气检测部分**************************/
 		
 		//IO口的数据回读部分
-		ValveState_Value=Gas_State_Read(); //函数实现读取IO口的高低电平值
+		ValveValue_Status=Gas_State_Read(); //函数实现读取IO口的高低电平值
+		ValveValue_Status_LCD = Gas_State_Read_LCD();
 		//IO数据串口显示
-			for(i=0;i<12;i++)
-			{
-				printf("\r\nStatevalue:%d\r\n",ValveState_Value[i]);
-			}
+		/*for(i=0;i<12;i++)
+		{
+			printf("StatusData:%s\n",ValveValue_Status_LCD[i]);
+		}*/
+		printf("%c",ValveValue_Status[0]);
+		printf("%c",ValveValue_Status[1]);
 		//IO数据 显示屏刷新
 			
-		Gas_StateLayerUpdate(ValveState_Value);
+		Gas_StateLayerUpdate(ValveValue_Status_LCD);
 		
 		/*******************************************************************************************************/
 	
-			voltage=AD_Conversion();
-			ADC_LCD_Out(voltage);
+		
+		voltage=AD_Conversion();
+		ADC_LCD_Out(voltage);
 
 		
 		

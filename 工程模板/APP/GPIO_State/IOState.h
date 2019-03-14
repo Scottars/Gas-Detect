@@ -8,7 +8,8 @@
 
 void ValveState_Init(void);  //¶Ë¿Ú³õÊ¼»¯
 void ValveStateChange(u8 ValveSet_Value[12]);
-u8 *Gas_State_Read(void);
+char *Gas_State_Read(void);
+char *Gas_State_Read_LCD(void);
 
 	
 
