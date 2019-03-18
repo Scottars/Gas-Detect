@@ -369,7 +369,7 @@
               <MiscControls></MiscControls>
               <Define>USE_STDPERIPH_DRIVER,STM32F10X_HD</Define>
               <Undefine></Undefine>
-              <IncludePath>.\user;.\Libraries\STM32F10x_StdPeriph_Driver\inc;.\Libraries\CMSIS\CM3\CoreSupport;.\Libraries\CMSIS\CM3\DeviceSupport\ST\STM32F10x;.\APP\LED;.\APP\SysTick;.\APP\PWM;.\APP\RS485;.\APP\printf;.\APP\IIC(24C02);.\APP\AT24Cxx;.\APP\DS18B20;.\APP\ADC;.\APP\beep;.\APP\exit;.\APP\key;.\APP\smg;.\APP\time;.\APP\usart;.\APP\dac;.\APP\SPI;.\APP\sys;.\APP\LCD;.\APP\touch;.\APP\GPIO_State;.\APP\W5500</IncludePath>
+              <IncludePath>.\user;.\Libraries\STM32F10x_StdPeriph_Driver\inc;.\Libraries\CMSIS\CM3\CoreSupport;.\Libraries\CMSIS\CM3\DeviceSupport\ST\STM32F10x;.\APP\LED;.\APP\SysTick;.\APP\PWM;.\APP\RS485;.\APP\printf;.\APP\IIC(24C02);.\APP\AT24Cxx;.\APP\DS18B20;.\APP\ADC;.\APP\beep;.\APP\exit;.\APP\key;.\APP\smg;.\APP\time;.\APP\usart;.\APP\dac;.\APP\SPI;.\APP\sys;.\APP\LCD;.\APP\touch;.\APP\GPIO_State;.\APP\W5500;.\APP\1479A;.\APP\DataProcess;.\APP\VacuumGauge</IncludePath>
             </VariousControls>
           </Cads>
           <Aads>
@@ -621,6 +621,16 @@
               <FileName>w5500.c</FileName>
               <FileType>1</FileType>
               <FilePath>.\APP\W5500\w5500.c</FilePath>
+            </File>
+            <File>
+              <FileName>DataProcess.c</FileName>
+              <FileType>1</FileType>
+              <FilePath>.\APP\DataProcess\DataProcess.c</FilePath>
+            </File>
+            <File>
+              <FileName>VacuumG.c</FileName>
+              <FileType>1</FileType>
+              <FilePath>.\APP\VacuumGauge\VacuumG.c</FilePath>
             </File>
           </Files>
         </Group>

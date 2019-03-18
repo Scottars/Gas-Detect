@@ -22,7 +22,7 @@ Dialog DLL:      TARMSTM.DLL V1.64.0.0
  
 <h2>Project:</h2>
 E:\研究生工作\Master--1\pcb\5keil程序\Code-sum\2、DAC-ADC-printf LCD  w5500\current-project\工程模板\Template.uvprojx
-Project File Date:  03/11/2019
+Project File Date:  03/15/2019
 
 <h2>Output:</h2>
 *** Using Compiler 'V5.05 update 1 (build 106)', folder: 'D:\Program Files\Keil5\ARM\ARMCC\Bin'
@@ -44,7 +44,9 @@ user\main.c(45): warning:  #177-D: variable "j" was declared but never reference
                 u8 i,j,k;               
 user\main.c(45): warning:  #177-D: variable "k" was declared but never referenced
                 u8 i,j,k;               
-user\main.c: 8 warnings, 0 errors
+user\main.c(50): warning:  #550-D: variable "ValveValue_Status" was set but never used
+        char *ValveValue_Status;
+user\main.c: 9 warnings, 0 errors
 compiling stm32f10x_it.c...
 compiling public.c...
 compiling core_cm3.c...
@@ -100,15 +102,47 @@ APP\GPIO_State\IOState.c(263): warning:  #120-D: return value type does not matc
         return GPIO_State_return ;
 APP\GPIO_State\IOState.c: 1 warning, 0 errors
 compiling w5500.c...
-APP\W5500\w5500.c(365): warning:  #167-D: argument of type "unsigned char *" is incompatible with parameter of type "const char *restrict"
+APP\W5500\w5500.c(410): warning:  #167-D: argument of type "unsigned char *" is incompatible with parameter of type "const char *restrict"
         printf(Rx_Buffer);
-APP\W5500\w5500.c(444): warning:  #192-D: unrecognized character escape sequence
+APP\W5500\w5500.c(485): warning:  #223-D: function "float2Hex" declared implicitly
+                                                float2Hex(temp1,temp);  
+APP\W5500\w5500.c(511): warning:  #111-D: statement is unreachable
+                                        break;
+APP\W5500\w5500.c(540): warning:  #192-D: unrecognized character escape sequence
                                                 printf("\r\SetValue ok\r\n");
-APP\W5500\w5500.c: 2 warnings, 0 errors
+APP\W5500\w5500.c(599): warning:  #187-D: use of "=" where "==" may have been intended
+                                                                if(Rx_Buffer[3]=0x01) //选择采用流量控制模式  在这个模式下，我们需要将我们设定的压电阀的开度设定到最大去
+APP\W5500\w5500.c(603): warning:  #187-D: use of "=" where "==" may have been intended
+                                                                if(Rx_Buffer[3]=0x02) //选择采用自动闭环控制模式
+APP\W5500\w5500.c(645): warning:  #187-D: use of "=" where "==" may have been intended
+                                                        if(Rx_Buffer[3]=0x01) //选择采用上位机触发方式  在这个模式下，设定新的数值给我们的设定的真空度的值
+APP\W5500\w5500.c(649): warning:  #187-D: use of "=" where "==" may have been intended
+                                                                if(Rx_Buffer[3]=0x02) //选择信号触发方式，在这个模式下，设定的新的数值在时钟信号来了的时候，我们将这个新的真空度的数值写下去。
+APP\W5500\w5500.c(364): warning:  #177-D: variable "floattest" was declared but never referenced
+        char floattest[10];
+APP\W5500\w5500.c(365): warning:  #177-D: variable "test1" was declared but never referenced
+         char test1[4];
+APP\W5500\w5500.c(374): warning:  #177-D: variable "VacuumValue_Set" was declared but never referenced
+        float VacuumValue_Set;
+APP\W5500\w5500.c(378): warning:  #177-D: variable "Flow1479AValue_Set" was declared but never referenced
+        float Flow1479AValue_Set;
+APP\W5500\w5500.c(383): warning:  #177-D: variable "GasPuffValue_Set" was declared but never referenced
+        float GasPuffValue_Set;
+APP\W5500\w5500.c(387): warning:  #177-D: variable "Kp" was declared but never referenced
+        float Kp,Ki,Kd;
+APP\W5500\w5500.c(387): warning:  #177-D: variable "Ki" was declared but never referenced
+        float Kp,Ki,Kd;
+APP\W5500\w5500.c(387): warning:  #177-D: variable "Kd" was declared but never referenced
+        float Kp,Ki,Kd;
+APP\W5500\w5500.c(399): warning:  #177-D: variable "AD_Value" was declared but never referenced
+        char AD_Value[50];
+APP\W5500\w5500.c: 17 warnings, 0 errors
+compiling DataProcess.c...
+compiling VacuumG.c...
 linking...
-Program Size: Code=30508 RO-data=9440 RW-data=116 ZI-data=5148  
+Program Size: Code=18680 RO-data=9440 RW-data=92 ZI-data=5148  
 FromELF: creating hex file...
-".\output\工程模板.axf" - 0 Error(s), 17 Warning(s).
+".\output\工程模板.axf" - 0 Error(s), 33 Warning(s).
 
 <h2>Collection of Component include folders:</h2>
   E:\研究生工作\Master--1\pcb\5keil程序\Code-sum\2、DAC-ADC-printf LCD  w5500\current-project\工程模板\RTE

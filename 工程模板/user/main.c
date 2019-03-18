@@ -45,7 +45,7 @@ int main()
 		u8 i,j,k;		
 	////////////////////AD part/////////////////////////
 
-float *voltage;
+	float *AD_Voltage_Status;
 	
 	char *ValveValue_Status;
 	char *ValveValue_Status_LCD;
@@ -176,8 +176,8 @@ float *voltage;
 		{
 			printf("StatusData:%s\n",ValveValue_Status_LCD[i]);
 		}*/
-		printf("%c",ValveValue_Status[0]);
-		printf("%c",ValveValue_Status[1]);
+	//	printf("%c",ValveValue_Status[0]);
+	//	printf("%c",ValveValue_Status[1]);
 		//IO数据 显示屏刷新
 			
 		Gas_StateLayerUpdate(ValveValue_Status_LCD);
@@ -185,8 +185,8 @@ float *voltage;
 		/*******************************************************************************************************/
 	
 		
-		voltage=AD_Conversion();
-		ADC_LCD_Out(voltage);
+		AD_Voltage_Status=AD_Conversion();
+		ADC_LCD_Out(AD_Voltage_Status);
 
 		
 		

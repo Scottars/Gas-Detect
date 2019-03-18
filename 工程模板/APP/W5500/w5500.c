@@ -12,6 +12,9 @@
 #include "led.h"
 #include "printf.h" //µ÷ÊÔÓÃ
 #include "IOState.h"
+#include "adc.h"
+#include "DataProcess.h"
+#include "stdint.h"
 
 
 
@@ -348,8 +351,18 @@ void W5500_Socket_Set(void)
 *			´¦ÀíÍê±Ï£¬½«Êı¾İ´ÓTemp_Buffer¿½±´µ½Tx_Buffer»º³åÇø¡£µ÷ÓÃS_tx_process()
 *			·¢ËÍÊı¾İ¡£
 *******************************************************************************/
+typedef union
+{
+float floatData;
+unsigned char byteData[4];
+//	uint32_t byteData;
+}FLOAT_BYTE;
 void Process_Socket_Data(SOCKET s)
 {
+	
+	FLOAT_BYTE testdata;
+	char floattest[10];
+	 char test1[4];
 	unsigned short size;//½ÓÊÕµ½µÄbuffer µÄ´óĞ¡
 		///////////////////////Valve Gas Part///////	
 
@@ -357,11 +370,43 @@ void Process_Socket_Data(SOCKET s)
 	char *ValveValue_Status;
 	u8 i;
 	////////////////////////////////////////////////////////
+	////////////////Õæ¿ÕÇ»²¿·Ö/////////////////////////////
+	float VacuumValue_Set;
+	
+	
+	//////////////////Á÷Á¿¼ÆµÄÁ÷Á¿ÖµÉè¶¨Éè¶¨//////////////////////////////////
+	float Flow1479AValue_Set;
+	
+	
+	
+	////////////////ÆøÌåÅç³ö·åÖµÕæ¿Õ¶ÈÉè¶¨//////////////////////////////////
+	float GasPuffValue_Set;
+	
+	
+	////////////////PID²ÎÊıÉè¶¨/////////////////////////
+	float Kp,Ki,Kd;
+	
+	
+	
+	
+	
+	
+	
+	///////////////////AD×ª»»²¿·Ö////////////////
+	float *AD_Voltage_Status; 
+	float temp=0; // ÓÃÀ´½øĞĞAD×ª»»Ê¹ÓÃµÄ±äÁ¿
+	uint8_t temp1[5];
+	char AD_Value[50];
+	
+	
+	
+	
+	
 	
 	size=Read_SOCK_Data_Buffer(s, Rx_Buffer);
-	printf("\r\nSIZE:%d\r\n",size);
+	//printf("\r\nSIZE:%d\r\n",size);
 	memcpy(Tx_Buffer, Rx_Buffer, size);			
-	printf("\r\nRX_BUFFER\r\n");
+//	printf("\r\nRX_BUFFER\r\n");
 	printf(Rx_Buffer);
 
 	//¹ØÓÚRX_Buffer  ÉÏÎ»»úÀíÂÛÉÏ Ó¦¸Ã´«ÈëµÄÊÇÒ»´®µÄÊı¾İ£¬ ¶ø²»ÊÇÒ»¸öµ¥´¿µÄÎ»
@@ -383,7 +428,7 @@ void Process_Socket_Data(SOCKET s)
 	
 	if (Rx_Buffer[0]==0x04) //±¾»úµÄÉè±¸µØÖ·Îª0x04 
 	{
-		printf("\r\nSLocal Address ok!\r\n");
+	//	printf("\r\nSLocal Address ok!\r\n");
 			
 		switch (Rx_Buffer[1])
 		{
@@ -393,22 +438,75 @@ void Process_Socket_Data(SOCKET s)
 					 
 				 		 
 					case 0x01: //627DÕæ¿Õ¶È¼ì²â£¬Õâ¸öÈç¹ûÉÏÎ»»ú·¢ÁËÃüÁî£¬ÎÒ»¹ÊÇÒª´«Ò»·İÊı¾İ»ØÈ¥Âğ£¿
-						
-						
-					case 0x02: //6025DÕæ¿Õ¶È¼ì²â£¬Õâ¸öÈç¹ûÉÏÎ»»ú·¢ÁËÃüÁî£¬ÎÒ»¹ÊÇÒª´«Ò»·İÊı¾İ»ØÈ¥Âğ£¿
-
+						Tx_Buffer[0]=0x04; // ±¾»úµØÖ·
+						Tx_Buffer[1]=0x03;//¹¦ÄÜÃüÁîÂë
+						Tx_Buffer[2]=0x01;//¼Ä´æÆ÷µØÖ	
+					
+				   	Write_SOCK_Data_Buffer(s, Tx_Buffer, 7);
+					case 0x02: //025DÕæ¿Õ¶È¼ì²â£¬Õâ¸öÈç¹ûÉÏÎ»»ú·¢ÁËÃüÁî£¬ÎÒ»¹ÊÇÒª´«Ò»·İÊı¾İ»ØÈ¥Âğ£¿
+						Tx_Buffer[0]=0x04; // ±¾»úµØÖ·
+						Tx_Buffer[1]=0x03;//¹¦ÄÜÃüÁîÂë
+						Tx_Buffer[2]=0x02;//¼Ä´æÆ÷µØÖ
+					
+					
+					
+					
+						Write_SOCK_Data_Buffer(s, Tx_Buffer, 7);
 					
 					case 0x03://ÅäÆø¹ñ·§ÃÅ×´Ì¬¶ÁÈ¡
-						Tx_Buffer[0]=0x04;
-						Tx_Buffer[1]=0x03;
+						Tx_Buffer[0]=0x04; // ±¾»úµØÖ·
+						Tx_Buffer[1]=0x03;//¹¦ÄÜÃüÁîÂë
+						Tx_Buffer[2]=0x03;//¼Ä´æÆ÷µØÖ·	
 						//¶ÁÈ¡ÅäÆø¹ñ·§ÃÅ×´Ì¬º¯Êı
 						ValveValue_Status=Gas_State_Read();
-						Tx_Buffer[2]=ValveValue_Status[0];
-						Tx_Buffer[3]=ValveValue_Status[1];
+						Tx_Buffer[3]=ValveValue_Status[0];
+						Tx_Buffer[4]=ValveValue_Status[1];
 						//size=3;
-						Write_SOCK_Data_Buffer(s, Tx_Buffer, 4);
+						Write_SOCK_Data_Buffer(s, Tx_Buffer, 5);
 						break;
 					case 0x04:
+						Tx_Buffer[0]=0x04; // ±¾»úµØÖ·
+						Tx_Buffer[1]=0x03;//¹¦ÄÜÃüÁîÂë
+						Tx_Buffer[2]=0x04;//¼Ä´æÆ÷µØÖ
+						//¶ÁÈ¡ÆøÌåÁ÷Á¿µÄµ±Ç°Öµ£¬´ÓĞÂ¼ÆËãÒ»´Î´«ÈëÉÏÈ¥£¬»¹ÊÇÖ±½ÓÉÏ´«µ±Ç°Öµ
+						AD_Voltage_Status = AD_Conversion();
+						//AD_Voltage_Status[0 1 2]   ·Ö±ğ±íÊ¾1479A 627D 025d
+						//translation
+					//	temp	= (int)(AD_Voltage_Status[0] * 100);
+						//¶ÔµÃµ½µÄµçÑ¹½øĞĞÁ÷Á¿Öµ½øĞĞ×ª»»,²ÉÓÃIEEE 754 ±ê×¼½øĞĞ×ª»»
+						AD_Voltage_Status[0]=2.5;
+						temp = GasFloatValue_Calc(AD_Voltage_Status[0]);
+						/*printf("%x", temp1[0]);
+						printf("%x",temp1[1]);
+						printf("%x",temp1[2]);
+						printf("%x",temp1[3]);*/
+						testdata.floatData=-12.5;
+					
+						float2Hex(temp1,temp);	
+						//sprintf(AD_Value,"%x",*temp1);
+					 // sprintf(floattest,"%x",testdata.byteData);
+			
+					
+						Tx_Buffer[3]=testdata.byteData[3];
+						
+						
+						
+						
+						Tx_Buffer[4]=testdata.byteData[2];
+						Tx_Buffer[5]=testdata.byteData[1];
+				  	Tx_Buffer[6]=testdata.byteData[0];
+					
+					
+			
+					
+					
+					
+						//size=3;
+						Write_SOCK_Data_Buffer(s, Tx_Buffer, 7);
+						break;
+					
+				
+					
 					//Write_SOCK_Data_Buffer(s, Tx_Buffer, 4);
 					break;
 				 
@@ -422,9 +520,7 @@ void Process_Socket_Data(SOCKET s)
 				//Éè¶¨·½°¸£ºÍ¨¹ıÈ«¾Ö±äÁ¿´«ËÍ³öÈ¥£¬»¹ÊÇ×îºóÖ±½Óµ÷ÓÃÏà¹ØµÄº¯ÊıÄØ£¿
 				//Ôİ¶¨·½°¸£º Ö±½Óµ÷ÓÃÏà¹ØµÄº¯Êı	
 				//Õâ¸öÊÇRx_BufferµÄ¶¨Òå£ºunsigned char Rx_Buffer[2048]
-				//¶ÔÓÚÉè¶¨²¿·ÖÓĞ ¹©ÆøÄ£Ê½ ÅäÆø¹ñ·§ÃÅ 1479AÁ÷Á¿Éè¶¨  ÆøÌåÅç³öÆôÍ£ ÆøÌåÅç³öÄ£Ê½ 
-				//									2xx     3 xx 4xx     5xx  6 xx      7   xx        8xx 
-				//Õâ¸öÊ±ºò×¨ÃÅÉè¶¨Ò»¸öº¯ÊıºÃÁË£¬½Ğ×öÍøÂçĞÅÏ¢´¦Àí
+
 	
 			////////////////////¹©ÆøÄ£Ê½////////////////////
 			/*********************************************
@@ -440,7 +536,7 @@ void Process_Socket_Data(SOCKET s)
 					 
 				 		 
 					case 0x01: 
-								////////////////////ÅäÆø¹ñ·§ÃÅ////////////////////
+		         ////////////////////ÅäÆø¹ñ·§ÃÅ////////////////////
 						printf("\r\SetValue ok\r\n");
 						for(i=0;i<8;i++)
 						{
@@ -464,39 +560,109 @@ void Process_Socket_Data(SOCKET s)
 							printf("Setvalue:%d\r\n",ValveValue_Set[i]);
 						}
 				
-					
+				
 					
 					ValveStateChange(ValveValue_Set);//ÍøÂçĞÅºÅ´«Èë¹ıÀ´µÄ¿ª¶ÏĞÅÏ¢£¬È»ºó³ÌĞòÊµÏÖ×Ô¶¯ÉèÖÃ¶ÔÓ¦µÄIOµÄ¸ßµÍµçÆ½£¬Êµ¼Ê¸Ä±äIO¿ÚÉè¶¨Öµ
-				
-						
-					case 0x02: 
-						
-					
-					case 0x03:
-					case 0x04:
-
 					break;
+						
+					case 0x02:  //ÆøÌåÅç³öÄ£Ê½µÄÆôÍ£  µ±ÆøÌåÂö³å·åÖµÉè¶¨ºÃÁËÖ®ºó£¬ÒÔ¼°´¥·¢·½Ê½Éè¶¨ºÃÁËÖ®ºó£¬Í¨¹ıÕâ¸ö°´¼üÀ´½øĞĞÆô¶¯Í£Ö¹
+						if(Rx_Buffer[3]==0x00) //±íÊ¾¹Ø±Õµ±Ç°Åç³öÄ£Ê½ x
+						{
+							
+						}
+						if(Rx_Buffer[3]==0xff) //±íÊ¾¿ªÆôµ±Ç°µÄÅç³öÄ£Ê½---Í¬ÑùÊÇ¸ù¾İÉè¶¨µÄÄ¿±êµÄÕæ¿Õ¶È½øĞĞ±Õ»·µÄµ÷½Ú£¬Ö»²»¹ıµ÷½ÚµÄÊÇÓĞÒ»¸ö·åÖµµÄ
+						{
+							
+						}
+		
+
+							break;
 				 
 				 
 				 
 				 }
 			
-			
+			case 0x06:
+					 switch(Rx_Buffer[2])
+					 {
+						 	case 0x01: //Õæ¿ÕÇ»Õæ¿Õ¶ÈÉèÖÃ
+								
+									//Õâ¸öÊ±ºò£¬¶ÔÉÏÎ»»ú´«¹ıÀ´µÄbuffer 3 4 5 6 ÖĞµÄÊı¾İ½øĞĞ´¦Àí£¬´¦ÀíµÄÇ°ÌáÊÇ½øĞĞcrc Ğ£Ñé 
+							
+							
+								
+							
+							//VacuumValue_Set=
+						 
+							break;
+						 case 0x02:  //¹©ÆøÄ£Ê½Ñ¡Ôñ
+								if(Rx_Buffer[3]=0x01) //Ñ¡Ôñ²ÉÓÃÁ÷Á¿¿ØÖÆÄ£Ê½  ÔÚÕâ¸öÄ£Ê½ÏÂ£¬ÎÒÃÇĞèÒª½«ÎÒÃÇÉè¶¨µÄÑ¹µç·§µÄ¿ª¶ÈÉè¶¨µ½×î´óÈ¥
+								{
+									
+								}
+								if(Rx_Buffer[3]=0x02) //Ñ¡Ôñ²ÉÓÃ×Ô¶¯±Õ»·¿ØÖÆÄ£Ê½
+								{
+									
+									
+								}
+						 
+						 
+						 
+								break;
+						 case 0x03://1479AÁ÷Á¿ÆäÁ÷Á¿Ä¿±êÉè¶¨
+							 	//Õâ¸öÊ±ºò£¬¶ÔÉÏÎ»»ú´«¹ıÀ´µÄbuffer 3 4 5 6 ÖĞµÄÊı¾İ½øĞĞ´¦Àí£¬´¦ÀíµÄÇ°ÌáÊÇ½øĞĞcrc Ğ£Ñé Í¨¹ı
+							
+							
+								
+							
+							//1479AFloatValue_Set=
+						 
+						 
+						 
+							 break;
+						 case 0x04: //ÆøÌåÂö³å·åÖµÉè¶¨
+							 
+						 	 	//Õâ¸öÊ±ºò£¬¶ÔÉÏÎ»»ú´«¹ıÀ´µÄbuffer 3 4 5 6 ÖĞµÄÊı¾İ½øĞĞ´¦Àí£¬´¦ÀíµÄÇ°ÌáÊÇ½øĞĞcrc Ğ£Ñé Í¨¹ı
+							
+							
+								
+							
+							//GasPuffValue_Set=
+						 
+						 
+						 
+							 break;
+						 case 0x05://PID²ÎÊıµÄÉè¶¨
+								//Õâ¸öÊ±ºò£¬¶ÔÉÏÎ»»ú´«¹ıÀ´µÄbuffer 3 4 5 6    7 8 9 10  11 12 13 14 ÖĞµÄÊı¾İ½øĞĞ´¦Àí£¬´¦ÀíµÄÇ°ÌáÊÇ½øĞĞcrc Ğ£Ñé Í¨¹ı
+							
+							
+								
+						
+							//=
+						 
+							 break;
+						 case 0x06: //Âö³åÄ£Ê½µÄ´¥·¢µÄ·½Ê½
+							if(Rx_Buffer[3]=0x01) //Ñ¡Ôñ²ÉÓÃÉÏÎ»»ú´¥·¢·½Ê½  ÔÚÕâ¸öÄ£Ê½ÏÂ£¬Éè¶¨ĞÂµÄÊıÖµ¸øÎÒÃÇµÄÉè¶¨µÄÕæ¿Õ¶ÈµÄÖµ
+								{
+									
+								}
+								if(Rx_Buffer[3]=0x02) //Ñ¡ÔñĞÅºÅ´¥·¢·½Ê½£¬ÔÚÕâ¸öÄ£Ê½ÏÂ£¬Éè¶¨µÄĞÂµÄÊıÖµÔÚÊ±ÖÓĞÅºÅÀ´ÁËµÄÊ±ºò£¬ÎÒÃÇ½«Õâ¸öĞÂµÄÕæ¿Õ¶ÈµÄÊıÖµĞ´ÏÂÈ¥¡£
+								{
+									
+									
+								}
+								break;
+						 
+						 
+						 
+						 
+					 }
 			
 				
 			
 			
-			///////////////////////////////////////////////////////
 		
-					
-		/////////////////////ÆøÌåÅç³öÆôÍ£/////////////////////
-					
-			
-			
-			
-	
-		////////////////////ÆøÌåÅç³öÄ£Ê½////////////////////
-				break;
+					 break;
 			
 			
 			default:

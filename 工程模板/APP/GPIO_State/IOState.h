@@ -1,5 +1,5 @@
-#ifndef _SPI_H_
-#define _SPI_H_
+#ifndef _IOState_H_
+#define _IOState_H_
 
 
 #include "stm32f10x.h"

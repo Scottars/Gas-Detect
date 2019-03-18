@@ -203,19 +203,19 @@ char *Gas_State_Read()
 */
 	
 	unsigned char static GPIO_State_return[2]={0x00,0x00};
-	printf("GPIO test in Internet");
+//printf("GPIO test in Internet");
 	
 //·½Ê½¶þ£º
 	if(GPIO_ReadOutputDataBit(GPIOC,GPIO_Pin_13)==1)
 	{
-	printf("GPIO test in pin0");
+	//printf("GPIO test in pin0");
 
 		GPIO_State_return[1] = (GPIO_State_return[1]) | 0x01;
 	}
 
 	if(GPIO_ReadOutputDataBit(GPIOC,GPIO_Pin_15)==1)
 	{
-		printf("GPIO test in pin1");
+	//	printf("GPIO test in pin1");
 		GPIO_State_return[1] = (GPIO_State_return[1])| 0x02;
 	}
 	if(GPIO_ReadOutputDataBit(GPIOC,GPIO_Pin_3)==1)

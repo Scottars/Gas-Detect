@@ -34,3 +34,5 @@
 .\output\w5500.o: .\APP\printf\printf.h
 .\output\w5500.o: D:\Program Files\Keil5\ARM\ARMCC\Bin\..\include\stdio.h
 .\output\w5500.o: .\APP\GPIO_State\IOState.h
+.\output\w5500.o: .\APP\ADC\adc.h
+.\output\w5500.o: .\APP\DataProcess\DataProcess.h
