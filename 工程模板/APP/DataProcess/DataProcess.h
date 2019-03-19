@@ -6,7 +6,7 @@
 
 
 float GasFloatValue_Calc(float ADValue_GasFlow);
-void	Float2Hex(uint8_t *char_array,float data);
+void	float2hex(uint8_t *char_array,float data);
 
 
 

@@ -41,4 +41,5 @@
 .\output\main.o: .\APP\sys\sys.h
 .\output\main.o: D:\Program Files\Keil5\ARM\ARMCC\Bin\..\include\stdlib.h
 .\output\main.o: .\APP\GPIO_State\IOState.h
+.\output\main.o: .\APP\DataProcess\DataProcess.h
 .\output\main.o: .\APP\W5500\w5500.h

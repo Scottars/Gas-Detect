@@ -10,7 +10,7 @@ float GasFloatValue_Calc(float ADValue_GasFlow)
 	return	ADValue_GasFlow;
 
 }
-void	float2Hex(uint8_t *char_array,float data)
+void	float2hex(uint8_t *char_array,float data)
 {
 
 	
@@ -25,28 +25,4 @@ void	float2Hex(uint8_t *char_array,float data)
 	printf("%x",char_array[3]); 
 }
 
-/*
-int *float2Hex_1000(float data)
-{
-	int HighData=(int) data;
-	if data
-	
-	
-	
-	char hex_return[4];
-	
-  data=(int)(data*1000)	;
-	
-	if (data>)
-	{
-		
-		
-	}
-	else
-	
-	
-	hex_return[0];
-	
-	
-}
-*/
+

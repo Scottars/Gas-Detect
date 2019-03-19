@@ -425,6 +425,10 @@ void Process_Socket_Data(SOCKET s)
 					
 	*/
 	
+	// ÔÚ½âÎö°üÖ®Ç°¾Í½øĞĞ£¬crc check  
+								
+	
+	
 	
 	if (Rx_Buffer[0]==0x04) //±¾»úµÄÉè±¸µØÖ·Îª0x04 
 	{
@@ -441,17 +445,58 @@ void Process_Socket_Data(SOCKET s)
 						Tx_Buffer[0]=0x04; // ±¾»úµØÖ·
 						Tx_Buffer[1]=0x03;//¹¦ÄÜÃüÁîÂë
 						Tx_Buffer[2]=0x01;//¼Ä´æÆ÷µØÖ	
+					//½øĞĞÕæ¿Õ¶ÈAD×ª»»
+					
+					
+					
+					//½øĞĞAD²É¼¯µ½µÄÊıÖµ½øĞĞ´¦ÀíµÃµ½Õæ¿Õ¶ÈµÄ±ê×¼ÊıÖµ
+					
+					
+					
+					
+					//ÊıÖµ×ª»»³É¸¡µãÊı
+					
+					
+					
+					
+				
+					
+				
+					
+					
 					
 				   	Write_SOCK_Data_Buffer(s, Tx_Buffer, 7);
+					
+					
+					
+						break;
 					case 0x02: //025DÕæ¿Õ¶È¼ì²â£¬Õâ¸öÈç¹ûÉÏÎ»»ú·¢ÁËÃüÁî£¬ÎÒ»¹ÊÇÒª´«Ò»·İÊı¾İ»ØÈ¥Âğ£¿
 						Tx_Buffer[0]=0x04; // ±¾»úµØÖ·
 						Tx_Buffer[1]=0x03;//¹¦ÄÜÃüÁîÂë
 						Tx_Buffer[2]=0x02;//¼Ä´æÆ÷µØÖ
+								//½øĞĞÕæ¿Õ¶ÈAD×ª»»
 					
+					
+					//½øĞĞAD²É¼¯µ½µÄÊıÖµ½øĞĞ´¦ÀíµÃµ½Õæ¿Õ¶ÈµÄ±ê×¼ÊıÖµ
+					
+					
+					
+					//ÊıÖµ×ª»»³É¸¡µãÊı
+					
+					
+					//get crc code  
+					
+					
+					
+					
+					//crc Ğ£ÑéÂë¸³Öµµ½tx buffer
 					
 					
 					
 						Write_SOCK_Data_Buffer(s, Tx_Buffer, 7);
+					
+
+						break;
 					
 					case 0x03://ÅäÆø¹ñ·§ÃÅ×´Ì¬¶ÁÈ¡
 						Tx_Buffer[0]=0x04; // ±¾»úµØÖ·
@@ -482,25 +527,16 @@ void Process_Socket_Data(SOCKET s)
 						printf("%x",temp1[3]);*/
 						testdata.floatData=-12.5;
 					
-						float2Hex(temp1,temp);	
+						
 						//sprintf(AD_Value,"%x",*temp1);
 					 // sprintf(floattest,"%x",testdata.byteData);
-			
-					
+						
 						Tx_Buffer[3]=testdata.byteData[3];
-						
-						
-						
-						
 						Tx_Buffer[4]=testdata.byteData[2];
 						Tx_Buffer[5]=testdata.byteData[1];
 				  	Tx_Buffer[6]=testdata.byteData[0];
-					
-					
-			
-					
-					
-					
+						
+							
 						//size=3;
 						Write_SOCK_Data_Buffer(s, Tx_Buffer, 7);
 						break;
@@ -537,6 +573,12 @@ void Process_Socket_Data(SOCKET s)
 				 		 
 					case 0x01: 
 		         ////////////////////ÅäÆø¹ñ·§ÃÅ////////////////////
+					
+					// crc check
+					
+
+					// if check ok
+					
 						printf("\r\SetValue ok\r\n");
 						for(i=0;i<8;i++)
 						{
@@ -560,7 +602,7 @@ void Process_Socket_Data(SOCKET s)
 							printf("Setvalue:%d\r\n",ValveValue_Set[i]);
 						}
 				
-				
+					//Ğ£Ñé²»ok·´À¡´íÎóÂë
 					
 					ValveStateChange(ValveValue_Set);//ÍøÂçĞÅºÅ´«Èë¹ıÀ´µÄ¿ª¶ÏĞÅÏ¢£¬È»ºó³ÌĞòÊµÏÖ×Ô¶¯ÉèÖÃ¶ÔÓ¦µÄIOµÄ¸ßµÍµçÆ½£¬Êµ¼Ê¸Ä±äIO¿ÚÉè¶¨Öµ
 					break;
@@ -611,6 +653,19 @@ void Process_Socket_Data(SOCKET s)
 								break;
 						 case 0x03://1479AÁ÷Á¿ÆäÁ÷Á¿Ä¿±êÉè¶¨
 							 	//Õâ¸öÊ±ºò£¬¶ÔÉÏÎ»»ú´«¹ıÀ´µÄbuffer 3 4 5 6 ÖĞµÄÊı¾İ½øĞĞ´¦Àí£¬´¦ÀíµÄÇ°ÌáÊÇ½øĞĞcrc Ğ£Ñé Í¨¹ı
+						 //ps:ËµÃ÷£ºÉÏÎ»»úµÄ¸¡µãÊıµÄ´«ËÍµÄË³Ğò£¬ÊÇ¸ßÎ»ÔÚÇ°µÍÎ»ÔÚºó£¬¶øÔÚbytesÖĞ£¬Ò²ÊÇµÍÎ»ÔÚÊı×éµÄµÍÎ»
+								testdata.byteData[3]=Rx_Buffer[3];
+								testdata.byteData[2]=Rx_Buffer[4];
+								testdata.byteData[1]=Rx_Buffer[5];
+								testdata.byteData[0]=Rx_Buffer[6];
+						 
+						 		printf("Setvalue:%f\r\n",testdata.floatData);
+						 if (testdata.floatData==-12.5)
+						 {
+							 printf("OK,In the if");
+							 Tx_Buffer[0]=0xff;
+							 Write_SOCK_Data_Buffer(s, Tx_Buffer,1);
+						 }
 							
 							
 								

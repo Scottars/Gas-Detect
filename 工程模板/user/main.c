@@ -23,6 +23,7 @@
 #include "lcd.h"
 #include "IOState.h"
 
+#include "DataProcess.h"
 #include "w5500.h"
 
 /****************************************************************************
