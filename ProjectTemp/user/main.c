@@ -44,6 +44,13 @@ typedef union
     unsigned char byteData[4];
 //  uint32_t byteData;
 } FLOAT_BYTE;
+typedef union
+{
+    unsigned int  CrcData;
+    unsigned char byteData[2];
+//  uint32_t byteData;
+} CRC_BYTE;
+
 /*
 Device_name_verbe
 
@@ -228,53 +235,30 @@ int main()
 
         if(Normal_Debug_RunningMode==0x00)
         {
-            printf("Normal Running Mode\n");
-
-
-            /*********Initial Normal Running Mode Circumastance************/
-
-
-            ////////Set default value to target value////////
-
-
-
-            ////////Set Valves that should be set////////
-
-
+             printf("Normal Running Mode\n");
             if(Valve_Signal_Open==0x00) //open valve or the system
             {
                 //Wait for opening
-
                 printf("Valve close\n");
-
-
-
-
-
-
             }
             else //Open command
             {
                 printf("Valve Open\n");
-
                 //Set actual valve should be opened
                 Valve_Operation_Status_Set[0]=Package_Valve_Status_Set[0];//Get the valves to open from the package
-
                 Valve_Operation_Status_Set[1]=Package_Valve_Status_Set[1];
-
                 ValveStateChange(Valve_Operation_Status_Set);
-
                 //
-
-
                 if (PEV_1479A_ControlMode==0x00) //PEV control Mode 1
                 {
                     //PEV,Default to PEV control
                     printf("PEV_Control Mode 1 \n");
 
+					//Default Set
                     // Set 1479A to fully open , we can use it fully open command   or use the DAC control to make it the biggest
 
 
+					
 
 
 
@@ -284,7 +268,7 @@ int main()
                     //Target pressure set , if there isn't value we use default value
                     Cavity_627D_Pressure_Set= Package_Cavity_627D_Pressure_Set; //Setting by the package we received from the internet
 
-
+					printf("Target Pressure Valueï¼š%f\n",Cavity_627D_Pressure_Set);
 
                     //set pid parameter to the function
 
@@ -390,12 +374,12 @@ int main()
 
                         if(Normal_Puff_RunningMode==0x00) //unpuff  mode off
                         {
-                            printf("unpuff mode");
+                            printf("Unpuff mode");
                             // Close all the puff valve
                             Cavity_627D_Pressure_Set=Cavity_627D_Pressure_Default;
 
                             Flow_1479A_Set=Flow_1479A_Default;
-                            printf("Unpuff Mode\n");
+
 
                             /*Switch those value to unpuff value, so that we can make it happen, during next pid adjustment*/
                             // valve to normal
@@ -483,15 +467,12 @@ int main()
                 else //1479A control mode 1
                 {
 
-
-
-
-
-
                     printf("1479A_Control Mode 1\n");
                     // Set the PEV open in order to using 1479A control mode
                     // we also use pev control, but only to make it open about 100v
-                    //set puff - 1479A mode voltage
+                    //set puff - PEV's Open voltage do we need a value to set?
+                    
+                    
                     //PID adjustment
 
                     //
@@ -499,6 +480,7 @@ int main()
 
                     //
                     Flow_1479A_Set=Package_Flow_1479A_Set;  //Setting by the package we received from the Internet
+					printf("Target Flow Valueï¼š%f\n",Flow_1479A_Set);
 
                     //1479A adjustment DAC
 
@@ -531,11 +513,10 @@ int main()
                             ValveStateChange(Valve_Operation_Status_Set);
 
                             //1479A flow to normal
-                            Flow_1479A_Set=Flow_1479A_Default;
+                            Flow_1479A_Set=Package_Flow_1479A_Set;
                             //627D Vacuum Pressire to normal
-                            Cavity_627D_Pressure_Set=Cavity_627D_Pressure_Default;
-
-
+                            Cavity_627D_Pressure_Set=Package_Cavity_627D_Pressure_Set;
+						
                             //this mode we jump out to exexute the pid adjustment again
 
 
@@ -564,8 +545,8 @@ int main()
                                 //update the target presste value of PID adjustment
 
                                 Cavity_627D_Pressure_Set=Cavity_627D_Puff_Set;
-
-
+								
+							   
 
                             }
                             else
@@ -581,6 +562,9 @@ int main()
                                 //update the target presste value of PID adjustment
 
                                 Flow_1479A_Set=Flow_1479A_Puff_Set;
+								
+							
+														
                             }
 
 
@@ -596,6 +580,8 @@ int main()
                     }
                     else // timing trigger mode
                     {
+
+                        printf("Timing Trigger Mode\n");
 
 
                         if(Normal_Puff_RunningMode==0x00) //unpuff  mode off
@@ -699,7 +685,7 @@ int main()
 
                 //send back the Pressure value
                 //PEV control mode or 1479A control mode both ok
-                Cavity_Pressure_SendBack();
+                //Cavity_Pressure_SendBack();
 
 
 
@@ -727,7 +713,7 @@ int main()
 
         /* In this part we need to update the devices to LCD or the internet  */  //use timer to send my status to the pc
         //LCD to update
-        ValveValue_Status=Gas_State_Read(); //º¯ÊýÊµÏÖ¶ÁÈ¡IO¿ÚµÄ¸ßµÍµçÆ½Öµ
+        // ValveValue_Status=Gas_State_Read(); //º¯ÊýÊµÏÖ¶ÁÈ¡IO¿ÚµÄ¸ßµÍµçÆ½Öµ
         ValveValue_Status_LCD = Gas_State_Read_LCD();
         Gas_StateLayerUpdate(ValveValue_Status_LCD);
         AD_Voltage_Status=AD_Conversion();
@@ -753,6 +739,7 @@ void Process_Socket_Data(SOCKET s)
 {
 
     FLOAT_BYTE testdata;
+    CRC_BYTE crctestdata;
     char floattest[10];
     char test1[4];
     unsigned short size;//½ÓÊÕµ½µÄbuffer µÄ´óÐ¡
@@ -801,9 +788,9 @@ void Process_Socket_Data(SOCKET s)
 
     size=Read_SOCK_Data_Buffer(s, Rx_Buffer);
     //printf("\r\nSIZE:%d\r\n",size);
-    memcpy(Tx_Buffer, Rx_Buffer, size);
+    // memcpy(Tx_Buffer, Rx_Buffer, size);
 //  printf("\r\nRX_BUFFER\r\n");
-    printf(Rx_Buffer);
+//   printf(Rx_Buffer);
 
     //¹ØÓÚRX_Buffer  ÉÏÎ»»úÀíÂÛÉÏ Ó¦¸Ã´«ÈëµÄÊÇÒ»´®µÄÊý¾Ý£¬ ¶ø²»ÊÇÒ»¸öµ¥´¿µÄÎ»
     //¿ÉÒÔ¿´µ½Rx_Buffer Ïàµ±ÓÚÒ»¸öÊý×é£¬16Î»°É
@@ -857,12 +844,15 @@ void Process_Socket_Data(SOCKET s)
                         Tx_Buffer[6]=testdata.byteData[0];
 
                         //GetCRC16
-                        CRC_Mid=GetCRC16(Tx_Buffer,7);
+                        crctestdata.CrcData=GetCRC16(Tx_Buffer,7);
 
-                        Tx_Buffer[7]=(u8)CRC_Mid;
-                        Tx_Buffer[8]=(u8)(CRC_Mid>>8);
+
+                        Tx_Buffer[7]=crctestdata.byteData[1];
+                        Tx_Buffer[8]=crctestdata.byteData[0];
+
 
                         Write_SOCK_Data_Buffer(s, Tx_Buffer, 9);
+
                         break;
 
 
@@ -890,10 +880,12 @@ void Process_Socket_Data(SOCKET s)
 
 
                         //GetCRC16
-                        CRC_Mid=GetCRC16(Tx_Buffer,7);
+                        crctestdata.CrcData=GetCRC16(Tx_Buffer,7);
 
-                        Tx_Buffer[7]=(u8)CRC_Mid;
-                        Tx_Buffer[8]=(u8)(CRC_Mid>>8);
+
+                        Tx_Buffer[7]=crctestdata.byteData[1];
+                        Tx_Buffer[8]=crctestdata.byteData[0];
+
 
                         Write_SOCK_Data_Buffer(s, Tx_Buffer, 9);
 
@@ -920,13 +912,12 @@ void Process_Socket_Data(SOCKET s)
                         Tx_Buffer[5]=testdata.byteData[1];
                         Tx_Buffer[6]=testdata.byteData[0];
 
-
-
                         //GetCRC16
-                        CRC_Mid=GetCRC16(Tx_Buffer,7);
+                        crctestdata.CrcData=GetCRC16(Tx_Buffer,7);
 
-                        Tx_Buffer[7]=(u8)CRC_Mid;
-                        Tx_Buffer[8]=(u8)(CRC_Mid>>8);
+
+                        Tx_Buffer[7]=crctestdata.byteData[1];
+                        Tx_Buffer[8]=crctestdata.byteData[0];
 
                         Write_SOCK_Data_Buffer(s, Tx_Buffer, 9);
 
@@ -943,12 +934,14 @@ void Process_Socket_Data(SOCKET s)
                         Tx_Buffer[3]=ValveValue_Status[0];
                         Tx_Buffer[4]=ValveValue_Status[1];
                         printf("after the gas state read");
+                        //GetCRC16
+                        crctestdata.CrcData=GetCRC16(Tx_Buffer,5);
 
-                        CRC_Mid=GetCRC16(Tx_Buffer,5);
-                        printf("after crc ");
-                        Tx_Buffer[5]=(u8)CRC_Mid;
-                        Tx_Buffer[6]=(u8)(CRC_Mid>>8);
-                        //size=3;
+
+                        Tx_Buffer[5]=crctestdata.byteData[1];
+                        Tx_Buffer[6]=crctestdata.byteData[0];
+
+
                         Write_SOCK_Data_Buffer(s, Tx_Buffer, 7);
                         break;
 
@@ -1037,25 +1030,25 @@ void Process_Socket_Data(SOCKET s)
 
                         break;
 
-					case 0x08:	//Command Mode or timing trigger mode
-											//use the puff mode or not
-											//we can use a new parameter in the pid function to enable puff or unpuff
-											if(Rx_Buffer[3]==0xff) //±íÊ¾¹Ø±Õµ±Ç°Åç³öÄ£Ê½ x
-											{
-												Command_Timing_TriggerMode=0xff;
-												printf("Case 08 Timing Trigger Mode\r\n");
-						
-											}
-											else
-											{
-												Command_Timing_TriggerMode=0x00;
-												printf("Case 08 Command Trigger Mode\r\n");
-						
-											}
-						
-						
-						
-											break;
+                    case 0x08:  //Command Mode or timing trigger mode
+                        //use the puff mode or not
+                        //we can use a new parameter in the pid function to enable puff or unpuff
+                        if(Rx_Buffer[3]==0xff) //±íÊ¾¹Ø±Õµ±Ç°Åç³öÄ£Ê½ x
+                        {
+                            Command_Timing_TriggerMode=0xff;
+                            printf("Case 08 Timing Trigger Mode\r\n");
+
+                        }
+                        else
+                        {
+                            Command_Timing_TriggerMode=0x00;
+                            printf("Case 08 Command Trigger Mode\r\n");
+
+                        }
+
+
+
+                        break;
 
 
                     case 0x09:  //Puff on or Puff off
@@ -1087,86 +1080,81 @@ void Process_Socket_Data(SOCKET s)
                 {
                     case 0x0A: //Vacuum value: Pressure value set 627D pressure value
 
+                        //if the value is received, we feedback the same package that we get
+
+                        size=Read_SOCK_Data_Buffer(s, Rx_Buffer);
+
+                        memcpy(Tx_Buffer, Rx_Buffer, size);
+                        Write_SOCK_Data_Buffer(s, Tx_Buffer,size);
 
 
-                     
+
+
                         //convert to float type
                         testdata.byteData[3]=Rx_Buffer[3];
                         testdata.byteData[2]=Rx_Buffer[4];
                         testdata.byteData[1]=Rx_Buffer[5];
                         testdata.byteData[0]=Rx_Buffer[6];
 
-                        //Vacuum Value should be changed into Voltage value accoroding 627D manul
+                        //Vacuum Value should be changed into Voltage value accoroding 627D manully
+
+                        Package_Cavity_627D_Pressure_Set=testdata.floatData;
 
 
-                        printf("Setvalue:%f\r\n",testdata.floatData);
-                        if (testdata.floatData==-12.5)
-                        {
-                            printf("OK,In the if");
-                            Tx_Buffer[0]=0xff;
-                            Write_SOCK_Data_Buffer(s, Tx_Buffer,1);
-                        }
-
-                        //if the value is received, we feedback the same package that we get
-                        Write_SOCK_Data_Buffer(s, Rx_Buffer,1);
-
-
-                        //VacuumValue_Set=
 
                         break;
                     case 0x0B:  //1479A Gas  Flow value set
 
-                       
-                     
+
+
+                        //if the value is received, we feedback the same package that we get
+
+                        size=Read_SOCK_Data_Buffer(s, Rx_Buffer);
+
+                        memcpy(Tx_Buffer, Rx_Buffer, size);
+                        Write_SOCK_Data_Buffer(s, Tx_Buffer,size);
+
+
+
+
                         //convert to float type
                         testdata.byteData[3]=Rx_Buffer[3];
                         testdata.byteData[2]=Rx_Buffer[4];
                         testdata.byteData[1]=Rx_Buffer[5];
                         testdata.byteData[0]=Rx_Buffer[6];
 
-                        //Gas FLow value set
+                        //1479A Flow Set value
 
+                        Package_Flow_1479A_Set=testdata.floatData;
 
-                        printf("GasFLowvalue:%f\r\n",testdata.floatData);
-                        if (testdata.floatData==-12.5)
-                        {
-                            
-                            Tx_Buffer[0]=0xff;
-                            Write_SOCK_Data_Buffer(s, Tx_Buffer,1);
-                        }
-
-                        //if the value is received, we feedback the same package that we get
-                        Write_SOCK_Data_Buffer(s, Rx_Buffer,1);
-
-
-                        //VacuumValue_Set=
 
                         break;
-                    case 0x0C://Gas Puff mode: Puff Pressure value set 
-                      
+                    case 0x0C://Gas Puff mode: Puff Pressure value set
+
+                        //if the value is received, we feedback the same package that we get
+
+                        size=Read_SOCK_Data_Buffer(s, Rx_Buffer);
+
+                        memcpy(Tx_Buffer, Rx_Buffer, size);
+                        Write_SOCK_Data_Buffer(s, Tx_Buffer,size);
+
+
+
+
+                        //convert to float type
                         testdata.byteData[3]=Rx_Buffer[3];
                         testdata.byteData[2]=Rx_Buffer[4];
                         testdata.byteData[1]=Rx_Buffer[5];
                         testdata.byteData[0]=Rx_Buffer[6];
 
-                        printf("Puff pressure valuevalue:%f\r\n",testdata.floatData);
-                        if (testdata.floatData==-12.5)
-                        {
-                            printf("OK,In the if");
-                            Tx_Buffer[0]=0xff;
-                            Write_SOCK_Data_Buffer(s, Tx_Buffer,1);
-                        }
+                        //Vacuum Value should be changed into Voltage value accoroding 627D manully
 
-
-
-
-                        //1479AFloatValue_Set=
-
+                        Package_Cavity_627D_Puff_Set=testdata.floatData;
 
 
                         break;
-					case 0x0d://pid code setting
-                      
+                    case 0x0d://pid code setting
+
                         testdata.byteData[3]=Rx_Buffer[3];
                         testdata.byteData[2]=Rx_Buffer[4];
                         testdata.byteData[1]=Rx_Buffer[5];
@@ -1188,7 +1176,7 @@ void Process_Socket_Data(SOCKET s)
 
 
                         break;
-                   
+
                     case 0x0E: //
                         Package_Valve_Status_Set[0]=Rx_Buffer[3];
                         Package_Valve_Status_Set[1]=Rx_Buffer[4];

@@ -100,6 +100,8 @@ unsigned int  GetCRC16(unsigned char *pdat,int len)
 		}
 	}
 }
+
+	
 	
 
 	return crc;

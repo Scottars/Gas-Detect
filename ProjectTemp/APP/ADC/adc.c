@@ -157,9 +157,9 @@ float *AD_Conversion()
 	
 			
 			
-			AD_Channel_10_Value = Get_ADC_Value(ADC_Channel_10,20); 
-			AD_Channel_11_Value = Get_ADC_Value(ADC_Channel_11,20);
-			AD_Channel_12_Value = Get_ADC_Value(ADC_Channel_12,20);
+			AD_Channel_10_Value = Get_ADC_Value(ADC_Channel_10,1); 
+			AD_Channel_11_Value = Get_ADC_Value(ADC_Channel_11,1);
+			AD_Channel_12_Value = Get_ADC_Value(ADC_Channel_12,1);
 			voltage[0] = (float)AD_Channel_10_Value*(3.3/4096);
 			voltage[1] = (float)AD_Channel_11_Value*(3.3/4096);
 			voltage[2] = (float)AD_Channel_12_Value*(3.3/4096);

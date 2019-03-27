@@ -112,8 +112,8 @@ void ADC_LCD_Out(float voltage[3])
 	//sprintf(str,"%.3s%.3s",s1,s2); 将多个字符串连接起来
 	//Gui_StrCenter(0,90,WHITE,RED,str,16,1);//居中显示
 	Show_Str(130,56+i*20,BLACK,WHITE,str,12,0);
-	delay_ms(10);		
-	delay_ms(10);
+	//delay_ms(10);		
+	//delay_ms(10);
 	}
 }
 
