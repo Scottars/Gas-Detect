@@ -272,13 +272,13 @@ int main()
                     //PEV,Default to PEV control
                     printf("PEV_Control Mode 1 \n");
 
-					// Set 1479A to fully open , we can use it fully open command   or use the DAC control to make it the biggest
+                    // Set 1479A to fully open , we can use it fully open command   or use the DAC control to make it the biggest
 
-					
 
-					
 
-					
+
+
+
 
 
                     //Target pressure set , if there isn't value we use default value
@@ -295,9 +295,9 @@ int main()
                     if (Command_Timing_TriggerMode==0x00) //Command trigger
                     {
                         printf("Command  Trigger Mode\n");
-						//all the mode needs to be default 
-						//Only set to unpuff mode 
-						Normal_Puff_RunningMode=0x00;
+                        //all the mode needs to be default
+                        //Only set to unpuff mode
+                        Normal_Puff_RunningMode=0x00;
 
                         if(Normal_Puff_RunningMode==0x00) //unpuff
                         {
@@ -384,9 +384,9 @@ int main()
                     }
                     else // timing trigger mode
                     {
-                    	printf("Timing Trigger Mode \n");
-	                    
-					
+                        printf("Timing Trigger Mode \n");
+
+
 
                         if(Normal_Puff_RunningMode==0x00) //unpuff  mode off
                         {
@@ -483,24 +483,24 @@ int main()
                 else //1479A control mode 1
                 {
 
-				
-				
-					
-					
-				
-                    printf("1479A_Control Mode 1\n");
-					// Set the PEV open in order to using 1479A control mode 
-					// we also use pev control, but only to make it open about 100v
-					//set puff - 1479A mode voltage
-					//PID adjustment
-					
-					//
-						
 
-					//
+
+
+
+
+                    printf("1479A_Control Mode 1\n");
+                    // Set the PEV open in order to using 1479A control mode
+                    // we also use pev control, but only to make it open about 100v
+                    //set puff - 1479A mode voltage
+                    //PID adjustment
+
+                    //
+
+
+                    //
                     Flow_1479A_Set=Package_Flow_1479A_Set;  //Setting by the package we received from the Internet
 
-					//1479A adjustment DAC
+                    //1479A adjustment DAC
 
 
 
@@ -511,7 +511,7 @@ int main()
                     if (Command_Timing_TriggerMode==0x00) //Command trigger
                     {
                         printf("Command Trigger Mode\n");
-					
+
 
                         if(Normal_Puff_RunningMode==0x00) //unpuff
                         {
@@ -821,13 +821,13 @@ void Process_Socket_Data(SOCKET s)
 
     */
 
-    // 在解析包之前就进行，crc check
+    //run crc check
 
 
 
 
 
-    if (Rx_Buffer[0]==0x05) //本机的设备地址为0x05
+    if (Rx_Buffer[0]==0x05) //Slave address 0x05
     {
         //  printf("\r\nSLocal Address ok!\r\n");
 
@@ -837,18 +837,18 @@ void Process_Socket_Data(SOCKET s)
                 switch  (Rx_Buffer[2])
                 {
 
-                    case 0x01:
-                        Tx_Buffer[0]=0x05; // 本机地址
-                        Tx_Buffer[1]=0x03;//功能命令码
-                        Tx_Buffer[2]=0x01;//寄存器地?
-                        //读取气体流量的当前值，从新计算一次传入上去，还是直接上传当前值
+                    case 0x01:   //Read Gas 1479A flow meter value
+                        Tx_Buffer[0]=0x05; // Slave address
+                        Tx_Buffer[1]=0x03;// function  code
+                        Tx_Buffer[2]=0x01;// register address
+                        //Ad conversion
                         AD_Voltage_Status = AD_Conversion();
                         //AD_Voltage_Status[0 1 2]   分别表示1479A 627D 025d
 
-                        //对得到的电压进行流量值进行转换,
+                        //
                         temp = GasFloatValue_1479ACalc(AD_Voltage_Status[0]);
                         temp=3;
-                        //转换得到IEEE 754 标准
+                        //Transfer the float data to hex data
                         testdata.floatData=temp;
 
                         Tx_Buffer[3]=testdata.byteData[3];
@@ -856,7 +856,7 @@ void Process_Socket_Data(SOCKET s)
                         Tx_Buffer[5]=testdata.byteData[1];
                         Tx_Buffer[6]=testdata.byteData[0];
 
-                        //GetCRC16 得到上面得数据的CRC校验码
+                        //GetCRC16
                         CRC_Mid=GetCRC16(Tx_Buffer,7);
 
                         Tx_Buffer[7]=(u8)CRC_Mid;
@@ -866,20 +866,20 @@ void Process_Socket_Data(SOCKET s)
                         break;
 
 
-                    case 0x02: //627D真空度检测，这个如果上位机发了命令，我还是要传一份数据回去吗？
-                        Tx_Buffer[0]=0x05; // 本机地址
-                        Tx_Buffer[1]=0x03;//功能命令码
-                        Tx_Buffer[2]=0x02;//寄存器地
-                        //进行真空度AD转换
+                    case 0x02: //Read 627D pressure value
+                        Tx_Buffer[0]=0x05; // Slave address
+                        Tx_Buffer[1]=0x03;// function  code
+                        Tx_Buffer[2]=0x02;// register address
+                        //Ad conversion
                         AD_Voltage_Status = AD_Conversion();
 
-                        //进行AD采集到的数值进行处理得到真空度的标准数值
+
                         //AD_Voltage_Status[0 1 2]   分别表示1479A 627D 025d
                         temp = VacuumFloatValue_627DCalc(AD_Voltage_Status[1]);
 
 
 
-                        //数值转换成浮点数
+                        //float value to hex
                         testdata.floatData=temp;
 
                         Tx_Buffer[3]=testdata.byteData[3];
@@ -889,7 +889,7 @@ void Process_Socket_Data(SOCKET s)
 
 
 
-                        //GetCRC16 得到上面得数据的CRC校验码
+                        //GetCRC16
                         CRC_Mid=GetCRC16(Tx_Buffer,7);
 
                         Tx_Buffer[7]=(u8)CRC_Mid;
@@ -900,19 +900,19 @@ void Process_Socket_Data(SOCKET s)
 
                         break;
 
-                    case 0x03: //025D真空度检测，这个如果上位机发了命令，我还是要传一份数据回去吗？
-                        Tx_Buffer[0]=0x05; // 本机地址
-                        Tx_Buffer[1]=0x03;//功能命令码
-                        Tx_Buffer[2]=0x03;//寄存器地?
-                        //进行真空度AD转换
+                    case 0x03: //Read CDG025D  vacuum value
+                        Tx_Buffer[0]=0x05; // Slave address
+                        Tx_Buffer[1]=0x03;// function  code
+                        Tx_Buffer[2]=0x03;// register address
+                        //ad conbersion
                         AD_Voltage_Status = AD_Conversion();
 
-                        //进行AD采集到的数值进行处理得到真空度的标准数值
+
                         //AD_Voltage_Status[0 1 2]   分别表示1479A 627D 025d
                         temp = VacuumFloatValue_025DCalc(AD_Voltage_Status[2]);
 
                         temp=3;
-                        //数值转换成浮点数
+                        //float to hex
                         testdata.floatData=temp;
 
                         Tx_Buffer[3]=testdata.byteData[3];
@@ -922,7 +922,7 @@ void Process_Socket_Data(SOCKET s)
 
 
 
-                        //GetCRC16 得到上面得数据的CRC校验码
+                        //GetCRC16
                         CRC_Mid=GetCRC16(Tx_Buffer,7);
 
                         Tx_Buffer[7]=(u8)CRC_Mid;
@@ -933,11 +933,11 @@ void Process_Socket_Data(SOCKET s)
 
                         break;
 
-                    case 0x04://配气柜阀门状态读取
-                        Tx_Buffer[0]=0x05; // 本机地址
-                        Tx_Buffer[1]=0x03;//功能命令码
-                        Tx_Buffer[2]=0x04;//寄存器地址
-                        //读取配气柜阀门状态函数
+                    case 0x04://Read Gas Feed Status
+                        Tx_Buffer[0]=0x05; // Slave address
+                        Tx_Buffer[1]=0x03;// function  code
+                        Tx_Buffer[2]=0x04;// register address
+                        //read gas valve status
                         printf("before the gas state read");
                         ValveValue_Status=Gas_State_Read();
                         Tx_Buffer[3]=ValveValue_Status[0];
@@ -978,18 +978,37 @@ void Process_Socket_Data(SOCKET s)
 
 
                     case 0x05:
-                        ////////////////////valve to open command///////////////////
+
+                        if(Rx_Buffer[3]==0xff)
+
+                        {
+                            Normal_Debug_RunningMode=Rx_Buffer[3];
+
+                            printf("Case 05 to open Debug Mode\n");
+                        }
+                        else
+                        {
+                            Normal_Debug_RunningMode=0x00;
+                            printf("ase 05 to open Normal Running Mode\n");
+
+
+                        }
+
+
+                        break;
+                    case 0x06: //Valve To Open
+
                         if(Rx_Buffer[3]==0xff)
 
                         {
                             Valve_Signal_Open=Rx_Buffer[3];
 
-                            printf("we are in the case 05 in order to open the valve\n");
+                            printf("Case 06 to open valves\r\n");
                         }
                         else
                         {
                             Valve_Signal_Open=0x00;
-                            printf("we are in the case 05 in order to close the valve\n");
+                            printf("ase 06 to close vavles\r\n");
 
 
                         }
@@ -997,26 +1016,61 @@ void Process_Socket_Data(SOCKET s)
 
                         break;
 
+                    case 0x07: //PEV control  mode or 1479A control mode
 
 
+                        if(Rx_Buffer[3]==0xff)
+
+                        {
+                            PEV_1479A_ControlMode=Rx_Buffer[3];
+
+                            printf("Case 07: to 1479A control Mode\r\n");
+                        }
+                        else
+                        {
+                            PEV_1479A_ControlMode=0x00;
+                            printf("ase 06 to PEV control mode\r\n");
 
 
+                        }
 
 
+                        break;
+
+					case 0x08:	//Command Mode or timing trigger mode
+											//use the puff mode or not
+											//we can use a new parameter in the pid function to enable puff or unpuff
+											if(Rx_Buffer[3]==0xff) //表示关闭当前喷出模式 x
+											{
+												Command_Timing_TriggerMode=0xff;
+												printf("Case 08 Timing Trigger Mode\r\n");
+						
+											}
+											else
+											{
+												Command_Timing_TriggerMode=0x00;
+												printf("Case 08 Command Trigger Mode\r\n");
+						
+											}
+						
+						
+						
+											break;
 
 
-
-                    case 0x06:  //气体喷出模式的启停  当气体脉冲峰值设定好了之后，以及触发方式设定好了之后，通过这个按键来进行启动停止
+                    case 0x09:  //Puff on or Puff off
                         //use the puff mode or not
                         //we can use a new parameter in the pid function to enable puff or unpuff
                         if(Rx_Buffer[3]==0xff) //表示关闭当前喷出模式 x
                         {
                             Normal_Puff_RunningMode=0xff;
+                            printf("Case 07 puff mode on\r\n");
 
                         }
                         else
                         {
                             Normal_Puff_RunningMode=0x00;
+                            printf("Case 07 puff mode off\r\n");
 
                         }
 
@@ -1031,12 +1085,11 @@ void Process_Socket_Data(SOCKET s)
             case 0x06:
                 switch(Rx_Buffer[2])
                 {
-                    case 0x07: //真空腔真空度设置
+                    case 0x0A: //Vacuum value: Pressure value set 627D pressure value
 
 
 
-
-                        //这个时候，对上位机传过来的buffer 3 4 5 6 中的数据进行处理，处理的前提是进行crc 校验
+                     
                         //convert to float type
                         testdata.byteData[3]=Rx_Buffer[3];
                         testdata.byteData[2]=Rx_Buffer[4];
@@ -1061,32 +1114,42 @@ void Process_Socket_Data(SOCKET s)
                         //VacuumValue_Set=
 
                         break;
-                    case 0x08:  //feed mode 1479A or pev control mode
+                    case 0x0B:  //1479A Gas  Flow value set
 
-                        if (Rx_Buffer[3]==0xff)
-                        {
-                            PEV_1479A_ControlMode=0xff;
-                            printf("Switch to 1479A control Mode");
-                        }
-                        else
-                        {
-                            PEV_1479A_ControlMode=0x00;
-                            printf("Switch to PEV  control Mode");
-                        }
-
-
-
-
-                        break;
-                    case 0x09://1479A流量其流量目标设定
-                        //这个时候，对上位机传过来的buffer 3 4 5 6 中的数据进行处理，处理的前提是进行crc 校验 通过
-                        //ps:说明：上位机的浮点数的传送的顺序，是高位在前低位在后，而在bytes中，也是低位在数组的低位
+                       
+                     
+                        //convert to float type
                         testdata.byteData[3]=Rx_Buffer[3];
                         testdata.byteData[2]=Rx_Buffer[4];
                         testdata.byteData[1]=Rx_Buffer[5];
                         testdata.byteData[0]=Rx_Buffer[6];
 
-                        printf("Setvalue:%f\r\n",testdata.floatData);
+                        //Gas FLow value set
+
+
+                        printf("GasFLowvalue:%f\r\n",testdata.floatData);
+                        if (testdata.floatData==-12.5)
+                        {
+                            
+                            Tx_Buffer[0]=0xff;
+                            Write_SOCK_Data_Buffer(s, Tx_Buffer,1);
+                        }
+
+                        //if the value is received, we feedback the same package that we get
+                        Write_SOCK_Data_Buffer(s, Rx_Buffer,1);
+
+
+                        //VacuumValue_Set=
+
+                        break;
+                    case 0x0C://Gas Puff mode: Puff Pressure value set 
+                      
+                        testdata.byteData[3]=Rx_Buffer[3];
+                        testdata.byteData[2]=Rx_Buffer[4];
+                        testdata.byteData[1]=Rx_Buffer[5];
+                        testdata.byteData[0]=Rx_Buffer[6];
+
+                        printf("Puff pressure valuevalue:%f\r\n",testdata.floatData);
                         if (testdata.floatData==-12.5)
                         {
                             printf("OK,In the if");
@@ -1102,45 +1165,36 @@ void Process_Socket_Data(SOCKET s)
 
 
                         break;
-                    case 0xA: //气体脉冲峰值设定
+					case 0x0d://pid code setting
+                      
+                        testdata.byteData[3]=Rx_Buffer[3];
+                        testdata.byteData[2]=Rx_Buffer[4];
+                        testdata.byteData[1]=Rx_Buffer[5];
+                        testdata.byteData[0]=Rx_Buffer[6];
 
-                        //这个时候，对上位机传过来的buffer 3 4 5 6 中的数据进行处理，处理的前提是进行crc 校验 通过
-
-
-
-
-                        //GasPuffValue_Set=
-
-
-
-                        break;
-                    case 0xB://PID参数的设定
-                        //这个时候，对上位机传过来的buffer 3 4 5 6    7 8 9 10  11 12 13 14 中的数据进行处理，处理的前提是进行crc 校验 通过
-
-
-
-
-                        //=
-
-                        break;
-                    case 0x0C: //puff trigger mode --0xff timing mode   0x00 command mode
-                        if(Rx_Buffer[3]=0xff) //选择采用上位机触发方式  在这个模式下，设定新的数值给我们的设定的真空度的值
+                        printf("PID code valuevalue:%f\r\n",testdata.floatData);
+                        if (testdata.floatData==-12.5)
                         {
-
+                            printf("OK,In the if");
+                            Tx_Buffer[0]=0xff;
+                            Write_SOCK_Data_Buffer(s, Tx_Buffer,1);
                         }
-                        if(Rx_Buffer[3]=0x02) //选择信号触发方式，在这个模式下，设定的新的数值在时钟信号来了的时候，我们将这个新的真空度的数值写下去。
-                        {
 
 
-                        }
+
+
+                        //1479AFloatValue_Set=
+
+
+
                         break;
-
-                    case 0x0D: //
+                   
+                    case 0x0E: //
                         Package_Valve_Status_Set[0]=Rx_Buffer[3];
                         Package_Valve_Status_Set[1]=Rx_Buffer[4];
                         break;
 
-                    case 0x0E: //puff mode auxiliary valve
+                    case 0x0F: //puff mode auxiliary valve
 
                         Package_Valve_Puff_Status_Set[0]=Rx_Buffer[3];
                         Package_Valve_Puff_Status_Set[1]=Rx_Buffer[4];
@@ -1162,12 +1216,7 @@ void Process_Socket_Data(SOCKET s)
                 break;
         }
 
-        /*if (Rx_Buffer[0]==0x01)   //判断寄存器中的内容就通过这个来进行。
-            {
-                Write_SOCK_Data_Buffer(s, Tx_Buffer, size);
-                Write_SOCK_Data_Buffer(0, "\r\n THis is 1\r\n", 23);
 
-            }*/
 
     }
     else
@@ -1188,7 +1237,6 @@ void Process_Socket_Data(SOCKET s)
 
     //
 
-//下面写入关于框架的内容，将我们所得到的整个数据进行分包处理，
 
 
 

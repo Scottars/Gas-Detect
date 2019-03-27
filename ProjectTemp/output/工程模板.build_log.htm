@@ -88,10 +88,6 @@ user\main.c(804): warning:  #223-D: function "memcpy" declared implicitly
       memcpy(Tx_Buffer, Rx_Buffer, size);
 user\main.c(806): warning:  #167-D: argument of type "unsigned char *" is incompatible with parameter of type "const char *restrict"
       printf(Rx_Buffer);
-user\main.c(1127): warning:  #187-D: use of "=" where "==" may have been intended
-                          if(Rx_Buffer[3]=0xff) //选择采用上位机触发方式  在这个模式下，设定新的数值给我们的设定的真空度的值
-user\main.c(1131): warning:  #187-D: use of "=" where "==" may have been intended
-                          if(Rx_Buffer[3]=0x02) //选择信号触发方式，在这个模式下，设定的新的数值在时钟信号来了的时候，我们将这个新的真空度的数值写下去。
 user\main.c(756): warning:  #177-D: variable "floattest" was declared but never referenced
       char floattest[10];
 user\main.c(757): warning:  #177-D: variable "test1" was declared but never referenced
@@ -116,7 +112,7 @@ user\main.c(794): warning:  #177-D: variable "temp1" was declared but never refe
       uint8_t temp1[5];
 user\main.c(795): warning:  #177-D: variable "AD_Value" was declared but never referenced
       char AD_Value[50];
-user\main.c: 44 warnings, 0 errors
+user\main.c: 42 warnings, 0 errors
 compiling stm32f10x_it.c...
 compiling public.c...
 compiling core_cm3.c...
@@ -182,9 +178,9 @@ APP\DataProcess\DataProcess.c(85): warning:  #177-D: variable "crc_return" was d
 APP\DataProcess\DataProcess.c: 2 warnings, 0 errors
 compiling VacuumG.c...
 linking...
-Program Size: Code=20500 RO-data=9440 RW-data=128 ZI-data=5152  
+Program Size: Code=21000 RO-data=9440 RW-data=128 ZI-data=5152  
 FromELF: creating hex file...
-".\output\工程模板.axf" - 0 Error(s), 54 Warning(s).
+".\output\工程模板.axf" - 0 Error(s), 52 Warning(s).
 
 <h2>Collection of Component include folders:</h2>
   E:\MasterWork\Master1\pcb\keilcode\Codesum\_2DAC_ADC_printf_LCD_w5500\current-project\ProjectTemp\RTE
