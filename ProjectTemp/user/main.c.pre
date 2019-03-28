@@ -148,9 +148,6 @@ int main()
 
 
 
-    float *AD_Voltage_Status;
-    char *ValveValue_Status;
-    char *ValveValue_Status_LCD;
 
     ///////////////////we initial our own default data///////////////////
 
@@ -294,8 +291,6 @@ int main()
 
 
 
-                    printf("Target FLOW Valueï¼š%f\r\n",Flow_1479A_Set);
-                    printf("Status FLOW value:%f\r\n",Flow_1479A_Status);
                     printf("Call PID funtion\n\n\n");
 
                     //set pid parameter to the function
@@ -523,9 +518,7 @@ int main()
 
                             //1479A flow to normal
                             Flow_1479A_Set=Package_Flow_1479A_Set;
-							printf("Execute to normal");
-							printf("Package_Flow_1479a set to defaul:%f\n\n",Package_Flow_1479A_Set);
-							printf("Flow_1479A _set is : %f\n\n",Flow_1479A_Set);
+                         
                             //627D Vacuum Pressire to normal
                             Cavity_627D_Pressure_Set=Package_Cavity_627D_Pressure_Set;
 
@@ -588,7 +581,7 @@ int main()
 
                     }
                     else // timing trigger mode
-                    	{
+                    {
 
                         printf("Timing Trigger Mode \n");
 
@@ -682,685 +675,686 @@ int main()
                     }
 
 
-                //send back the Pressure value
-                //PEV control mode or 1479A control mode both ok
-                //Cavity_Pressure_SendBack();
+                    //send back the Pressure value
+                    //PEV control mode or 1479A control mode both ok
+                    //Cavity_Pressure_SendBack();
+
+
+
+                }
+
+
+
+
+
+
+
+            }
+					}
+          else
+            {
+                //Initial ALl the valve or mode we are using
+
+
+
+                //Test whether the valves can work noramlly
+                Valve_Operation_Status_Set[0]=Package_Valve_Status_Set[0];
+                Valve_Operation_Status_Set[1]=Package_Valve_Status_Set[1];
+                //Now, we just directly open the valve
+                ValveStateChange(Valve_Operation_Status_Set);
+
+                //Test whether the 1479A Flow Meter work normally
+                Flow_1479A_Set=Package_Flow_1479A_Set;
+                //Call DAC Translation funtion
+                /*      */
+
+
+                //Test whether the PEV's closed-loop control can work normally
+                Cavity_627D_Pressure_Set=Package_Cavity_627D_Pressure_Set;
+
+                //call pid adjustment function
+
+
+
+                //test pid parameter's function
+                //cannot be done with my code
+
+
+                printf("we are in dubug mode");
+
+
+
+
+
+
+
+
+
+                //this mode is dubug running
 
 
 
             }
 
 
+  
+
+            //we should also set set currret status to the status register
 
 
+        }
+    }
+
+    /*******************************************************************************
+    * º¯ÊýÃû  : Process_Socket_Data
+    * ÃèÊö    : W5500½ÓÊÕ²¢·¢ËÍ½ÓÊÕµ½µÄÊý¾Ý
+    * ÊäÈë    : s:¶Ë¿ÚºÅ
+    * Êä³ö    : ÎÞ
+    * ·µ»ØÖµ  : ÎÞ
+    * ËµÃ÷    : ±¾¹ý³ÌÏÈµ÷ÓÃS_rx_process()´ÓW5500µÄ¶Ë¿Ú½ÓÊÕÊý¾Ý»º³åÇø¶ÁÈ¡Êý¾Ý,
+    *           È»ºó½«¶ÁÈ¡µÄÊý¾Ý´ÓRx_Buffer¿½±´µ½Temp_Buffer»º³åÇø½øÐÐ´¦Àí¡£
+    *           ´¦ÀíÍê±Ï£¬½«Êý¾Ý´ÓTemp_Buffer¿½±´µ½Tx_Buffer»º³åÇø¡£µ÷ÓÃS_tx_process()
+    *           ·¢ËÍÊý¾Ý¡£
+    *******************************************************************************/
+
+    void Process_Socket_Data(SOCKET s)
+    {
+
+        FLOAT_BYTE testdata;
+        CRC_BYTE crctestdata;
+        char floattest[10];
+        char test1[4];
+        unsigned short size;//½ÓÊÕµ½µÄbuffer µÄ´óÐ¡
+        ///////////////////////Valve Gas Part///////
+
+        u8 ValveValue_Set[12];  //À´×ÔÍøÂç´«Èë¹ýÀ´µÄÐÅºÅ
+        char *ValveValue_Status;
+        u8 i;
+ 
+
+        ////////////////PID²ÎÊýÉè¶¨/////////////////////////
+        float Kp,Ki,Kd;
+
+
+        ////////////////CRC_Mid/////////////////////////
+        unsigned int CRC_Mid;
+
+
+
+
+
+
+
+        ///////////////////AD×ª»»²¿·Ö////////////////
+        float *AD_Voltage_Status;
+        float temp=0; // ÓÃÀ´½øÐÐAD×ª»»Ê¹ÓÃµÄ±äÁ¿
+        uint8_t temp1[5];
+        char AD_Value[50];
+
+
+
+
+
+
+        size=Read_SOCK_Data_Buffer(s, Rx_Buffer);
+
+        //printf("\r\nSIZE:%d\r\n",size);
+        // memcpy(Tx_Buffer, Rx_Buffer, size);
+//  printf("\r\nRX_BUFFER\r\n");
+//   printf(Rx_Buffer);
+
+        //¹ØÓÚRX_Buffer  ÉÏÎ»»úÀíÂÛÉÏ Ó¦¸Ã´«ÈëµÄÊÇÒ»´®µÄÊý¾Ý£¬ ¶ø²»ÊÇÒ»¸öµ¥´¿µÄÎ»
+        //¿ÉÒÔ¿´µ½Rx_Buffer Ïàµ±ÓÚÒ»¸öÊý×é£¬16Î»°É
+        //¶ÔÓÚModbusÐ­Òé ÏÈ¾Ù¸öÀý×Ó
+        /*
+        ¶ÁÊý¾Ý£º    04               03                   02                                                                                            ÏÂÎ»»ú£º»Ø¸´ÆäÐèÒª¶ÁµÄÐÅÏ¢ 04 03 02 length data1 data2 *** crc
+                        ´Ó»úµØÖ·          ¹¦ÄÜÂë¶Á                      ¼Ä´æÆ÷µØÖ·  ---------------------------------------¡·
+        Ð´Êý¾Ý£º    04               06                   02             data1  data2 ***  crc16                ÏÂÎ»»ú£º»Ø¸´ÆäÐèÒªÐ´µÄÐÅÏ¢ 04 06 02  ****     £¨PS£¬Õâ¸öµØ·½»Ø¸´µÄÊÇÓëÉÏÎ»»úÏàÍ¬µÄ¶«Î÷£©
+                        ´Ó»úµØÖ·          ¹¦ÄÜÂëÐ´                      ¼Ä´æÆ÷µØÖ·
+        ÖÃÎ»On/off£º  04               05                   02              data1 data2 ***  crc16                   ÏÂÎ»»ú£º    Õâ¸öÊÇ·ñÐèÒª·µ»ØÊý¾Ý£¿
+                        ´Ó»úµØÖ·          ¹¦ÄÜÂëÖÃÎ»                    ¼Ä´æÆ÷µØÖ·
+        ±¨´íÐÅÏ¢£º  04               04                  02              data1 data2 ***  crc16            Õâ¸öÊÇÏÂÎ»»ú¶ÔÉÏÎ»»úµÄ·¢ËÍµÄÊý¾ÝÓÐ²»Í¬Òâ¼û²úÉúµÄ´íÎó
+                        ´Ó»úµØÖ·          ¹¦ÄÜÂëÖÃÎ»                    ¼Ä´æÆ÷µØÖ·
+
+
+        */
+
+        //run crc check
+
+
+
+
+
+        if (Rx_Buffer[0]==0x05) //Slave address 0x05
+        {
+            //  printf("\r\nSLocal Address ok!\r\n");
+
+            switch (Rx_Buffer[1])
+            {
+                case 0x03:    //¶ÁÈ¡¹¦ÄÜÂë¼Ä´æÆ÷µÄ×´Ì¬ --ÊÇ·ñÎª¶ÁÊý¾Ý¹¦ÄÜÂë
+                    switch  (Rx_Buffer[2])
+                    {
+
+                        case 0x01:   //Read Gas 1479A flow meter value
+                            Tx_Buffer[0]=0x05; // Slave address
+                            Tx_Buffer[1]=0x03;// function  code
+                            Tx_Buffer[2]=0x01;// register address
+                            //Ad conversion
+                            AD_Voltage_Status = AD_Conversion();
+                            //AD_Voltage_Status[0 1 2]   ·Ö±ð±íÊ¾1479A 627D 025d
+                            Flow_1479A_Status=1.5;
+
+                            //
+                            temp = GasFloatValue_1479ACalc(AD_Voltage_Status[0]);
+                            temp=3;
+                            //Transfer the float data to hex data
+                            testdata.floatData=temp;
+
+                            Tx_Buffer[3]=testdata.byteData[3];
+                            Tx_Buffer[4]=testdata.byteData[2];
+                            Tx_Buffer[5]=testdata.byteData[1];
+                            Tx_Buffer[6]=testdata.byteData[0];
+
+                            //GetCRC16
+                            crctestdata.CrcData=GetCRC16(Tx_Buffer,7);
+
+
+                            Tx_Buffer[7]=crctestdata.byteData[1];
+                            Tx_Buffer[8]=crctestdata.byteData[0];
+
+
+                            Write_SOCK_Data_Buffer(s, Tx_Buffer, 9);
+
+                            break;
+
+
+                        case 0x02: //Read 627D pressure value
+                            Tx_Buffer[0]=0x05; // Slave address
+                            Tx_Buffer[1]=0x03;// function  code
+                            Tx_Buffer[2]=0x02;// register address
+                            //Ad conversion
+                            AD_Voltage_Status = AD_Conversion();
+                            AD_Voltage_Status[1]=1.5;
+                            Cavity_627D_Pressure_Status=AD_Voltage_Status[1];
+
+
+                            //AD_Voltage_Status[0 1 2]   ·Ö±ð±íÊ¾1479A 627D 025d
+                            temp = VacuumFloatValue_627DCalc(AD_Voltage_Status[1]);
+
+
+
+                            //float value to hex
+                            testdata.floatData=temp;
+
+                            Tx_Buffer[3]=testdata.byteData[3];
+                            Tx_Buffer[4]=testdata.byteData[2];
+                            Tx_Buffer[5]=testdata.byteData[1];
+                            Tx_Buffer[6]=testdata.byteData[0];
+
+
+
+                            //GetCRC16
+                            crctestdata.CrcData=GetCRC16(Tx_Buffer,7);
+
+
+                            Tx_Buffer[7]=crctestdata.byteData[1];
+                            Tx_Buffer[8]=crctestdata.byteData[0];
+
+
+                            Write_SOCK_Data_Buffer(s, Tx_Buffer, 9);
+
+
+                            break;
+
+                        case 0x03: //Read CDG025D  vacuum value
+                            Tx_Buffer[0]=0x05; // Slave address
+                            Tx_Buffer[1]=0x03;// function  code
+                            Tx_Buffer[2]=0x03;// register address
+                            //ad conbersion
+                            AD_Voltage_Status = AD_Conversion();
+
+
+                            //AD_Voltage_Status[0 1 2]   ·Ö±ð±íÊ¾1479A 627D 025d
+                            temp = VacuumFloatValue_025DCalc(AD_Voltage_Status[2]);
+
+                            temp=3;
+                            //float to hex
+                            testdata.floatData=temp;
+
+                            Tx_Buffer[3]=testdata.byteData[3];
+                            Tx_Buffer[4]=testdata.byteData[2];
+                            Tx_Buffer[5]=testdata.byteData[1];
+                            Tx_Buffer[6]=testdata.byteData[0];
+
+                            //GetCRC16
+                            crctestdata.CrcData=GetCRC16(Tx_Buffer,7);
+
+
+                            Tx_Buffer[7]=crctestdata.byteData[1];
+                            Tx_Buffer[8]=crctestdata.byteData[0];
+
+                            Write_SOCK_Data_Buffer(s, Tx_Buffer, 9);
+
+
+                            break;
+
+                        case 0x04://Read Gas Feed Status
+                            Tx_Buffer[0]=0x05; // Slave address
+                            Tx_Buffer[1]=0x03;// function  code
+                            Tx_Buffer[2]=0x04;// register address
+                            //read gas valve status
+                            printf("before the gas state read");
+                            ValveValue_Status=Gas_State_Read();
+                            Tx_Buffer[3]=ValveValue_Status[0];
+                            Tx_Buffer[4]=ValveValue_Status[1];
+                            printf("after the gas state read");
+                            //GetCRC16
+                            crctestdata.CrcData=GetCRC16(Tx_Buffer,5);
+
+
+                            Tx_Buffer[5]=crctestdata.byteData[1];
+                            Tx_Buffer[6]=crctestdata.byteData[0];
+
+
+                            Write_SOCK_Data_Buffer(s, Tx_Buffer, 7);
+                            break;
+
+
+
+                    }
+
+
+                case 0x05:    //Ð´Èë¼Ä´æÆ÷µÄ×´Ì¬
+                    //Éè¶¨12¹âÂ·¡¢Éè¶¨Õæ¿Õ¶È¡¢Éè¶¨Á÷Á¿Öµ
+                    //Éè¶¨·½°¸£ºÍ¨¹ýÈ«¾Ö±äÁ¿´«ËÍ³öÈ¥£¬»¹ÊÇ×îºóÖ±½Óµ÷ÓÃÏà¹ØµÄº¯ÊýÄØ£¿
+                    //ÔÝ¶¨·½°¸£º Ö±½Óµ÷ÓÃÏà¹ØµÄº¯Êý
+                    //Õâ¸öÊÇRx_BufferµÄ¶¨Òå£ºunsigned char Rx_Buffer[2048]
+
+
+                    ////////////////////¹©ÆøÄ£Ê½////////////////////
+                    /*********************************************
+                    *¹©ÆøÄ£Ê½µÃÑ¡ÔñÓÐ2ÖÖ
+                    * Ä£Ê½1£ºÉÏÎ»»úÖ±½Ó¿ØÖÆÁ÷Á¿¼Æ £¬ Ã¿´Î¸øÁ÷Á¿¼ÆÉè¶¨µ±Ç°µÃÊýÖµ
+                    * Ä£Ê½2£ºÉÏÎ»»ú²»¿ØÖÆÁ÷Á¿£¬ÈÃÆäÍ¨¹ý×Ô¶¯µÃ±Õ»·½øÐÐ¿ØÖÆ
+                    *ÊµÏÖµÃ·½°¸
+                    *
+                    *
+                    *********************************************/
+                    switch  (Rx_Buffer[2])
+                    {
+
+
+                        case 0x05:
+
+                            if(Rx_Buffer[3]==0xff)
+
+                            {
+                                Normal_Debug_RunningMode=Rx_Buffer[3];
+
+                                printf("Case 05 to open Debug Mode\n");
+                            }
+                            else
+                            {
+                                Normal_Debug_RunningMode=0x00;
+                                printf("ase 05 to open Normal Running Mode\n");
+
+
+                            }
+
+
+                            break;
+                        case 0x06: //Valve To Open
+
+                            if(Rx_Buffer[3]==0xff)
+
+                            {
+                                Valve_Signal_Open=Rx_Buffer[3];
+
+                                printf("Case 06 to open valves\r\n");
+                            }
+                            else
+                            {
+                                Valve_Signal_Open=0x00;
+                                printf("case 06 to close vavles\r\n");
+
+
+                            }
+
+
+                            break;
+
+                        case 0x07: //PEV control  mode or 1479A control mode
+
+
+                            if(Rx_Buffer[3]==0xff)
+
+                            {
+                                PEV_1479A_ControlMode=Rx_Buffer[3];
+
+                                printf("Case 07: to 1479A control Mode\r\n");
+                            }
+                            else
+                            {
+                                PEV_1479A_ControlMode=0x00;
+                                printf("ase 06 to PEV control mode\r\n");
+
+
+                            }
+
+
+                            break;
+
+                        case 0x08:  //Command Mode or timing trigger mode
+                            //use the puff mode or not
+                            //we can use a new parameter in the pid function to enable puff or unpuff
+                            if(Rx_Buffer[3]==0xff) //±íÊ¾¹Ø±Õµ±Ç°Åç³öÄ£Ê½ x
+                            {
+                                Command_Timing_TriggerMode=0xff;
+                                printf("Case 08 Timing Trigger Mode\r\n");
+
+                            }
+                            else
+                            {
+                                Command_Timing_TriggerMode=0x00;
+                                printf("Case 08 Command Trigger Mode\r\n");
+
+                            }
+
+
+
+                            break;
+
+
+                        case 0x09:  //Puff on or Puff off
+                            //use the puff mode or not
+                            //we can use a new parameter in the pid function to enable puff or unpuff
+                            if(Rx_Buffer[3]==0xff) //±íÊ¾¹Ø±Õµ±Ç°Åç³öÄ£Ê½ x
+                            {
+                                Normal_Puff_RunningMode=0xff;
+                                printf("Case 07 puff mode on\r\n");
+
+                            }
+                            else
+                            {
+                                Normal_Puff_RunningMode=0x00;
+                                printf("Case 07 puff mode off\r\n");
+
+                            }
+
+
+
+                            break;
+
+
+
+                    }
+
+                case 0x06:
+                    switch(Rx_Buffer[2])
+                    {
+                        case 0x0A: //Vacuum value: Pressure value set 627D pressure value
+
+                            //if the value is received, we feedback the same package that we get
+
+                            size=Read_SOCK_Data_Buffer(s, Rx_Buffer);
+
+                            memcpy(Tx_Buffer, Rx_Buffer, size);
+                            Write_SOCK_Data_Buffer(s, Tx_Buffer,size);
+
+
+
+
+                            //convert to float type
+                            testdata.byteData[3]=Rx_Buffer[3];
+                            testdata.byteData[2]=Rx_Buffer[4];
+                            testdata.byteData[1]=Rx_Buffer[5];
+                            testdata.byteData[0]=Rx_Buffer[6];
+
+                            //Vacuum Value should be changed into Voltage value accoroding 627D manully
+
+                            Package_Cavity_627D_Pressure_Set=testdata.floatData;
+
+
+
+                            break;
+
+                        case 0x0B:  //1479A Gas  Flow value set
+
+
+
+                            //if the value is received, we feedback the same package that we get
+
+                            size=Read_SOCK_Data_Buffer(s, Rx_Buffer);
+
+                            memcpy(Tx_Buffer, Rx_Buffer, size);
+                            Write_SOCK_Data_Buffer(s, Tx_Buffer,size);
+
+
+
+
+                            //convert to float type
+                            testdata.byteData[3]=Rx_Buffer[3];
+                            testdata.byteData[2]=Rx_Buffer[4];
+                            testdata.byteData[1]=Rx_Buffer[5];
+                            testdata.byteData[0]=Rx_Buffer[6];
+
+                            //1479A Flow Set value
+
+                            Package_Flow_1479A_Set=testdata.floatData;
+                            printf("Set 1479A Flow Data ");
+
+
+                            break;
+                        case 0x0C://Gas Puff mode: Puff Pressure value set
+
+                            //if the value is received, we feedback the same package that we get
+
+                            size=Read_SOCK_Data_Buffer(s, Rx_Buffer);
+
+                            memcpy(Tx_Buffer, Rx_Buffer, size);
+                            Write_SOCK_Data_Buffer(s, Tx_Buffer,size);
+
+
+
+
+                            //convert to float type
+                            testdata.byteData[3]=Rx_Buffer[3];
+                            testdata.byteData[2]=Rx_Buffer[4];
+                            testdata.byteData[1]=Rx_Buffer[5];
+                            testdata.byteData[0]=Rx_Buffer[6];
+
+                            //Vacuum Value should be changed into Voltage value accoroding 627D manully
+
+                            Package_Cavity_627D_Puff_Set=testdata.floatData;
+
+
+                            break;
+                        case 0x0d://pid code setting
+
+                            testdata.byteData[3]=Rx_Buffer[3];
+                            testdata.byteData[2]=Rx_Buffer[4];
+                            testdata.byteData[1]=Rx_Buffer[5];
+                            testdata.byteData[0]=Rx_Buffer[6];
+                            Package_Duty_P=testdata.floatData;
+                            testdata.byteData[3]=Rx_Buffer[7];
+                            testdata.byteData[2]=Rx_Buffer[8];
+                            testdata.byteData[1]=Rx_Buffer[9];
+                            testdata.byteData[0]=Rx_Buffer[10];
+                            Package_Duty_I=testdata.floatData;
+                            testdata.byteData[3]=Rx_Buffer[11];
+                            testdata.byteData[2]=Rx_Buffer[12];
+                            testdata.byteData[1]=Rx_Buffer[13];
+                            testdata.byteData[0]=Rx_Buffer[14];
+                            Package_Duty_D=testdata.floatData;
+                            printf("Set PID parameter ok\n\n");
+
+
+
+
+
+
+                            //1479AFloatValue_Set=
+
+
+
+                            break;
+
+                        case 0x0E: //
+                            Package_Valve_Status_Set[0]=Rx_Buffer[3];
+                            Package_Valve_Status_Set[1]=Rx_Buffer[4];
+                            break;
+
+                        case 0x0F: //puff mode auxiliary valve
+
+                            Package_Valve_Puff_Status_Set[0]=Rx_Buffer[3];
+                            Package_Valve_Puff_Status_Set[1]=Rx_Buffer[4];
+
+
+                            break;
+
+
+                    }
+
+
+
+
+
+                    break;
+
+
+                default:
+                    break;
+            }
 
 
 
         }
         else
         {
-            //Initial ALl the valve or mode we are using
-
-
-
-            //Test whether the valves can work noramlly
-            Valve_Operation_Status_Set[0]=Package_Valve_Status_Set[0];
-            Valve_Operation_Status_Set[1]=Package_Valve_Status_Set[1];
-            //Now, we just directly open the valve
-            ValveStateChange(Valve_Operation_Status_Set);
-
-            //Test whether the 1479A Flow Meter work normally
-            Flow_1479A_Set=Package_Flow_1479A_Set;
-            //Call DAC Translation funtion
-            /*      */
-
-
-            //Test whether the PEV's closed-loop control can work normally
-            Cavity_627D_Pressure_Set=Package_Cavity_627D_Pressure_Set;
-
-            //call pid adjustment function
-
-
-
-            //test pid parameter's function
-            //cannot be done with my code
-
-
-            printf("we are in dubug mode");
-
-
-
-
-
-
-
-
-
-            //this mode is dubug running
+            //Èç¹û²»ÊÇ±¾»úµÄµØÖ·µÄÇé¿ö ÈçºÎ½øÐÐ´¦Àí
 
 
 
         }
 
 
-        /* In this part we need to update the devices to LCD or the internet  */  //use timer to send my status to the pc
-        //LCD to update
-        // ValveValue_Status=Gas_State_Read(); //º¯ÊýÊµÏÖ¶ÁÈ¡IO¿ÚµÄ¸ßµÍµçÆ½Öµ
-        //   ValveValue_Status_LCD = Gas_State_Read_LCD();
-        //   Gas_StateLayerUpdate(ValveValue_Status_LCD);
-        //  AD_Voltage_Status=AD_Conversion();
-        //   ADC_LCD_Out(AD_Voltage_Status);
-
-        //we should also set set currret status to the status register
-
-
-    }
-}
-
-/*******************************************************************************
-* º¯ÊýÃû  : Process_Socket_Data
-* ÃèÊö    : W5500½ÓÊÕ²¢·¢ËÍ½ÓÊÕµ½µÄÊý¾Ý
-* ÊäÈë    : s:¶Ë¿ÚºÅ
-* Êä³ö    : ÎÞ
-* ·µ»ØÖµ  : ÎÞ
-* ËµÃ÷    : ±¾¹ý³ÌÏÈµ÷ÓÃS_rx_process()´ÓW5500µÄ¶Ë¿Ú½ÓÊÕÊý¾Ý»º³åÇø¶ÁÈ¡Êý¾Ý,
-*           È»ºó½«¶ÁÈ¡µÄÊý¾Ý´ÓRx_Buffer¿½±´µ½Temp_Buffer»º³åÇø½øÐÐ´¦Àí¡£
-*           ´¦ÀíÍê±Ï£¬½«Êý¾Ý´ÓTemp_Buffer¿½±´µ½Tx_Buffer»º³åÇø¡£µ÷ÓÃS_tx_process()
-*           ·¢ËÍÊý¾Ý¡£
-*******************************************************************************/
-
-void Process_Socket_Data(SOCKET s)
-{
-
-    FLOAT_BYTE testdata;
-    CRC_BYTE crctestdata;
-    char floattest[10];
-    char test1[4];
-    unsigned short size;//½ÓÊÕµ½µÄbuffer µÄ´óÐ¡
-    ///////////////////////Valve Gas Part///////
-
-    u8 ValveValue_Set[12];  //À´×ÔÍøÂç´«Èë¹ýÀ´µÄÐÅºÅ
-    char *ValveValue_Status;
-    u8 i;
-    ////////////////////////////////////////////////////////
-    ////////////////Õæ¿ÕÇ»²¿·Ö/////////////////////////////
-    float VacuumValue_Set;
-
-
-    //////////////////Á÷Á¿¼ÆµÄÁ÷Á¿ÖµÉè¶¨Éè¶¨//////////////////////////////////
-    float Flow1479AValue_Set;
-
-
-
-    ////////////////ÆøÌåÅç³ö·åÖµÕæ¿Õ¶ÈÉè¶¨//////////////////////////////////
-    float GasPuffValue_Set;
-
-
-    ////////////////PID²ÎÊýÉè¶¨/////////////////////////
-    float Kp,Ki,Kd;
-
-
-    ////////////////CRC_Mid/////////////////////////
-    unsigned int CRC_Mid;
-
-
-
-
-
-
-
-    ///////////////////AD×ª»»²¿·Ö////////////////
-    float *AD_Voltage_Status;
-    float temp=0; // ÓÃÀ´½øÐÐAD×ª»»Ê¹ÓÃµÄ±äÁ¿
-    uint8_t temp1[5];
-    char AD_Value[50];
-
-
-
-
-
-
-    size=Read_SOCK_Data_Buffer(s, Rx_Buffer);
-
-    //printf("\r\nSIZE:%d\r\n",size);
-    // memcpy(Tx_Buffer, Rx_Buffer, size);
-//  printf("\r\nRX_BUFFER\r\n");
-//   printf(Rx_Buffer);
-
-    //¹ØÓÚRX_Buffer  ÉÏÎ»»úÀíÂÛÉÏ Ó¦¸Ã´«ÈëµÄÊÇÒ»´®µÄÊý¾Ý£¬ ¶ø²»ÊÇÒ»¸öµ¥´¿µÄÎ»
-    //¿ÉÒÔ¿´µ½Rx_Buffer Ïàµ±ÓÚÒ»¸öÊý×é£¬16Î»°É
-    //¶ÔÓÚModbusÐ­Òé ÏÈ¾Ù¸öÀý×Ó
-    /*
-    ¶ÁÊý¾Ý£º    04               03                   02                                                                                            ÏÂÎ»»ú£º»Ø¸´ÆäÐèÒª¶ÁµÄÐÅÏ¢ 04 03 02 length data1 data2 *** crc
-                    ´Ó»úµØÖ·          ¹¦ÄÜÂë¶Á                      ¼Ä´æÆ÷µØÖ·  ---------------------------------------¡·
-    Ð´Êý¾Ý£º    04               06                   02             data1  data2 ***  crc16                ÏÂÎ»»ú£º»Ø¸´ÆäÐèÒªÐ´µÄÐÅÏ¢ 04 06 02  ****     £¨PS£¬Õâ¸öµØ·½»Ø¸´µÄÊÇÓëÉÏÎ»»úÏàÍ¬µÄ¶«Î÷£©
-                    ´Ó»úµØÖ·          ¹¦ÄÜÂëÐ´                      ¼Ä´æÆ÷µØÖ·
-    ÖÃÎ»On/off£º  04               05                   02              data1 data2 ***  crc16                   ÏÂÎ»»ú£º    Õâ¸öÊÇ·ñÐèÒª·µ»ØÊý¾Ý£¿
-                    ´Ó»úµØÖ·          ¹¦ÄÜÂëÖÃÎ»                    ¼Ä´æÆ÷µØÖ·
-    ±¨´íÐÅÏ¢£º  04               04                  02              data1 data2 ***  crc16            Õâ¸öÊÇÏÂÎ»»ú¶ÔÉÏÎ»»úµÄ·¢ËÍµÄÊý¾ÝÓÐ²»Í¬Òâ¼û²úÉúµÄ´íÎó
-                    ´Ó»úµØÖ·          ¹¦ÄÜÂëÖÃÎ»                    ¼Ä´æÆ÷µØÖ·
-
-
-    */
-
-    //run crc check
-
-
-
-
-
-    if (Rx_Buffer[0]==0x05) //Slave address 0x05
-    {
-        //  printf("\r\nSLocal Address ok!\r\n");
-
-        switch (Rx_Buffer[1])
+        /*if (Rx_Buffer[0]==0x11)   //ÅÐ¶Ï¼Ä´æÆ÷ÖÐµÄÄÚÈÝ¾ÍÍ¨¹ýÕâ¸öÀ´½øÐÐ¡£
         {
-            case 0x03:    //¶ÁÈ¡¹¦ÄÜÂë¼Ä´æÆ÷µÄ×´Ì¬ --ÊÇ·ñÎª¶ÁÊý¾Ý¹¦ÄÜÂë
-                switch  (Rx_Buffer[2])
-                {
+            Write_SOCK_Data_Buffer(s, Tx_Buffer, size);
+            Write_SOCK_Data_Buffer(0, "\r\n THis is 1\r\n", 23);
 
-                    case 0x01:   //Read Gas 1479A flow meter value
-                        Tx_Buffer[0]=0x05; // Slave address
-                        Tx_Buffer[1]=0x03;// function  code
-                        Tx_Buffer[2]=0x01;// register address
-                        //Ad conversion
-                        AD_Voltage_Status = AD_Conversion();
-                        //AD_Voltage_Status[0 1 2]   ·Ö±ð±íÊ¾1479A 627D 025d
-                        Flow_1479A_Status=1.5;
+        }*/
 
-                        //
-                        temp = GasFloatValue_1479ACalc(AD_Voltage_Status[0]);
-                        temp=3;
-                        //Transfer the float data to hex data
-                        testdata.floatData=temp;
+        //
 
-                        Tx_Buffer[3]=testdata.byteData[3];
-                        Tx_Buffer[4]=testdata.byteData[2];
-                        Tx_Buffer[5]=testdata.byteData[1];
-                        Tx_Buffer[6]=testdata.byteData[0];
-
-                        //GetCRC16
-                        crctestdata.CrcData=GetCRC16(Tx_Buffer,7);
-
-
-                        Tx_Buffer[7]=crctestdata.byteData[1];
-                        Tx_Buffer[8]=crctestdata.byteData[0];
-
-
-                        Write_SOCK_Data_Buffer(s, Tx_Buffer, 9);
-
-                        break;
-
-
-                    case 0x02: //Read 627D pressure value
-                        Tx_Buffer[0]=0x05; // Slave address
-                        Tx_Buffer[1]=0x03;// function  code
-                        Tx_Buffer[2]=0x02;// register address
-                        //Ad conversion
-                        AD_Voltage_Status = AD_Conversion();
-                        AD_Voltage_Status[1]=1.5;
-                        Cavity_627D_Pressure_Status=AD_Voltage_Status[1];
-
-
-                        //AD_Voltage_Status[0 1 2]   ·Ö±ð±íÊ¾1479A 627D 025d
-                        temp = VacuumFloatValue_627DCalc(AD_Voltage_Status[1]);
-
-
-
-                        //float value to hex
-                        testdata.floatData=temp;
-
-                        Tx_Buffer[3]=testdata.byteData[3];
-                        Tx_Buffer[4]=testdata.byteData[2];
-                        Tx_Buffer[5]=testdata.byteData[1];
-                        Tx_Buffer[6]=testdata.byteData[0];
-
-
-
-                        //GetCRC16
-                        crctestdata.CrcData=GetCRC16(Tx_Buffer,7);
-
-
-                        Tx_Buffer[7]=crctestdata.byteData[1];
-                        Tx_Buffer[8]=crctestdata.byteData[0];
-
-
-                        Write_SOCK_Data_Buffer(s, Tx_Buffer, 9);
-
-
-                        break;
-
-                    case 0x03: //Read CDG025D  vacuum value
-                        Tx_Buffer[0]=0x05; // Slave address
-                        Tx_Buffer[1]=0x03;// function  code
-                        Tx_Buffer[2]=0x03;// register address
-                        //ad conbersion
-                        AD_Voltage_Status = AD_Conversion();
-
-
-                        //AD_Voltage_Status[0 1 2]   ·Ö±ð±íÊ¾1479A 627D 025d
-                        temp = VacuumFloatValue_025DCalc(AD_Voltage_Status[2]);
-
-                        temp=3;
-                        //float to hex
-                        testdata.floatData=temp;
-
-                        Tx_Buffer[3]=testdata.byteData[3];
-                        Tx_Buffer[4]=testdata.byteData[2];
-                        Tx_Buffer[5]=testdata.byteData[1];
-                        Tx_Buffer[6]=testdata.byteData[0];
-
-                        //GetCRC16
-                        crctestdata.CrcData=GetCRC16(Tx_Buffer,7);
-
-
-                        Tx_Buffer[7]=crctestdata.byteData[1];
-                        Tx_Buffer[8]=crctestdata.byteData[0];
-
-                        Write_SOCK_Data_Buffer(s, Tx_Buffer, 9);
-
-
-                        break;
-
-                    case 0x04://Read Gas Feed Status
-                        Tx_Buffer[0]=0x05; // Slave address
-                        Tx_Buffer[1]=0x03;// function  code
-                        Tx_Buffer[2]=0x04;// register address
-                        //read gas valve status
-                        printf("before the gas state read");
-                        ValveValue_Status=Gas_State_Read();
-                        Tx_Buffer[3]=ValveValue_Status[0];
-                        Tx_Buffer[4]=ValveValue_Status[1];
-                        printf("after the gas state read");
-                        //GetCRC16
-                        crctestdata.CrcData=GetCRC16(Tx_Buffer,5);
-
-
-                        Tx_Buffer[5]=crctestdata.byteData[1];
-                        Tx_Buffer[6]=crctestdata.byteData[0];
-
-
-                        Write_SOCK_Data_Buffer(s, Tx_Buffer, 7);
-                        break;
-
-
-
-                }
-
-
-            case 0x05:    //Ð´Èë¼Ä´æÆ÷µÄ×´Ì¬
-                //Éè¶¨12¹âÂ·¡¢Éè¶¨Õæ¿Õ¶È¡¢Éè¶¨Á÷Á¿Öµ
-                //Éè¶¨·½°¸£ºÍ¨¹ýÈ«¾Ö±äÁ¿´«ËÍ³öÈ¥£¬»¹ÊÇ×îºóÖ±½Óµ÷ÓÃÏà¹ØµÄº¯ÊýÄØ£¿
-                //ÔÝ¶¨·½°¸£º Ö±½Óµ÷ÓÃÏà¹ØµÄº¯Êý
-                //Õâ¸öÊÇRx_BufferµÄ¶¨Òå£ºunsigned char Rx_Buffer[2048]
-
-
-                ////////////////////¹©ÆøÄ£Ê½////////////////////
-                /*********************************************
-                *¹©ÆøÄ£Ê½µÃÑ¡ÔñÓÐ2ÖÖ
-                * Ä£Ê½1£ºÉÏÎ»»úÖ±½Ó¿ØÖÆÁ÷Á¿¼Æ £¬ Ã¿´Î¸øÁ÷Á¿¼ÆÉè¶¨µ±Ç°µÃÊýÖµ
-                * Ä£Ê½2£ºÉÏÎ»»ú²»¿ØÖÆÁ÷Á¿£¬ÈÃÆäÍ¨¹ý×Ô¶¯µÃ±Õ»·½øÐÐ¿ØÖÆ
-                *ÊµÏÖµÃ·½°¸
-                *
-                *
-                *********************************************/
-                switch  (Rx_Buffer[2])
-                {
-
-
-                    case 0x05:
-
-                        if(Rx_Buffer[3]==0xff)
-
-                        {
-                            Normal_Debug_RunningMode=Rx_Buffer[3];
-
-                            printf("Case 05 to open Debug Mode\n");
-                        }
-                        else
-                        {
-                            Normal_Debug_RunningMode=0x00;
-                            printf("ase 05 to open Normal Running Mode\n");
-
-
-                        }
-
-
-                        break;
-                    case 0x06: //Valve To Open
-
-                        if(Rx_Buffer[3]==0xff)
-
-                        {
-                            Valve_Signal_Open=Rx_Buffer[3];
-
-                            printf("Case 06 to open valves\r\n");
-                        }
-                        else
-                        {
-                            Valve_Signal_Open=0x00;
-                            printf("case 06 to close vavles\r\n");
-
-
-                        }
-
-
-                        break;
-
-                    case 0x07: //PEV control  mode or 1479A control mode
-
-
-                        if(Rx_Buffer[3]==0xff)
-
-                        {
-                            PEV_1479A_ControlMode=Rx_Buffer[3];
-
-                            printf("Case 07: to 1479A control Mode\r\n");
-                        }
-                        else
-                        {
-                            PEV_1479A_ControlMode=0x00;
-                            printf("ase 06 to PEV control mode\r\n");
-
-
-                        }
-
-
-                        break;
-
-                    case 0x08:  //Command Mode or timing trigger mode
-                        //use the puff mode or not
-                        //we can use a new parameter in the pid function to enable puff or unpuff
-                        if(Rx_Buffer[3]==0xff) //±íÊ¾¹Ø±Õµ±Ç°Åç³öÄ£Ê½ x
-                        {
-                            Command_Timing_TriggerMode=0xff;
-                            printf("Case 08 Timing Trigger Mode\r\n");
-
-                        }
-                        else
-                        {
-                            Command_Timing_TriggerMode=0x00;
-                            printf("Case 08 Command Trigger Mode\r\n");
-
-                        }
-
-
-
-                        break;
-
-
-                    case 0x09:  //Puff on or Puff off
-                        //use the puff mode or not
-                        //we can use a new parameter in the pid function to enable puff or unpuff
-                        if(Rx_Buffer[3]==0xff) //±íÊ¾¹Ø±Õµ±Ç°Åç³öÄ£Ê½ x
-                        {
-                            Normal_Puff_RunningMode=0xff;
-                            printf("Case 07 puff mode on\r\n");
-
-                        }
-                        else
-                        {
-                            Normal_Puff_RunningMode=0x00;
-                            printf("Case 07 puff mode off\r\n");
-
-                        }
-
-
-
-                        break;
-
-
-
-                }
-
-            case 0x06:
-                switch(Rx_Buffer[2])
-                {
-                    case 0x0A: //Vacuum value: Pressure value set 627D pressure value
-
-                        //if the value is received, we feedback the same package that we get
-
-                        size=Read_SOCK_Data_Buffer(s, Rx_Buffer);
-
-                        memcpy(Tx_Buffer, Rx_Buffer, size);
-                        Write_SOCK_Data_Buffer(s, Tx_Buffer,size);
-
-
-
-
-                        //convert to float type
-                        testdata.byteData[3]=Rx_Buffer[3];
-                        testdata.byteData[2]=Rx_Buffer[4];
-                        testdata.byteData[1]=Rx_Buffer[5];
-                        testdata.byteData[0]=Rx_Buffer[6];
-
-                        //Vacuum Value should be changed into Voltage value accoroding 627D manully
-
-                        Package_Cavity_627D_Pressure_Set=testdata.floatData;
-
-
-
-                        break;
-
-                    case 0x0B:  //1479A Gas  Flow value set
-
-
-
-                        //if the value is received, we feedback the same package that we get
-
-                        size=Read_SOCK_Data_Buffer(s, Rx_Buffer);
-
-                        memcpy(Tx_Buffer, Rx_Buffer, size);
-                        Write_SOCK_Data_Buffer(s, Tx_Buffer,size);
-
-
-
-
-                        //convert to float type
-                        testdata.byteData[3]=Rx_Buffer[3];
-                        testdata.byteData[2]=Rx_Buffer[4];
-                        testdata.byteData[1]=Rx_Buffer[5];
-                        testdata.byteData[0]=Rx_Buffer[6];
-
-                        //1479A Flow Set value
-
-                        Package_Flow_1479A_Set=testdata.floatData;
-                        printf("Set 1479A Flow Data ");
-
-
-                        break;
-                    case 0x0C://Gas Puff mode: Puff Pressure value set
-
-                        //if the value is received, we feedback the same package that we get
-
-                        size=Read_SOCK_Data_Buffer(s, Rx_Buffer);
-
-                        memcpy(Tx_Buffer, Rx_Buffer, size);
-                        Write_SOCK_Data_Buffer(s, Tx_Buffer,size);
-
-
-
-
-                        //convert to float type
-                        testdata.byteData[3]=Rx_Buffer[3];
-                        testdata.byteData[2]=Rx_Buffer[4];
-                        testdata.byteData[1]=Rx_Buffer[5];
-                        testdata.byteData[0]=Rx_Buffer[6];
-
-                        //Vacuum Value should be changed into Voltage value accoroding 627D manully
-
-                        Package_Cavity_627D_Puff_Set=testdata.floatData;
-
-
-                        break;
-                    case 0x0d://pid code setting
-
-                        testdata.byteData[3]=Rx_Buffer[3];
-                        testdata.byteData[2]=Rx_Buffer[4];
-                        testdata.byteData[1]=Rx_Buffer[5];
-                        testdata.byteData[0]=Rx_Buffer[6];
-                        Package_Duty_P=testdata.floatData;
-                        testdata.byteData[3]=Rx_Buffer[7];
-                        testdata.byteData[2]=Rx_Buffer[8];
-                        testdata.byteData[1]=Rx_Buffer[9];
-                        testdata.byteData[0]=Rx_Buffer[10];
-                        Package_Duty_I=testdata.floatData;
-                        testdata.byteData[3]=Rx_Buffer[11];
-                        testdata.byteData[2]=Rx_Buffer[12];
-                        testdata.byteData[1]=Rx_Buffer[13];
-                        testdata.byteData[0]=Rx_Buffer[14];
-                        Package_Duty_D=testdata.floatData;
-                        printf("Set PID parameter ok\n\n");
-
-
-
-
-
-
-                        //1479AFloatValue_Set=
-
-
-
-                        break;
-
-                    case 0x0E: //
-                        Package_Valve_Status_Set[0]=Rx_Buffer[3];
-                        Package_Valve_Status_Set[1]=Rx_Buffer[4];
-                        break;
-
-                    case 0x0F: //puff mode auxiliary valve
-
-                        Package_Valve_Puff_Status_Set[0]=Rx_Buffer[3];
-                        Package_Valve_Puff_Status_Set[1]=Rx_Buffer[4];
-
-
-                        break;
-
-
-                }
-
-
-
-
-
-                break;
-
-
-            default:
-                break;
-        }
-
-
-
-    }
-    else
-    {
-        //Èç¹û²»ÊÇ±¾»úµÄµØÖ·µÄÇé¿ö ÈçºÎ½øÐÐ´¦Àí
 
 
 
     }
 
 
-    /*if (Rx_Buffer[0]==0x11)   //ÅÐ¶Ï¼Ä´æÆ÷ÖÐµÄÄÚÈÝ¾ÍÍ¨¹ýÕâ¸öÀ´½øÐÐ¡£
+
+
+
+
+
+
+
+    void Cavity_Pressure_SendBack()
     {
-        Write_SOCK_Data_Buffer(s, Tx_Buffer, size);
-        Write_SOCK_Data_Buffer(0, "\r\n THis is 1\r\n", 23);
-
-    }*/
-
-    //
-
-
-
-
-}
+        ////////////////CRC_Mid/////////////////////////
+        unsigned int CRC_Mid;
+        FLOAT_BYTE testdata;
+        float temptofun;
+        float *AD_Voltage_Status;
 
 
 
 
+        u8 s=0;
+        /*Read the actual flow value , and send it back to the pc*/
+        Tx_Buffer[0]=0x05; // ±¾»úµØÖ·
+        Tx_Buffer[1]=0x03;//¹¦ÄÜÃüÁîÂë
+        Tx_Buffer[2]=0x01;//¼Ä´æÆ÷µØ
+
+        //AD translation
+        AD_Voltage_Status=AD_Conversion();
+
+        //value translation
+        temptofun=GasFloatValue_1479ACalc(AD_Voltage_Status[0]);
+        temptofun=-12.5;
+        //value to IEEE 754 standard
+
+        testdata.floatData=temptofun;
+
+        //Set it to Tx_Buffer
+        Tx_Buffer[3]=testdata.byteData[3];
+        Tx_Buffer[4]=testdata.byteData[2];
+        Tx_Buffer[5]=testdata.byteData[1];
+        Tx_Buffer[6]=testdata.byteData[0];
+
+
+
+        //Get Crc check code
+        CRC_Mid=GetCRC16(Tx_Buffer,6);
+
+        //Set it to Tx_Buffer
+        Tx_Buffer[7]=(u8)CRC_Mid;
+        Tx_Buffer[8]=(u8)(CRC_Mid>>8);
+
+        Write_SOCK_Data_Buffer(s, Tx_Buffer, 8);
 
 
 
 
+    }
 
-void Cavity_Pressure_SendBack()
-{
-    ////////////////CRC_Mid/////////////////////////
-    unsigned int CRC_Mid;
-    FLOAT_BYTE testdata;
-    float temptofun;
+    void Initial_DebugMode()
+    {
+        ////////////////////Singal to Open Part///////////////////
+        Valve_Signal_Open=0x00;
+        Timing_Signal_Open=0x00;
+        Command_Signal_Open=0x00;
+
+
+        ////////////////////Mode Switch/////////////////// this should be able to change though the w5500
+        Normal_Debug_RunningMode=0x00;
+
+        Command_Timing_TriggerMode=0x00;
+
+        Normal_Puff_RunningMode=0x00;
+
+        PEV_1479A_ControlMode=0x00;
+
+
+    }
+
+    void Status_Register_Update()
+    {
+
+  
     float *AD_Voltage_Status;
+    char *ValveValue_Status;
+    char *ValveValue_Status_LCD;
+        
+			/* In this part we need to update the devices to LCD or the internet  */  //use timer to send my status to the pc
+			  //LCD to update
+			   ValveValue_Status=Gas_State_Read(); //º¯ÊýÊµÏÖ¶ÁÈ¡IO¿ÚµÄ¸ßµÍµçÆ½Öµ
+				 ValveValue_Status_LCD = Gas_State_Read_LCD();
+				 Gas_StateLayerUpdate(ValveValue_Status_LCD);
+			   AD_Voltage_Status=AD_Conversion();
+				 ADC_LCD_Out(AD_Voltage_Status);
+
+
+				 //Alter current status ,
+
+	         
+		       
+		        Flow_1479A_Status=GasFloatValue_1479ACalc(AD_Voltage_Status[0]);
+			 Cavity_627D_Pressure_Status=VacuumFloatValue_627DCalc(AD_Voltage_Status[1]);
+						 
 
 
 
-
-    u8 s=0;
-    /*Read the actual flow value , and send it back to the pc*/
-    Tx_Buffer[0]=0x05; // ±¾»úµØÖ·
-    Tx_Buffer[1]=0x03;//¹¦ÄÜÃüÁîÂë
-    Tx_Buffer[2]=0x01;//¼Ä´æÆ÷µØ
-
-    //AD translation
-    AD_Voltage_Status=AD_Conversion();
-
-    //value translation
-    temptofun=GasFloatValue_1479ACalc(AD_Voltage_Status[0]);
-    temptofun=-12.5;
-    //value to IEEE 754 standard
-
-    testdata.floatData=temptofun;
-
-    //Set it to Tx_Buffer
-    Tx_Buffer[3]=testdata.byteData[3];
-    Tx_Buffer[4]=testdata.byteData[2];
-    Tx_Buffer[5]=testdata.byteData[1];
-    Tx_Buffer[6]=testdata.byteData[0];
-
-
-
-    //Get Crc check code
-    CRC_Mid=GetCRC16(Tx_Buffer,6);
-
-    //Set it to Tx_Buffer
-    Tx_Buffer[7]=(u8)CRC_Mid;
-    Tx_Buffer[8]=(u8)(CRC_Mid>>8);
-
-    Write_SOCK_Data_Buffer(s, Tx_Buffer, 8);
-
-
-
-
-}
-
-void Initial_DebugMode()
-{
-    ////////////////////Singal to Open Part///////////////////
-    Valve_Signal_Open=0x00;
-    Timing_Signal_Open=0x00;
-    Command_Signal_Open=0x00;
-
-
-    ////////////////////Mode Switch/////////////////// this should be able to change though the w5500
-    Normal_Debug_RunningMode=0x00;
-
-    Command_Timing_TriggerMode=0x00;
-
-    Normal_Puff_RunningMode=0x00;
-
-    PEV_1479A_ControlMode=0x00;
-
-
-}
-
-void Status_Register_Update()
-{
-
-    /*
-    Cavity_627D_Pressure_Status=;
-    Flow_1479A_Status=;*/
-
-
-
-}
+    }
 
