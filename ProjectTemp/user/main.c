@@ -294,8 +294,6 @@ int main()
 
 
 
-                    printf("Target FLOW Value：%f\r\n",Flow_1479A_Set);
-                    printf("Status FLOW value:%f\r\n",Flow_1479A_Status);
                     printf("Call PID funtion\n\n\n");
 
                     //set pid parameter to the function
@@ -523,9 +521,7 @@ int main()
 
                             //1479A flow to normal
                             Flow_1479A_Set=Package_Flow_1479A_Set;
-                            printf("Execute to normal");
-                            printf("Package_Flow_1479a set to defaul:%f\n\n",Package_Flow_1479A_Set);
-                            printf("Flow_1479A _set is : %f\n\n",Flow_1479A_Set);
+                         
                             //627D Vacuum Pressire to normal
                             Cavity_627D_Pressure_Set=Package_Cavity_627D_Pressure_Set;
 
