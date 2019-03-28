@@ -244,7 +244,7 @@ int main()
         delay_ms(1000);
 
 
-        TIM_SetCompare2(TIM1,30000);
+ 
 //
 
 
@@ -306,7 +306,7 @@ int main()
                         printf("Command  Trigger Mode\n");
                         //all the mode needs to be default
                         //Only set to unpuff mode
-                        Normal_Puff_RunningMode=0x00;
+                        
 
                         if(Normal_Puff_RunningMode==0x00) //unpuff
                         {

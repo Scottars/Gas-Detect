@@ -1,5 +1,6 @@
 
 #include "VacuumG.h"
+#include "dac.h"
 #include "printf.h"
 
 /*************************************************
@@ -51,6 +52,7 @@ float VacuumValue_PID(float VacuumValue_Set, float VacuumValue_Status,float Kp,f
 	D = Kp * error + Ki * error*time_change + Kd * error/time_change;  
 	printf("Set Duty parameter:%f\r\n",D);
 	//actually we need to call pwm duty change functiobn
+	TIM_SetCompare2(TIM1,0);
 
 	
 	return D;
