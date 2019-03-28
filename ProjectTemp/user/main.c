@@ -26,6 +26,7 @@
 #include "DataProcess.h"
 #include "w5500.h"
 #include "VacuumG.h"
+#include "pwm.h"
 
 /****************************************************************************
 * Function Name  : main
@@ -74,9 +75,9 @@ float Package_Cavity_627D_Puff_Set=6.0;
 char  Package_Valve_Puff_Status_Set[2]= {0x0f,0xff};
 
 char Package_Valve_Status_Set[2]= {0x00,0xff};
+float Package_Duty_P,Package_Duty_I,Package_Duty_D;
 
-///////////////////PID Duty Adjustment part//////
-float Duty_P,Duty_I,Duty_D;
+
 
 //////////////////
 
@@ -137,6 +138,8 @@ int main()
 
 
 
+    ///////////////////PID Duty Adjustment part//////
+    float Duty_P=0.1,Duty_I=0.1,Duty_D=0.1;
 
 
     ////////////////////1479A part/////////////////////////
@@ -157,8 +160,15 @@ int main()
 
     //Valve_Operation_Status_Set=Valve_Default_Status_Set;
     Package_Cavity_627D_Pressure_Set=Cavity_627D_Pressure_Default;
-	Package_Flow_1479A_Set=Flow_1479A_Default;
-	
+    Package_Flow_1479A_Set=Flow_1479A_Default;
+    Package_Duty_P=Duty_P;
+    Package_Duty_I=Duty_I;
+    Package_Duty_D=Duty_D;
+
+
+    //Target pressure set , if there isn't value we use default value actually we need set this in the intial part
+    Cavity_627D_Pressure_Set= Package_Cavity_627D_Pressure_Set; //Setting by the package we received from the internet
+
 
 
     /****************Initial system part*****************/
@@ -183,6 +193,11 @@ int main()
     ///////////////DAC Initial /////////////////DAC ²¿·ÖµÄ³õÊ¼»¯£¬ÎÒÃÇ²ÉÓÃµÄÊÇDAC1  Ò²¾ÍÊÇPA4 ¿ÚµÄÊä³ö
     Dac1_Init();                //DAC³õÊ¼»¯
     DAC_SetChannel1Data(DAC_Align_12b_R, 0);//³õÊ¼ÖµÎª0
+
+
+    /////////////PWM Initial//////////////////////
+    pwm_init(900,0);
+
 
 
     ///////////////Valve Status Initial/////////////
@@ -225,7 +240,12 @@ int main()
 
     while(1)
     {
+        //printf("while mid");
+        delay_ms(1000);
 
+
+        TIM_SetCompare2(TIM1,30000);
+//
 
 
 
@@ -245,11 +265,11 @@ int main()
 
         if(Normal_Debug_RunningMode==0x00)
         {
-            // printf("Normal Running Mode\n");
+            printf("Normal Running Mode\n");
             if(Valve_Signal_Open==0x00) //open valve or the system
             {
                 //Wait for opening
-                //      printf("Valve close\n");
+                printf("Valve close\n");
             }
             else //Open command
             {
@@ -270,19 +290,12 @@ int main()
 
 
 
-
-
-
-
-
-                    //Target pressure set , if there isn't value we use default value
-                    Cavity_627D_Pressure_Set= Package_Cavity_627D_Pressure_Set; //Setting by the package we received from the internet
-
-                    printf("Target Pressure Valueï¼š%f\r\n",Cavity_627D_Pressure_Set);
-                    printf("Status Pressure:%f\r\n",Cavity_627D_Pressure_Status);
+                    // printf("Target Pressure Valueï¼š%f\r\n",Cavity_627D_Pressure_Set);
+                    // printf("Status Pressure:%f\r\n",Cavity_627D_Pressure_Status);
+                    printf("Call PID funtion\n\n\n");
 
                     //set pid parameter to the function
-                    VacuumValue_PID(Cavity_627D_Pressure_Set, Cavity_627D_Pressure_Status, Duty_P,Duty_I,Duty_D);
+                    VacuumValue_PID(Cavity_627D_Pressure_Set, Cavity_627D_Pressure_Status, Package_Duty_P,Package_Duty_I,Package_Duty_D);
 
 
                     //execute the PID function to set the new pwm duty ratio
@@ -297,7 +310,7 @@ int main()
 
                         if(Normal_Puff_RunningMode==0x00) //unpuff
                         {
-                   
+
                             printf("Unpuff Mode\n");
 
                             /*Switch those value to unpuff value, so that we can make it happen, during next pid adjustment*/
@@ -385,20 +398,20 @@ int main()
                         {
                             printf("Unpuff mode");
                             // Close all the puff valve
-                        
-							/*Switch those value to unpuff value, so that we can make it happen, during next pid adjustment*/
-													   // valve to normal
-													   Valve_Operation_Status_Set[0]=Package_Valve_Status_Set[0];// we can get it from the Internet
-							
-													   Valve_Operation_Status_Set[1]=Package_Valve_Status_Set[1];
-							
-													   //to close Puff mode status directly
-													   ValveStateChange(Valve_Operation_Status_Set);
-							
-													   //1479A flow to normal
-													   Flow_1479A_Set=Package_Flow_1479A_Set;
-													   //627D Vacuum Pressire to normal
-													   Cavity_627D_Pressure_Set=Package_Cavity_627D_Pressure_Set;
+
+                            /*Switch those value to unpuff value, so that we can make it happen, during next pid adjustment*/
+                            // valve to normal
+                            Valve_Operation_Status_Set[0]=Package_Valve_Status_Set[0];// we can get it from the Internet
+
+                            Valve_Operation_Status_Set[1]=Package_Valve_Status_Set[1];
+
+                            //to close Puff mode status directly
+                            ValveStateChange(Valve_Operation_Status_Set);
+
+                            //1479A flow to normal
+                            Flow_1479A_Set=Package_Flow_1479A_Set;
+                            //627D Vacuum Pressire to normal
+                            Cavity_627D_Pressure_Set=Package_Cavity_627D_Pressure_Set;
                             //this mode we jump out to exexute the pid adjustment again
 
                         }
@@ -480,7 +493,7 @@ int main()
                     //
 
 
-                    //
+                    //we should also set this function in the intial part
                     Flow_1479A_Set=Package_Flow_1479A_Set;  //Setting by the package we received from the Internet
                     printf("Target Flow Valueï¼š%f\n",Flow_1479A_Set);
 
@@ -500,7 +513,7 @@ int main()
                         if(Normal_Puff_RunningMode==0x00) //unpuff
                         {
                             // Close all the puff valve
-                   
+
                             printf("Unpuff Mode\n");
 
                             /*Switch those value to unpuff value, so that we can make it happen, during next pid adjustment*/
@@ -588,7 +601,7 @@ int main()
                         {
                             printf("unpuff mode");
                             // Close all the puff valve
-              
+
                             printf("Unpuff Mode\n");
 
                             /*Switch those value to unpuff value, so that we can make it happen, during next pid adjustment*/
@@ -818,6 +831,7 @@ void Process_Socket_Data(SOCKET s)
 
 
     size=Read_SOCK_Data_Buffer(s, Rx_Buffer);
+
     //printf("\r\nSIZE:%d\r\n",size);
     // memcpy(Tx_Buffer, Rx_Buffer, size);
 //  printf("\r\nRX_BUFFER\r\n");
@@ -1034,7 +1048,7 @@ void Process_Socket_Data(SOCKET s)
                         else
                         {
                             Valve_Signal_Open=0x00;
-                            printf("ase 06 to close vavles\r\n");
+                            printf("case 06 to close vavles\r\n");
 
 
                         }
@@ -1193,17 +1207,18 @@ void Process_Socket_Data(SOCKET s)
                         testdata.byteData[2]=Rx_Buffer[4];
                         testdata.byteData[1]=Rx_Buffer[5];
                         testdata.byteData[0]=Rx_Buffer[6];
-                        Duty_P=testdata.floatData;
+                        Package_Duty_P=testdata.floatData;
                         testdata.byteData[3]=Rx_Buffer[7];
                         testdata.byteData[2]=Rx_Buffer[8];
                         testdata.byteData[1]=Rx_Buffer[9];
                         testdata.byteData[0]=Rx_Buffer[10];
-                        Duty_I=testdata.floatData;
-                        testdata.byteData[3]=Rx_Buffer[1];
+                        Package_Duty_I=testdata.floatData;
+                        testdata.byteData[3]=Rx_Buffer[11];
                         testdata.byteData[2]=Rx_Buffer[12];
                         testdata.byteData[1]=Rx_Buffer[13];
                         testdata.byteData[0]=Rx_Buffer[14];
-                        Duty_D=testdata.floatData;
+                        Package_Duty_D=testdata.floatData;
+                        printf("Set PID parameter ok\n\n");
 
 
 

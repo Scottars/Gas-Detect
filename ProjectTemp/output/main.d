@@ -44,3 +44,4 @@
 .\output\main.o: .\APP\DataProcess\DataProcess.h
 .\output\main.o: .\APP\W5500\w5500.h
 .\output\main.o: .\APP\VacuumGauge\VacuumG.h
+.\output\main.o: .\APP\PWM\pwm.h
