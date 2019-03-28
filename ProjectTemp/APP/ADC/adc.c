@@ -150,8 +150,6 @@ float *AD_Conversion()
 			
 	
 		
-			dacval=i*200;
-			Dac1_Set_Vol(dacval);//…Ë÷√DAC÷µ	
 		
 		//	printf("The target dac boltage is : %f\n",dacval*3.3/3300);	
 	

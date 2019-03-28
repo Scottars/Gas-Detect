@@ -28,95 +28,89 @@ Project File Date:  03/21/2019
 *** Using Compiler 'V5.05 update 1 (build 106)', folder: 'D:\Program Files\Keil5\ARM\ARMCC\Bin'
 Build target 'Target 1'
 compiling main.c...
-user\main.c(206): warning:  #223-D: function "System_Initialization" declared implicitly
+user\main.c(216): warning:  #223-D: function "System_Initialization" declared implicitly
       System_Initialization();    //STM32系统初始化函数(初始化STM32时钟及外设)
-user\main.c(207): warning:  #223-D: function "Load_Net_Parameters" declared implicitly
+user\main.c(217): warning:  #223-D: function "Load_Net_Parameters" declared implicitly
       Load_Net_Parameters();      //装载网络参数
-user\main.c(209): warning:  #223-D: function "W5500_Initialization" declared implicitly
+user\main.c(219): warning:  #223-D: function "W5500_Initialization" declared implicitly
       W5500_Initialization();     //W5500初始货配置
-user\main.c(210): warning:  #223-D: function "W5500_Socket_Set" declared implicitly
+user\main.c(220): warning:  #223-D: function "W5500_Socket_Set" declared implicitly
       W5500_Socket_Set();//W5500端口初始化配置
-user\main.c(250): warning:  #167-D: argument of type "char *" is incompatible with parameter of type "u8 *"
+user\main.c(260): warning:  #167-D: argument of type "char *" is incompatible with parameter of type "u8 *"
                   ValveStateChange(Valve_Operation_Status_Set);
-user\main.c(271): warning:  #870-D: invalid multibyte character sequence
-                                        printf("Target Pressure Value锛?f\n",Cavity_627D_Pressure_Set);
-user\main.c(301): warning:  #167-D: argument of type "char *" is incompatible with parameter of type "u8 *"
+user\main.c(281): warning:  #870-D: invalid multibyte character sequence
+                      printf("Target Pressure Value锛?f\r\n",Cavity_627D_Pressure_Set);
+user\main.c(310): warning:  #167-D: argument of type "char *" is incompatible with parameter of type "u8 *"
                               ValveStateChange(Valve_Operation_Status_Set);
-user\main.c(322): warning:  #167-D: argument of type "char *" is incompatible with parameter of type "u8 *"
+user\main.c(331): warning:  #167-D: argument of type "char *" is incompatible with parameter of type "u8 *"
                               ValveStateChange(Valve_Operation_Status_Set);
-user\main.c(392): warning:  #167-D: argument of type "char *" is incompatible with parameter of type "u8 *"
+user\main.c(396): warning:  #167-D: argument of type "char *" is incompatible with parameter of type "u8 *"
+                                                                                                           ValveStateChange(Valve_Operation_Status_Set);
+user\main.c(422): warning:  #167-D: argument of type "char *" is incompatible with parameter of type "u8 *"
                               ValveStateChange(Valve_Operation_Status_Set);
-user\main.c(420): warning:  #167-D: argument of type "char *" is incompatible with parameter of type "u8 *"
-                              ValveStateChange(Valve_Operation_Status_Set);
-user\main.c(483): warning:  #870-D: invalid multibyte character sequence
-                                        printf("Target Flow Value锛?f\n",Flow_1479A_Set);
+user\main.c(485): warning:  #870-D: invalid multibyte character sequence
+                      printf("Target Flow Value锛?f\n",Flow_1479A_Set);
 user\main.c(513): warning:  #167-D: argument of type "char *" is incompatible with parameter of type "u8 *"
                               ValveStateChange(Valve_Operation_Status_Set);
 user\main.c(533): warning:  #167-D: argument of type "char *" is incompatible with parameter of type "u8 *"
                               ValveStateChange(Valve_Operation_Status_Set);
-user\main.c(604): warning:  #167-D: argument of type "char *" is incompatible with parameter of type "u8 *"
+user\main.c(602): warning:  #167-D: argument of type "char *" is incompatible with parameter of type "u8 *"
                               ValveStateChange(Valve_Operation_Status_Set);
-user\main.c(632): warning:  #167-D: argument of type "char *" is incompatible with parameter of type "u8 *"
+user\main.c(630): warning:  #167-D: argument of type "char *" is incompatible with parameter of type "u8 *"
                               ValveStateChange(Valve_Operation_Status_Set);
-user\main.c(718): warning:  #167-D: argument of type "char *" is incompatible with parameter of type "u8 *"
-          Gas_StateLayerUpdate(ValveValue_Status_LCD);
-user\main.c(95): warning:  #177-D: variable "i" was declared but never referenced
+user\main.c(709): warning:  #167-D: argument of type "char *" is incompatible with parameter of type "u8 *"
+              ValveStateChange(Valve_Operation_Status_Set);
+user\main.c(109): warning:  #177-D: variable "i" was declared but never referenced
       u8 i,j,k;
-user\main.c(95): warning:  #177-D: variable "j" was declared but never referenced
+user\main.c(109): warning:  #177-D: variable "j" was declared but never referenced
       u8 i,j,k;
-user\main.c(95): warning:  #177-D: variable "k" was declared but never referenced
+user\main.c(109): warning:  #177-D: variable "k" was declared but never referenced
       u8 i,j,k;
-user\main.c(96): warning:  #177-D: variable "temptofun" was declared but never referenced
+user\main.c(110): warning:  #177-D: variable "temptofun" was declared but never referenced
       float temptofun;
-user\main.c(104): warning:  #177-D: variable "Cavity_627D_Pressure_Status" was declared but never referenced
-      float Cavity_627D_Pressure_Status;
-user\main.c(108): warning:  #177-D: variable "Flow_1479A_Status" was declared but never referenced
-      float Flow_1479A_Status;
-user\main.c(120): warning:  #177-D: variable "Valve_Default_Status_Set" was declared but never referenced
+user\main.c(134): warning:  #177-D: variable "Valve_Default_Status_Set" was declared but never referenced
       char Valve_Default_Status_Set[2]= {0x00,0x00};
-user\main.c(122): warning:  #177-D: variable "Valve_Puff_Status_Set" was declared but never referenced
+user\main.c(136): warning:  #177-D: variable "Valve_Puff_Status_Set" was declared but never referenced
       char Valve_Puff_Status_Set[2];
-user\main.c(126): warning:  #177-D: variable "Duty_P" was declared but never referenced
-      float Duty_P,Duty_I,Duty_D;
-user\main.c(126): warning:  #177-D: variable "Duty_I" was declared but never referenced
-      float Duty_P,Duty_I,Duty_D;
-user\main.c(126): warning:  #177-D: variable "Duty_D" was declared but never referenced
-      float Duty_P,Duty_I,Duty_D;
-user\main.c(142): warning:  #177-D: variable "ValveValue_Status" was declared but never referenced
+user\main.c(152): warning:  #177-D: variable "AD_Voltage_Status" was declared but never referenced
+      float *AD_Voltage_Status;
+user\main.c(153): warning:  #177-D: variable "ValveValue_Status" was declared but never referenced
       char *ValveValue_Status;
-user\main.c(1087): warning:  #223-D: function "memcpy" declared implicitly
+user\main.c(154): warning:  #177-D: variable "ValveValue_Status_LCD" was declared but never referenced
+      char *ValveValue_Status_LCD;
+user\main.c(1120): warning:  #223-D: function "memcpy" declared implicitly
                           memcpy(Tx_Buffer, Rx_Buffer, size);
-user\main.c(743): warning:  #177-D: variable "floattest" was declared but never referenced
+user\main.c(774): warning:  #177-D: variable "floattest" was declared but never referenced
       char floattest[10];
-user\main.c(744): warning:  #177-D: variable "test1" was declared but never referenced
+user\main.c(775): warning:  #177-D: variable "test1" was declared but never referenced
       char test1[4];
-user\main.c(748): warning:  #177-D: variable "ValveValue_Set" was declared but never referenced
+user\main.c(779): warning:  #177-D: variable "ValveValue_Set" was declared but never referenced
       u8 ValveValue_Set[12];  //来自网络传入过来的信号
-user\main.c(750): warning:  #177-D: variable "i" was declared but never referenced
+user\main.c(781): warning:  #177-D: variable "i" was declared but never referenced
       u8 i;
-user\main.c(753): warning:  #177-D: variable "VacuumValue_Set" was declared but never referenced
+user\main.c(784): warning:  #177-D: variable "VacuumValue_Set" was declared but never referenced
       float VacuumValue_Set;
-user\main.c(757): warning:  #177-D: variable "Flow1479AValue_Set" was declared but never referenced
+user\main.c(788): warning:  #177-D: variable "Flow1479AValue_Set" was declared but never referenced
       float Flow1479AValue_Set;
-user\main.c(762): warning:  #177-D: variable "GasPuffValue_Set" was declared but never referenced
+user\main.c(793): warning:  #177-D: variable "GasPuffValue_Set" was declared but never referenced
       float GasPuffValue_Set;
-user\main.c(766): warning:  #177-D: variable "Kp" was declared but never referenced
+user\main.c(797): warning:  #177-D: variable "Kp" was declared but never referenced
       float Kp,Ki,Kd;
-user\main.c(766): warning:  #177-D: variable "Ki" was declared but never referenced
+user\main.c(797): warning:  #177-D: variable "Ki" was declared but never referenced
       float Kp,Ki,Kd;
-user\main.c(766): warning:  #177-D: variable "Kd" was declared but never referenced
+user\main.c(797): warning:  #177-D: variable "Kd" was declared but never referenced
       float Kp,Ki,Kd;
-user\main.c(770): warning:  #177-D: variable "CRC_Mid" was declared but never referenced
+user\main.c(801): warning:  #177-D: variable "CRC_Mid" was declared but never referenced
       unsigned int CRC_Mid;
-user\main.c(781): warning:  #177-D: variable "temp1" was declared but never referenced
+user\main.c(812): warning:  #177-D: variable "temp1" was declared but never referenced
       uint8_t temp1[5];
-user\main.c(782): warning:  #177-D: variable "AD_Value" was declared but never referenced
+user\main.c(813): warning:  #177-D: variable "AD_Value" was declared but never referenced
       char AD_Value[50];
-user\main.c: 42 warnings, 0 errors
+user\main.c: 39 warnings, 0 errors
 linking...
-Program Size: Code=20884 RO-data=9440 RW-data=128 ZI-data=5152  
+Program Size: Code=20432 RO-data=6148 RW-data=148 ZI-data=5140  
 FromELF: creating hex file...
-".\output\工程模板.axf" - 0 Error(s), 42 Warning(s).
+".\output\工程模板.axf" - 0 Error(s), 39 Warning(s).
 
 <h2>Collection of Component include folders:</h2>
   E:\MasterWork\Master1\pcb\keilcode\Codesum\_2DAC_ADC_printf_LCD_w5500\current-project\ProjectTemp\RTE

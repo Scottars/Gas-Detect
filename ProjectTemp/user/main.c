@@ -25,6 +25,7 @@
 
 #include "DataProcess.h"
 #include "w5500.h"
+#include "VacuumG.h"
 
 /****************************************************************************
 * Function Name  : main
@@ -74,6 +75,12 @@ char  Package_Valve_Puff_Status_Set[2]= {0x0f,0xff};
 
 char Package_Valve_Status_Set[2]= {0x00,0xff};
 
+///////////////////PID Duty Adjustment part//////
+float Duty_P,Duty_I,Duty_D;
+
+//////////////////
+
+
 ////////////////////Singal to Open Part///////////////////
 u8 Valve_Signal_Open=0x00;
 u8 Timing_Signal_Open=0x00;
@@ -89,6 +96,13 @@ u8 Normal_Puff_RunningMode=0x00;
 
 u8 PEV_1479A_ControlMode=0x00;
 
+///////////////////Value to PID ///////
+float Cavity_627D_Pressure_Status;
+float Flow_1479A_Status;
+
+
+
+
 
 int main()
 {
@@ -101,13 +115,13 @@ int main()
 
 
     ////////////////////Value to control///////////////////
-    float Cavity_627D_Pressure_Status;
-    float Cavity_627D_Pressure_Set;
-    float Cavity_627D_Pressure_Default;
 
-    float Flow_1479A_Status;
+    float Cavity_627D_Pressure_Set;
+    float Cavity_627D_Pressure_Default=0.5;
+
+
     float Flow_1479A_Set;
-    float Flow_1479A_Default;
+    float Flow_1479A_Default=0.5;
 
 
     float Flow_1479A_Puff_Set;
@@ -122,10 +136,7 @@ int main()
     char Valve_Puff_Status_Set[2];
 
 
-    ///////////////////PID Duty Adjustment part//////
-    float Duty_P,Duty_I,Duty_D;
 
-    //////////////////
 
 
     ////////////////////1479A part/////////////////////////
@@ -145,10 +156,9 @@ int main()
     ///////////////////we initial our own default data///////////////////
 
     //Valve_Operation_Status_Set=Valve_Default_Status_Set;
-
-
-
-
+    Package_Cavity_627D_Pressure_Set=Cavity_627D_Pressure_Default;
+	Package_Flow_1479A_Set=Flow_1479A_Default;
+	
 
 
     /****************Initial system part*****************/
@@ -235,11 +245,11 @@ int main()
 
         if(Normal_Debug_RunningMode==0x00)
         {
-             printf("Normal Running Mode\n");
+            // printf("Normal Running Mode\n");
             if(Valve_Signal_Open==0x00) //open valve or the system
             {
                 //Wait for opening
-                printf("Valve close\n");
+                //      printf("Valve close\n");
             }
             else //Open command
             {
@@ -254,11 +264,11 @@ int main()
                     //PEV,Default to PEV control
                     printf("PEV_Control Mode 1 \n");
 
-					//Default Set
+                    //Default Set
                     // Set 1479A to fully open , we can use it fully open command   or use the DAC control to make it the biggest
 
 
-					
+
 
 
 
@@ -268,9 +278,11 @@ int main()
                     //Target pressure set , if there isn't value we use default value
                     Cavity_627D_Pressure_Set= Package_Cavity_627D_Pressure_Set; //Setting by the package we received from the internet
 
-					printf("Target Pressure Valueï¼š%f\n",Cavity_627D_Pressure_Set);
+                    printf("Target Pressure Valueï¼š%f\r\n",Cavity_627D_Pressure_Set);
+                    printf("Status Pressure:%f\r\n",Cavity_627D_Pressure_Status);
 
                     //set pid parameter to the function
+                    VacuumValue_PID(Cavity_627D_Pressure_Set, Cavity_627D_Pressure_Status, Duty_P,Duty_I,Duty_D);
 
 
                     //execute the PID function to set the new pwm duty ratio
@@ -285,10 +297,7 @@ int main()
 
                         if(Normal_Puff_RunningMode==0x00) //unpuff
                         {
-                            // Close all the puff valve
-                            Cavity_627D_Pressure_Set=Cavity_627D_Pressure_Default;
-
-                            Flow_1479A_Set=Flow_1479A_Default;
+                   
                             printf("Unpuff Mode\n");
 
                             /*Switch those value to unpuff value, so that we can make it happen, during next pid adjustment*/
@@ -301,9 +310,9 @@ int main()
                             ValveStateChange(Valve_Operation_Status_Set);
 
                             //1479A flow to normal
-                            Flow_1479A_Set=Flow_1479A_Default;
+                            Flow_1479A_Set=Package_Flow_1479A_Set;
                             //627D Vacuum Pressire to normal
-                            Cavity_627D_Pressure_Set=Cavity_627D_Pressure_Default;
+                            Cavity_627D_Pressure_Set=Package_Cavity_627D_Pressure_Set;
 
 
                             //this mode we jump out to exexute the pid adjustment again
@@ -376,27 +385,20 @@ int main()
                         {
                             printf("Unpuff mode");
                             // Close all the puff valve
-                            Cavity_627D_Pressure_Set=Cavity_627D_Pressure_Default;
-
-                            Flow_1479A_Set=Flow_1479A_Default;
-
-
-                            /*Switch those value to unpuff value, so that we can make it happen, during next pid adjustment*/
-                            // valve to normal
-                            Valve_Operation_Status_Set[0]=Package_Valve_Status_Set[0];// we can get it from the Internet
-
-                            Valve_Operation_Status_Set[1]=Package_Valve_Status_Set[1];
-
-
-                            //to open Puff mode status directly to open
-                            ValveStateChange(Valve_Operation_Status_Set);
-
-                            //1479A flow to normal
-                            Flow_1479A_Set=Flow_1479A_Default;
-                            //627D Vacuum Pressire to normal
-                            Cavity_627D_Pressure_Set=Cavity_627D_Pressure_Default;
-
-
+                        
+							/*Switch those value to unpuff value, so that we can make it happen, during next pid adjustment*/
+													   // valve to normal
+													   Valve_Operation_Status_Set[0]=Package_Valve_Status_Set[0];// we can get it from the Internet
+							
+													   Valve_Operation_Status_Set[1]=Package_Valve_Status_Set[1];
+							
+													   //to close Puff mode status directly
+													   ValveStateChange(Valve_Operation_Status_Set);
+							
+													   //1479A flow to normal
+													   Flow_1479A_Set=Package_Flow_1479A_Set;
+													   //627D Vacuum Pressire to normal
+													   Cavity_627D_Pressure_Set=Package_Cavity_627D_Pressure_Set;
                             //this mode we jump out to exexute the pid adjustment again
 
                         }
@@ -471,8 +473,8 @@ int main()
                     // Set the PEV open in order to using 1479A control mode
                     // we also use pev control, but only to make it open about 100v
                     //set puff - PEV's Open voltage do we need a value to set?
-                    
-                    
+
+
                     //PID adjustment
 
                     //
@@ -480,7 +482,7 @@ int main()
 
                     //
                     Flow_1479A_Set=Package_Flow_1479A_Set;  //Setting by the package we received from the Internet
-					printf("Target Flow Valueï¼š%f\n",Flow_1479A_Set);
+                    printf("Target Flow Valueï¼š%f\n",Flow_1479A_Set);
 
                     //1479A adjustment DAC
 
@@ -498,9 +500,7 @@ int main()
                         if(Normal_Puff_RunningMode==0x00) //unpuff
                         {
                             // Close all the puff valve
-                            Cavity_627D_Pressure_Set=Cavity_627D_Pressure_Default;
-
-                            Flow_1479A_Set=Flow_1479A_Default;
+                   
                             printf("Unpuff Mode\n");
 
                             /*Switch those value to unpuff value, so that we can make it happen, during next pid adjustment*/
@@ -516,7 +516,7 @@ int main()
                             Flow_1479A_Set=Package_Flow_1479A_Set;
                             //627D Vacuum Pressire to normal
                             Cavity_627D_Pressure_Set=Package_Cavity_627D_Pressure_Set;
-						
+
                             //this mode we jump out to exexute the pid adjustment again
 
 
@@ -545,8 +545,8 @@ int main()
                                 //update the target presste value of PID adjustment
 
                                 Cavity_627D_Pressure_Set=Cavity_627D_Puff_Set;
-								
-							   
+
+
 
                             }
                             else
@@ -562,9 +562,9 @@ int main()
                                 //update the target presste value of PID adjustment
 
                                 Flow_1479A_Set=Flow_1479A_Puff_Set;
-								
-							
-														
+
+
+
                             }
 
 
@@ -588,9 +588,7 @@ int main()
                         {
                             printf("unpuff mode");
                             // Close all the puff valve
-                            Cavity_627D_Pressure_Set=Cavity_627D_Pressure_Default;
-
-                            Flow_1479A_Set=Flow_1479A_Default;
+              
                             printf("Unpuff Mode\n");
 
                             /*Switch those value to unpuff value, so that we can make it happen, during next pid adjustment*/
@@ -700,9 +698,42 @@ int main()
         }
         else
         {
+            //Initial ALl the valve or mode we are using
+
+
+
+            //Test whether the valves can work noramlly
+            Valve_Operation_Status_Set[0]=Package_Valve_Status_Set[0];
+            Valve_Operation_Status_Set[1]=Package_Valve_Status_Set[1];
+            //Now, we just directly open the valve
+            ValveStateChange(Valve_Operation_Status_Set);
+
+            //Test whether the 1479A Flow Meter work normally
+            Flow_1479A_Set=Package_Flow_1479A_Set;
+            //Call DAC Translation funtion
+            /*      */
+
+
+            //Test whether the PEV's closed-loop control can work normally
+            Cavity_627D_Pressure_Set=Package_Cavity_627D_Pressure_Set;
+
+            //call pid adjustment function
+
+
+
+            //test pid parameter's function
+            //cannot be done with my code
 
 
             printf("we are in dubug mode");
+
+
+
+
+
+
+
+
 
             //this mode is dubug running
 
@@ -714,10 +745,10 @@ int main()
         /* In this part we need to update the devices to LCD or the internet  */  //use timer to send my status to the pc
         //LCD to update
         // ValveValue_Status=Gas_State_Read(); //º¯ÊýÊµÏÖ¶ÁÈ¡IO¿ÚµÄ¸ßµÍµçÆ½Öµ
-        ValveValue_Status_LCD = Gas_State_Read_LCD();
-        Gas_StateLayerUpdate(ValveValue_Status_LCD);
-        AD_Voltage_Status=AD_Conversion();
-        ADC_LCD_Out(AD_Voltage_Status);
+        //   ValveValue_Status_LCD = Gas_State_Read_LCD();
+        //   Gas_StateLayerUpdate(ValveValue_Status_LCD);
+        //  AD_Voltage_Status=AD_Conversion();
+        //   ADC_LCD_Out(AD_Voltage_Status);
 
 
     }
@@ -862,6 +893,8 @@ void Process_Socket_Data(SOCKET s)
                         Tx_Buffer[2]=0x02;// register address
                         //Ad conversion
                         AD_Voltage_Status = AD_Conversion();
+                        AD_Voltage_Status[1]=1.5;
+                        Cavity_627D_Pressure_Status=AD_Voltage_Status[1];
 
 
                         //AD_Voltage_Status[0 1 2]   ·Ö±ð±íÊ¾1479A 627D 025d
@@ -1103,7 +1136,8 @@ void Process_Socket_Data(SOCKET s)
 
 
                         break;
-                    case 0x0B:  //1479A Gas  Flow value set
+
+                    case 0x09:  //1479A Gas  Flow value set
 
 
 
@@ -1159,14 +1193,19 @@ void Process_Socket_Data(SOCKET s)
                         testdata.byteData[2]=Rx_Buffer[4];
                         testdata.byteData[1]=Rx_Buffer[5];
                         testdata.byteData[0]=Rx_Buffer[6];
+                        Duty_P=testdata.floatData;
+                        testdata.byteData[3]=Rx_Buffer[7];
+                        testdata.byteData[2]=Rx_Buffer[8];
+                        testdata.byteData[1]=Rx_Buffer[9];
+                        testdata.byteData[0]=Rx_Buffer[10];
+                        Duty_I=testdata.floatData;
+                        testdata.byteData[3]=Rx_Buffer[1];
+                        testdata.byteData[2]=Rx_Buffer[12];
+                        testdata.byteData[1]=Rx_Buffer[13];
+                        testdata.byteData[0]=Rx_Buffer[14];
+                        Duty_D=testdata.floatData;
 
-                        printf("PID code valuevalue:%f\r\n",testdata.floatData);
-                        if (testdata.floatData==-12.5)
-                        {
-                            printf("OK,In the if");
-                            Tx_Buffer[0]=0xff;
-                            Write_SOCK_Data_Buffer(s, Tx_Buffer,1);
-                        }
+
 
 
 
@@ -1287,5 +1326,23 @@ void Cavity_Pressure_SendBack()
 
 }
 
+void Initial_DebugMode()
+{
+    ////////////////////Singal to Open Part///////////////////
+    Valve_Signal_Open=0x00;
+    Timing_Signal_Open=0x00;
+    Command_Signal_Open=0x00;
 
+
+    ////////////////////Mode Switch/////////////////// this should be able to change though the w5500
+    Normal_Debug_RunningMode=0x00;
+
+    Command_Timing_TriggerMode=0x00;
+
+    Normal_Puff_RunningMode=0x00;
+
+    PEV_1479A_ControlMode=0x00;
+
+
+}
 

@@ -25,35 +25,32 @@
 						如何对两个闭环进行区分，直接以真空度为标准 或者 以boost 的调节的电路为标准
 						
 *******************************************************************************/
-void VacuumValue_PID(float VacuumValue_Set, float VacuumValue_Status,float Kp,float Ki, float Kd)
-{	/*
+float VacuumValue_PID(float VacuumValue_Set, float VacuumValue_Status,float Kp,float Ki, float Kd)
+{	
 	float error;
 	float time_now=0;
 	float static time_last=0;
 	float time_change;
-	int D;
+	float D;
+	Kp=1;
+	Ki=0;
+	Kd=0;
 	
-	time_now=__TIME__;
-	time_change=time_now-time_last;
+	
+	VacuumValue_Set=0.3;
+	VacuumValue_Status=0.5;
+	
+	time_change=0.1;
 	error=VacuumValue_Set-VacuumValue_Status;
 	
 	
-	D = (int)Kp * error + Ki * error*time_change + Kd * error/time_change;  
+	D = Kp * error + Ki * error*time_change + Kd * error/time_change;  
 	
-	
-	
-	
-	time_last=time_now ; 
-	
-	*/
-	
-	
-	
-	
-	
+	return D;
 		
 	
 }
+
 
 
 
