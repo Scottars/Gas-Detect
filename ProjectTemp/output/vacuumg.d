@@ -1,5 +1,6 @@
 .\output\vacuumg.o: APP\VacuumGauge\VacuumG.c
 .\output\vacuumg.o: APP\VacuumGauge\VacuumG.h
+.\output\vacuumg.o: .\APP\printf\printf.h
 .\output\vacuumg.o: .\Libraries\CMSIS\CM3\DeviceSupport\ST\STM32F10x\stm32f10x.h
 .\output\vacuumg.o: .\Libraries\CMSIS\CM3\CoreSupport\core_cm3.h
 .\output\vacuumg.o: D:\Program Files\Keil5\ARM\ARMCC\Bin\..\include\stdint.h
@@ -29,6 +30,4 @@
 .\output\vacuumg.o: .\Libraries\STM32F10x_StdPeriph_Driver\inc\stm32f10x_usart.h
 .\output\vacuumg.o: .\Libraries\STM32F10x_StdPeriph_Driver\inc\stm32f10x_wwdg.h
 .\output\vacuumg.o: .\Libraries\STM32F10x_StdPeriph_Driver\inc\misc.h
-.\output\vacuumg.o: .\APP\dac\dac.h
-.\output\vacuumg.o: .\APP\printf\printf.h
 .\output\vacuumg.o: D:\Program Files\Keil5\ARM\ARMCC\Bin\..\include\stdio.h

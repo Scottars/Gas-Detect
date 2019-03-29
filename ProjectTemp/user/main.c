@@ -26,6 +26,7 @@
 #include "DataProcess.h"
 #include "w5500.h"
 #include "VacuumG.h"
+#include "1479A.h"
 #include "pwm.h"
 
 /****************************************************************************
@@ -55,10 +56,7 @@ typedef union
 
 /*
 Device_name_verbe
-
-
 */
-
 
 
 //several package value to set it in the analysis package function
@@ -97,9 +95,11 @@ u8 Normal_Puff_RunningMode=0x00;
 
 u8 PEV_1479A_ControlMode=0x00;
 
-///////////////////Value to PID ///////
+///////////////////Value to PID/////////////////
 float Cavity_627D_Pressure_Status;
 float Flow_1479A_Status;
+
+
 
 
 
@@ -288,7 +288,8 @@ int main()
                     //Default Set
                     // Set 1479A to fully open , we can use it fully open command   or use the DAC control to make it the biggest
 
-
+					
+					Flow_1479A_Adjustment(1.5);
 
 
                     printf("Call PID funtion\n\n\n");
@@ -491,6 +492,8 @@ int main()
                     printf("Target Flow Value:%f\n\n",Flow_1479A_Set);
 
                     //1479A adjustment DAC
+
+					Flow_1479A_Adjustment(1.0);
 
 
 
@@ -827,7 +830,7 @@ void Process_Socket_Data(SOCKET s)
 
 
 
-    if (Rx_Buffer[0]==0x05) //Slave address 0x05
+if (Rx_Buffer[0]==0x05) //Slave address 0x05
     {
         //  printf("\r\nSLocal Address ok!\r\n");
 
@@ -844,10 +847,10 @@ void Process_Socket_Data(SOCKET s)
                         //Ad conversion
                         AD_Voltage_Status = AD_Conversion();
                         //AD_Voltage_Status[0 1 2]   分别表示1479A 627D 025d
-                        Flow_1479A_Status=1.5;
+                       // Flow_1479A_Status=1.5;
 
                         //
-                        temp = GasFloatValue_1479ACalc(AD_Voltage_Status[0]);
+                        temp = ADVoltage_2_Flow1479A(AD_Voltage_Status[0]);
                         temp=3;
                         //Transfer the float data to hex data
                         testdata.floatData=temp;
@@ -877,11 +880,11 @@ void Process_Socket_Data(SOCKET s)
                         //Ad conversion
                         AD_Voltage_Status = AD_Conversion();
                         AD_Voltage_Status[1]=1.5;
-                        Cavity_627D_Pressure_Status=AD_Voltage_Status[1];
+                       // Cavity_627D_Pressure_Status=AD_Voltage_Status[1];
 
 
                         //AD_Voltage_Status[0 1 2]   分别表示1479A 627D 025d
-                        temp = VacuumFloatValue_627DCalc(AD_Voltage_Status[1]);
+                        temp = ADVoltage_2_Pressure627D(AD_Voltage_Status[1]);
 
 
 
@@ -917,7 +920,7 @@ void Process_Socket_Data(SOCKET s)
 
 
                         //AD_Voltage_Status[0 1 2]   分别表示1479A 627D 025d
-                        temp = VacuumFloatValue_025DCalc(AD_Voltage_Status[2]);
+                        temp = ADVoltage_2_Pressure025D(AD_Voltage_Status[2]);
 
                         temp=3;
                         //float to hex
@@ -1283,7 +1286,7 @@ void Cavity_Pressure_SendBack()
     AD_Voltage_Status=AD_Conversion();
 
     //value translation
-    temptofun=GasFloatValue_1479ACalc(AD_Voltage_Status[0]);
+    temptofun=ADVoltage_2_Flow1479A(AD_Voltage_Status[0]);
     temptofun=-12.5;
     //value to IEEE 754 standard
 
@@ -1352,8 +1355,8 @@ void Status_Register_Update()
 
 
 
-    Flow_1479A_Status=GasFloatValue_1479ACalc(AD_Voltage_Status[0]);
-    Cavity_627D_Pressure_Status=VacuumFloatValue_627DCalc(AD_Voltage_Status[1]);
+    Flow_1479A_Status=ADVoltage_2_Flow1479A(AD_Voltage_Status[0]);
+    Cavity_627D_Pressure_Status=ADVoltage_2_Pressure627D(AD_Voltage_Status[1]);
 
 
 

@@ -39,6 +39,7 @@
 ".\output\w5500.o"
 ".\output\dataprocess.o"
 ".\output\vacuumg.o"
+".\output\1479a.o"
 --library_type=microlib --strict --scatter ".\output\¹¤³ÌÄ£°å.sct"
 --summary_stderr --info summarysizes --map --xref --callgraph --symbols
 --info sizes --info totals --info unused --info veneers
