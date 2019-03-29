@@ -43,9 +43,11 @@ void Flow_1479A_Adjustment(float Flow_Value)
 
 
 
+	Flow_ADVoltage=(int)(Flow_Value*100);
 
-	printf("Set Actuall value parameter:1500");
-	Dac1_Set_Vol(1500);
+	printf("Set Actuall value parameter:%f\r\n",Flow_ADVoltage);
+	
+	Dac1_Set_Vol(Flow_ADVoltage);
 
 	
 
