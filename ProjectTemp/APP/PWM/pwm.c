@@ -15,15 +15,15 @@ void pwm_init(u16 pre, u16 psc)
 	TIM_OCInitTypeDef TIM_OCInitStructure;//根据TIM_OCInitStruct中指定的参数初始化外设TIMx
 
 	/* 开启时钟 */
-	RCC_APB2PeriphClockCmd(RCC_APB2Periph_GPIOA,ENABLE);
-	RCC_APB1PeriphClockCmd(RCC_APB2Periph_TIM1,ENABLE);
+	RCC_APB2PeriphClockCmd(RCC_APB2Periph_GPIOC,ENABLE);
+	RCC_APB1PeriphClockCmd(RCC_APB1Periph_TIM3,ENABLE);
 	RCC_APB2PeriphClockCmd(RCC_APB2Periph_AFIO,ENABLE);
 
 	/*  配置GPIO的模式和IO口 */
-	GPIO_InitStructure.GPIO_Pin=GPIO_Pin_9;    //TIM1 CH2  pa9
+	GPIO_InitStructure.GPIO_Pin=GPIO_Pin_7;    //TIM1 CH2  pa9
 	GPIO_InitStructure.GPIO_Speed=GPIO_Speed_50MHz;
 	GPIO_InitStructure.GPIO_Mode=GPIO_Mode_AF_PP;//复用推挽输出
-	GPIO_Init(GPIOA,&GPIO_InitStructure);
+	GPIO_Init(GPIOC,&GPIO_InitStructure);
 
 	//Fpwm = 72M / ((arr+1)*(psc+1))(??:Hz)
 	//duty circle = TIM3->CCR1 / arr(??:%)
@@ -33,7 +33,7 @@ void pwm_init(u16 pre, u16 psc)
 	TIM_TimeBaseInitStructure.TIM_Prescaler = psc;//设置用来作为TIMx时钟频率预分频值，100Khz计数频率
 	TIM_TimeBaseInitStructure.TIM_ClockDivision =TIM_CKD_DIV1;//设置时钟分割:TDTS = Tck_tim
 	TIM_TimeBaseInitStructure.TIM_CounterMode = TIM_CounterMode_Up;	//TIM向上计数模式
-	TIM_TimeBaseInit(TIM1, & TIM_TimeBaseInitStructure);
+	TIM_TimeBaseInit(TIM3, & TIM_TimeBaseInitStructure);
 	
 	
 	/*
@@ -46,7 +46,7 @@ void pwm_init(u16 pre, u16 psc)
 	*/
 	//注意公式： Fpwm = 72M / ((arr+1)*(psc+1))(??:Hz)
 
-//	GPIO_PinRemapConfig(GPIO_FullRemap_TIM3,ENABLE);//改变指定管脚的映射	//pC7
+	GPIO_PinRemapConfig(GPIO_FullRemap_TIM3,ENABLE);//改变指定管脚的映射	//pC7
 
 	//PWM初始化	  //根据TIM_OCInitStruct中指定的参数初始化外设TIMx
 	
@@ -54,12 +54,12 @@ void pwm_init(u16 pre, u16 psc)
 	TIM_OCInitStructure.TIM_OutputState=TIM_OutputState_Enable;//PWM输出使能
 	TIM_OCInitStructure.TIM_OCPolarity=TIM_OCPolarity_Low;     //震荡的极性是不同的
 
-	TIM_OC2Init(TIM1,&TIM_OCInitStructure);
+	TIM_OC2Init(TIM3,&TIM_OCInitStructure);
 	//注意此处初始化时TIM_OC2Init而不是TIM_OCInit，否则会出错。因为固件库的版本不一样。
 	//PS 通道1 2 3 4  就是通过这个OC2 OC1 来指定的
 
-	TIM_OC2PreloadConfig(TIM1, TIM_OCPreload_Enable);//使能或者失能TIMx在CCR2上的预装载寄存器
+	TIM_OC2PreloadConfig(TIM3, TIM_OCPreload_Enable);//使能或者失能TIMx在CCR2上的预装载寄存器
 					
 	
-	TIM_Cmd(TIM1,ENABLE);//使能或者失能TIMx外设
+	TIM_Cmd(TIM3,ENABLE);//使能或者失能TIMx外设
 }

@@ -111,22 +111,19 @@ int main()
     float temptofun;
     /**************variable define part************************/
 
-
-
-
-
     ////////////////////Value to control///////////////////
 
     float Cavity_627D_Pressure_Set;
     float Cavity_627D_Pressure_Default=0.5;
 
 
+	//////////////////use to 1479A mode or pev mode working alone///////
+	float PEV_FullyOpen_1479AMode=13.3;
+	float _1479A_FullyOpen_PEVMode=13.3;
+
+
     float Flow_1479A_Set;
     float Flow_1479A_Default=0.5;
-
-
-
-
     ////////////////////Valve IO part////////////////
     char Valve_Default_Status_Set[2]= {0x00,0x00};
     char Valve_Operation_Status_Set[2];
@@ -135,17 +132,11 @@ int main()
 
 
     ///////////////////PID Duty Adjustment part//////
-    float Duty_P=0.1,Duty_I=0.1,Duty_D=0.1;
+    float Duty_P=1,Duty_I=0,Duty_D=0; // we can set it later
 
 
     ////////////////////1479A part/////////////////////////
     /*we need to set target value*/
-
-
-
-
-
-
 
 
 
@@ -191,7 +182,7 @@ int main()
 
 
     /////////////PWM Initial//////////////////////
-    pwm_init(900,0);
+    pwm_init(3599,0);
 
 
 
@@ -287,18 +278,20 @@ int main()
 
                     //Default Set
                     // Set 1479A to fully open , we can use it fully open command   or use the DAC control to make it the biggest
-
 					
-					Flow_1479A_Adjustment(1.5);
+					
+					Flow_1479A_Adjustment(_1479A_FullyOpen_PEVMode);
+					//Directly use the value we set
 
 
                     printf("Call PID funtion\n\n\n");
 
                     //set pid parameter to the function
-                    VacuumValue_PID(Cavity_627D_Pressure_Set, Cavity_627D_Pressure_Status, Package_Duty_P,Package_Duty_I,Package_Duty_D);
-
-
-                    //execute the PID function to set the new pwm duty ratio
+                    //we have set our default value to  Package_P  I D 
+                    //we should also check the number's reasonable value
+					//execute the PID function to set the new pwm duty ratio
+					VacuumValue_PID(Cavity_627D_Pressure_Set, Cavity_627D_Pressure_Status, Package_Duty_P,Package_Duty_I,Package_Duty_D);
+					
 
 
                     if (Command_Timing_TriggerMode==0x00) //Command trigger
@@ -481,11 +474,10 @@ int main()
                     // Set the PEV open in order to using 1479A control mode
                     // we also use pev control, but only to make it open about 100v
                     //set puff - PEV's Open voltage do we need a value to set?
+                   
+					VacuumValue_PID(PEV_FullyOpen_1479AMode, Cavity_627D_Pressure_Status, Package_Duty_P,Package_Duty_I,Package_Duty_D);
 
-
-                    //PID adjustment
-
-                    //
+              
 
 
                     printf("Flow Status:%f\n\n",Flow_1479A_Status);
@@ -493,7 +485,8 @@ int main()
 
                     //1479A adjustment DAC
 
-					Flow_1479A_Adjustment(1.0);
+					Flow_1479A_Adjustment(Flow_1479A_Set);
+					//pay attention to this, if we directall 
 
 
 
