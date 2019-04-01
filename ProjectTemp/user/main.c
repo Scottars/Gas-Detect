@@ -278,15 +278,14 @@ int main()
 
                     //Default Set
                     // Set 1479A to fully open , we can use it fully open command   or use the DAC control to make it the biggest
-					
-					
-					Flow_1479A_Adjustment(_1479A_FullyOpen_PEVMode);
+							
+					Flow_1479A_Adjustment(_1479A_FullyOpen_PEVMode);//to make it fully ioen
 					//Directly use the value we set
 
 
                     printf("Call PID funtion\n\n\n");
 
-                    //set pid parameter to the function
+                    //set pid parameter to the function 
                     //we have set our default value to  Package_P  I D 
                     //we should also check the number's reasonable value
 					//execute the PID function to set the new pwm duty ratio
@@ -348,11 +347,6 @@ int main()
 
                                 //update the target presste value of PID adjustment
 
-
-
-
-
-
                             }
                             else
                             {
@@ -366,11 +360,6 @@ int main()
 
 
                             }
-
-
-
-
-
 
                         }
 
@@ -826,6 +815,7 @@ void Process_Socket_Data(SOCKET s)
 if (Rx_Buffer[0]==0x05) //Slave address 0x05
     {
         //  printf("\r\nSLocal Address ok!\r\n");
+        //after the slave address, we use the length to make sure the package is complete
 
         switch (Rx_Buffer[1])
         {
@@ -984,10 +974,10 @@ if (Rx_Buffer[0]==0x05) //Slave address 0x05
 
                     case 0x05:
 
-                        if(Rx_Buffer[3]==0xff)
+                        if(Rx_Buffer[3]==0x31)
 
                         {
-                            Normal_Debug_RunningMode=Rx_Buffer[3];
+                            Normal_Debug_RunningMode=0xff;
 
                             printf("Case 05 to open Debug Mode\n");
                         }
@@ -1003,10 +993,10 @@ if (Rx_Buffer[0]==0x05) //Slave address 0x05
                         break;
                     case 0x06: //Valve To Open
 
-                        if(Rx_Buffer[3]==0xff)
+                        if(Rx_Buffer[3]==0x31)
 
                         {
-                            Valve_Signal_Open=Rx_Buffer[3];
+                            Valve_Signal_Open=0xff;
 
                             printf("Case 06 to open valves\r\n");
                         }
@@ -1024,10 +1014,10 @@ if (Rx_Buffer[0]==0x05) //Slave address 0x05
                     case 0x07: //PEV control  mode or 1479A control mode
 
 
-                        if(Rx_Buffer[3]==0xff)
+                        if(Rx_Buffer[3]==0x31)
 
                         {
-                            PEV_1479A_ControlMode=Rx_Buffer[3];
+                            PEV_1479A_ControlMode=0xff;
 
                             printf("Case 07: to 1479A control Mode\r\n");
                         }
@@ -1045,7 +1035,7 @@ if (Rx_Buffer[0]==0x05) //Slave address 0x05
                     case 0x08:  //Command Mode or timing trigger mode
                         //use the puff mode or not
                         //we can use a new parameter in the pid function to enable puff or unpuff
-                        if(Rx_Buffer[3]==0xff) //表示关闭当前喷出模式 x
+                        if(Rx_Buffer[3]==0x31) //表示关闭当前喷出模式 x
                         {
                             Command_Timing_TriggerMode=0xff;
                             printf("Case 08 Timing Trigger Mode\r\n");
@@ -1066,7 +1056,7 @@ if (Rx_Buffer[0]==0x05) //Slave address 0x05
                     case 0x09:  //Puff on or Puff off
                         //use the puff mode or not
                         //we can use a new parameter in the pid function to enable puff or unpuff
-                        if(Rx_Buffer[3]==0xff) //表示关闭当前喷出模式 x
+                        if(Rx_Buffer[3]==0x31) //表示关闭当前喷出模式 x
                         {
                             Normal_Puff_RunningMode=0xff;
                             printf("Case 07 puff mode on\r\n");

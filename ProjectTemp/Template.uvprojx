@@ -632,6 +632,11 @@
               <FileType>1</FileType>
               <FilePath>.\APP\VacuumGauge\VacuumG.c</FilePath>
             </File>
+            <File>
+              <FileName>1479A.c</FileName>
+              <FileType>1</FileType>
+              <FilePath>.\APP\1479A\1479A.c</FilePath>
+            </File>
           </Files>
         </Group>
         <Group>
