@@ -29,6 +29,8 @@
 #include "1479A.h"
 #include "pwm.h"
 
+#include "iwdg.h"
+
 /****************************************************************************
 * Function Name  : main
 * Description    : Main program.
@@ -117,9 +119,9 @@ int main()
     float Cavity_627D_Pressure_Default=0.5;
 
 
-	//////////////////use to 1479A mode or pev mode working alone///////
-	float PEV_FullyOpen_1479AMode=13.3;
-	float _1479A_FullyOpen_PEVMode=13.3;
+    //////////////////use to 1479A mode or pev mode working alone///////
+    float PEV_FullyOpen_1479AMode=13.3;
+    float _1479A_FullyOpen_PEVMode=13.3;
 
 
     float Flow_1479A_Set;
@@ -223,14 +225,30 @@ int main()
 
 
 
+	/*****************IWDG--working begin************************/
+		
+		iwdg_init();
+
+	 printf("watch dog working ");
+	
+
+
+
+
+
 
     while(1)
     {
         //printf("while mid");
-        delay_ms(1000);
+       // delay_ms(100);
+		
 
 
 
+
+		/////////////Update the watch dog  register//////////////////////
+			IWDG_ReloadCounter();
+			printf("Watch dog in while\r\n");
 //
 
 
@@ -278,19 +296,19 @@ int main()
 
                     //Default Set
                     // Set 1479A to fully open , we can use it fully open command   or use the DAC control to make it the biggest
-							
-					Flow_1479A_Adjustment(_1479A_FullyOpen_PEVMode);//to make it fully ioen
-					//Directly use the value we set
+
+                    Flow_1479A_Adjustment(_1479A_FullyOpen_PEVMode);//to make it fully ioen
+                    //Directly use the value we set
 
 
                     printf("Call PID funtion\n\n\n");
 
-                    //set pid parameter to the function 
-                    //we have set our default value to  Package_P  I D 
+                    //set pid parameter to the function
+                    //we have set our default value to  Package_P  I D
                     //we should also check the number's reasonable value
-					//execute the PID function to set the new pwm duty ratio
-					VacuumValue_PID(Cavity_627D_Pressure_Set, Cavity_627D_Pressure_Status, Package_Duty_P,Package_Duty_I,Package_Duty_D);
-					
+                    //execute the PID function to set the new pwm duty ratio
+                    VacuumValue_PID(Cavity_627D_Pressure_Set, Cavity_627D_Pressure_Status, Package_Duty_P,Package_Duty_I,Package_Duty_D);
+
 
 
                     if (Command_Timing_TriggerMode==0x00) //Command trigger
@@ -463,10 +481,10 @@ int main()
                     // Set the PEV open in order to using 1479A control mode
                     // we also use pev control, but only to make it open about 100v
                     //set puff - PEV's Open voltage do we need a value to set?
-                   
-					VacuumValue_PID(PEV_FullyOpen_1479AMode, Cavity_627D_Pressure_Status, Package_Duty_P,Package_Duty_I,Package_Duty_D);
 
-              
+                    VacuumValue_PID(PEV_FullyOpen_1479AMode, Cavity_627D_Pressure_Status, Package_Duty_P,Package_Duty_I,Package_Duty_D);
+
+
 
 
                     printf("Flow Status:%f\n\n",Flow_1479A_Status);
@@ -474,8 +492,8 @@ int main()
 
                     //1479A adjustment DAC
 
-					Flow_1479A_Adjustment(Flow_1479A_Set);
-					//pay attention to this, if we directall 
+                    Flow_1479A_Adjustment(Flow_1479A_Set);
+                    //pay attention to this, if we directall
 
 
 
@@ -726,7 +744,7 @@ int main()
 
         //we should also set set currret status to the status register
 
-		Status_Register_Update();
+        Status_Register_Update();
 
 
     }
@@ -812,7 +830,7 @@ void Process_Socket_Data(SOCKET s)
 
 
 
-if (Rx_Buffer[0]==0x05) //Slave address 0x05
+    if (Rx_Buffer[0]==0x05) //Slave address 0x05
     {
         //  printf("\r\nSLocal Address ok!\r\n");
         //after the slave address, we use the length to make sure the package is complete
@@ -830,7 +848,7 @@ if (Rx_Buffer[0]==0x05) //Slave address 0x05
                         //Ad conversion
                         AD_Voltage_Status = AD_Conversion();
                         //AD_Voltage_Status[0 1 2]   分别表示1479A 627D 025d
-                       // Flow_1479A_Status=1.5;
+                        // Flow_1479A_Status=1.5;
 
                         //
                         temp = ADVoltage_2_Flow1479A(AD_Voltage_Status[0]);
@@ -863,7 +881,7 @@ if (Rx_Buffer[0]==0x05) //Slave address 0x05
                         //Ad conversion
                         AD_Voltage_Status = AD_Conversion();
                         AD_Voltage_Status[1]=1.5;
-                       // Cavity_627D_Pressure_Status=AD_Voltage_Status[1];
+                        // Cavity_627D_Pressure_Status=AD_Voltage_Status[1];
 
 
                         //AD_Voltage_Status[0 1 2]   分别表示1479A 627D 025d
@@ -1235,6 +1253,11 @@ if (Rx_Buffer[0]==0x05) //Slave address 0x05
 
     //
 
+
+
+
+	/////////////Update the watch dog  register//////////////////////
+	IWDG_ReloadCounter();
 
 
 

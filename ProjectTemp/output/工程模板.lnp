@@ -15,6 +15,7 @@
 ".\output\stm32f10x_dac.o"
 ".\output\stm32f10x_spi.o"
 ".\output\stm32f10x_flash.o"
+".\output\stm32f10x_iwdg.o"
 ".\output\led.o"
 ".\output\systick.o"
 ".\output\pwm.o"
@@ -40,6 +41,7 @@
 ".\output\dataprocess.o"
 ".\output\vacuumg.o"
 ".\output\1479a.o"
+".\output\iwdg.o"
 --library_type=microlib --strict --scatter ".\output\¹¤³ÌÄ£°å.sct"
 --summary_stderr --info summarysizes --map --xref --callgraph --symbols
 --info sizes --info totals --info unused --info veneers
