@@ -969,7 +969,7 @@ void Process_Socket_Data(SOCKET s)
 
                 }
 
-
+				break;
             case 0x05:    //写入寄存器的状态
                 //设定12光路、设定真空度、设定流量值
                 //设定方案：通过全局变量传送出去，还是最后直接调用相关的函数呢？
@@ -1091,10 +1091,13 @@ void Process_Socket_Data(SOCKET s)
 
                         break;
 
+					default:
+						break;
+
 
 
                 }
-
+				break;
             case 0x06:
                 switch(Rx_Buffer[2])
                 {
@@ -1119,6 +1122,7 @@ void Process_Socket_Data(SOCKET s)
                         //Vacuum Value should be changed into Voltage value accoroding 627D manully
 
                         Package_Cavity_627D_Pressure_Set=testdata.floatData;
+						printf("Case 0x0A: set 627D pressure\r\n");
 
 
 
@@ -1147,7 +1151,7 @@ void Process_Socket_Data(SOCKET s)
                         //1479A Flow Set value
 
                         Package_Flow_1479A_Set=testdata.floatData;
-                        printf("Set 1479A Flow Data ");
+                        printf("Set 1479A Flow Data\r\n");
 
 
                         break;
@@ -1173,6 +1177,7 @@ void Process_Socket_Data(SOCKET s)
 
                         Package_Cavity_627D_Puff_Set=testdata.floatData;
 
+						printf("Case 0x0c: set puff pressure set\r\n");
 
                         break;
                     case 0x0d://pid code setting
@@ -1192,7 +1197,7 @@ void Process_Socket_Data(SOCKET s)
                         testdata.byteData[1]=Rx_Buffer[13];
                         testdata.byteData[0]=Rx_Buffer[14];
                         Package_Duty_D=testdata.floatData;
-                        printf("Set PID parameter ok\n\n");
+                        printf("Case 0x0d Set PID parameter ok\r\n");
 
 
 
@@ -1208,6 +1213,7 @@ void Process_Socket_Data(SOCKET s)
                     case 0x0E: //
                         Package_Valve_Status_Set[0]=Rx_Buffer[3];
                         Package_Valve_Status_Set[1]=Rx_Buffer[4];
+					printf("Case 0x0E: set 627D pressure\r\n");
                         break;
 
                     case 0x0F: //puff mode auxiliary valve
@@ -1215,6 +1221,7 @@ void Process_Socket_Data(SOCKET s)
                         Package_Valve_Puff_Status_Set[0]=Rx_Buffer[3];
                         Package_Valve_Puff_Status_Set[1]=Rx_Buffer[4];
 
+						printf("Case 0x0f:Set Puff Mode auxiliary Valve\r\n");
 
                         break;
 
@@ -1253,11 +1260,6 @@ void Process_Socket_Data(SOCKET s)
 
     //
 
-
-
-
-	/////////////Update the watch dog  register//////////////////////
-	IWDG_ReloadCounter();
 
 
 

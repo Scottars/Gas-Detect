@@ -29,9 +29,14 @@
 *******************************************************************************/
 float VacuumValue_PID(float VacuumValue_Set, float VacuumValue_Status,float Kp,float Ki, float Kd)
 {	
-	float error;
-	float time_now=0;
-	float static time_last=0;
+	float error_P;
+	float error_I=0;
+	float error_D=0;
+	
+	float static error_last=0;
+	
+	float static Input_last=0;
+	
 	float time_change;
 	float D;
 	float Duty;
@@ -44,23 +49,32 @@ float VacuumValue_PID(float VacuumValue_Set, float VacuumValue_Status,float Kp,f
 	printf("Set Pressure value:%f\r\n",VacuumValue_Set);
 	
 	
-	
 	//VacuumValue_Set=0.3;
-	//VacuumValue_Status=0.5;
+	VacuumValue_Status=0.3;
+	
 	
 	time_change=0.1;
-	error=VacuumValue_Set-VacuumValue_Status;
+	error_P=VacuumValue_Set-VacuumValue_Status;
 	
+	error_I +=(VacuumValue_Set-VacuumValue_Status);  //error sum
+
+	error_D=VacuumValue_Status-Input_last;
+
+	Input_last = VacuumValue_Status;
+
+
+		
+	D = Kp * error_P + Ki * error_I + Kd * error_D; 
 	
-	D = Kp * error + Ki * error*time_change + Kd * error/time_change; 
 	//we think VacuumValueSet is 0.3 to 13.3  
 	// vacuumvalue_Setatus   0.3 to 13.3
 	//so error=-10 to 10
 	//we want duty in 0-3600, if it is linear, we can use the formular below
+	
 	Duty=D*180 +1800;
 
 	
-	printf("Set Duty parameter:%f\r\n",D);
+	printf("Set Duty parameter:%f\r\n",Duty);
 	//actually we need to call pwm duty change functiobn
 	//Duty's range is from 0 to 3600,So we can set our duty to 
 	

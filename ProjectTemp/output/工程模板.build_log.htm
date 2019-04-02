@@ -68,7 +68,7 @@ user\main.c(130): warning:  #177-D: variable "Valve_Default_Status_Set" was decl
       char Valve_Default_Status_Set[2]= {0x00,0x00};
 user\main.c(132): warning:  #177-D: variable "Valve_Puff_Status_Set" was declared but never referenced
       char Valve_Puff_Status_Set[2];
-user\main.c(1107): warning:  #223-D: function "memcpy" declared implicitly
+user\main.c(1110): warning:  #223-D: function "memcpy" declared implicitly
                           memcpy(Tx_Buffer, Rx_Buffer, size);
 user\main.c(770): warning:  #177-D: variable "floattest" was declared but never referenced
       char floattest[10];
@@ -90,9 +90,9 @@ user\main.c(796): warning:  #177-D: variable "temp1" was declared but never refe
       uint8_t temp1[5];
 user\main.c(797): warning:  #177-D: variable "AD_Value" was declared but never referenced
       char AD_Value[50];
-user\main.c(1355): warning:  #167-D: argument of type "char *" is incompatible with parameter of type "u8 *"
+user\main.c(1357): warning:  #167-D: argument of type "char *" is incompatible with parameter of type "u8 *"
       Gas_StateLayerUpdate(ValveValue_Status_LCD);
-user\main.c(1348): warning:  #550-D: variable "ValveValue_Status" was set but never used
+user\main.c(1350): warning:  #550-D: variable "ValveValue_Status" was set but never used
       char *ValveValue_Status;
 user\main.c: 33 warnings, 0 errors
 compiling stm32f10x_it.c...
@@ -162,15 +162,15 @@ APP\DataProcess\DataProcess.c(121): warning:  #177-D: variable "crc_return" was 
       unsigned char *crc_return;
 APP\DataProcess\DataProcess.c: 2 warnings, 0 errors
 compiling VacuumG.c...
-APP\VacuumGauge\VacuumG.c(33): warning:  #177-D: variable "time_now" was declared but never referenced
-        float time_now=0;
-APP\VacuumGauge\VacuumG.c(34): warning:  #177-D: variable "time_last" was declared but never referenced
-        float static time_last=0;
+APP\VacuumGauge\VacuumG.c(36): warning:  #177-D: variable "error_last" was declared but never referenced
+        float static error_last=0;
+APP\VacuumGauge\VacuumG.c(40): warning:  #550-D: variable "time_change" was set but never used
+        float time_change;
 APP\VacuumGauge\VacuumG.c: 2 warnings, 0 errors
 compiling 1479A.c...
 compiling iwdg.c...
 linking...
-Program Size: Code=22364 RO-data=9440 RW-data=148 ZI-data=5148  
+Program Size: Code=22576 RO-data=9440 RW-data=156 ZI-data=5148  
 FromELF: creating hex file...
 ".\output\¹¤³ÌÄ£°å.axf" - 0 Error(s), 46 Warning(s).
 
