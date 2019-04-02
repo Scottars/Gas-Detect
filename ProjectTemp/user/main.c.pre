@@ -79,7 +79,11 @@ float Package_Duty_P,Package_Duty_I,Package_Duty_D;
 
 
 
-//////////////////
+//////////////////flag for mode switch/////////////////
+
+int flag_Debug=0;
+int flag_Normal=0;
+
 
 
 ////////////////////Singal to Open Part///////////////////
@@ -119,9 +123,11 @@ int main()
     float Cavity_627D_Pressure_Default=0.5;
 
 
-	//////////////////use to 1479A mode or pev mode working alone///////
-	float PEV_FullyOpen_1479AMode=13.3;
-	float _1479A_FullyOpen_PEVMode=13.3;
+    //////////////////use to 1479A mode or pev mode working alone///////
+    float PEV_FullyOpen_1479AMode=13.3;
+    float _1479A_FullyOpen_PEVMode=13.3;
+    float PEV_FullyClose_1479AMode=13.3;
+    float _1479A_FullyClose_PEVMode=13.3;
 
 
     float Flow_1479A_Set;
@@ -225,14 +231,30 @@ int main()
 
 
 
+    /*****************IWDG--working begin************************/
+
+    iwdg_init();
+
+    printf("watch dog working ");
+
+
+
+
+
+
 
     while(1)
     {
         //printf("while mid");
-        delay_ms(1000);
+        // delay_ms(100);
 
 
 
+
+
+        /////////////Update the watch dog  register//////////////////////
+        IWDG_ReloadCounter();
+        printf("Watch dog in while\r\n");
 //
 
 
@@ -253,10 +275,47 @@ int main()
 
         if(Normal_Debug_RunningMode==0x00)
         {
+
             printf("Normal Running Mode\n");
+				if(flag_Debug==1)
+				{
+					//gonna swtich to debugrunning mode
+			
+            	printf("In normal running mode,from debug mode\r\n");
+
+                //In this situation, you need to close the valve
+                //In this state, you need to Set the closed-loop to closed
+                //In this state, you need to set the dac conversion to the minimal
+                Valve_Operation_Status_Set[0]=0x00;
+                Valve_Operation_Status_Set[1]=0x00;
+                ValveStateChange(Valve_Operation_Status_Set);
+
+                //Flow_1479A_Adjustment(_1479A_FullyOpen_PEVMode);//to make it fully open
+
+
+                //VacuumValue_PID(PEV_FullyOpen_1479AMode, Cavity_627D_Pressure_Status, Package_Duty_P,Package_Duty_I,Package_Duty_D);
+
+				flag_Debug=0;
+
+            				
+				}
+			flag_Normal=1;
             if(Valve_Signal_Open==0x00) //open valve or the system
             {
                 //Wait for opening
+                //In this state, you need to close the valve
+                //In this state, you need to Set the closed-loop to closed
+                //In this state, you need to set the dac conversion to the minimal
+                Valve_Operation_Status_Set[0]=0x00;
+                Valve_Operation_Status_Set[1]=0x00;
+                ValveStateChange(Valve_Operation_Status_Set);
+
+                //Flow_1479A_Adjustment(_1479A_FullyOpen_PEVMode);//to make it fully open
+
+
+                //VacuumValue_PID(PEV_FullyOpen_1479AMode, Cavity_627D_Pressure_Status, Package_Duty_P,Package_Duty_I,Package_Duty_D);
+
+
                 printf("Valve close\n");
             }
             else //Open command
@@ -280,19 +339,19 @@ int main()
 
                     //Default Set
                     // Set 1479A to fully open , we can use it fully open command   or use the DAC control to make it the biggest
-							
-					Flow_1479A_Adjustment(_1479A_FullyOpen_PEVMode);//to make it fully ioen
-					//Directly use the value we set
+
+                    Flow_1479A_Adjustment(_1479A_FullyOpen_PEVMode);//to make it fully ioen
+                    //Directly use the value we set
 
 
                     printf("Call PID funtion\n\n\n");
 
-                    //set pid parameter to the function 
-                    //we have set our default value to  Package_P  I D 
+                    //set pid parameter to the function
+                    //we have set our default value to  Package_P  I D
                     //we should also check the number's reasonable value
-					//execute the PID function to set the new pwm duty ratio
-					VacuumValue_PID(Cavity_627D_Pressure_Set, Cavity_627D_Pressure_Status, Package_Duty_P,Package_Duty_I,Package_Duty_D);
-					
+                    //execute the PID function to set the new pwm duty ratio
+                    VacuumValue_PID(Cavity_627D_Pressure_Set, Cavity_627D_Pressure_Status, Package_Duty_P,Package_Duty_I,Package_Duty_D);
+
 
 
                     if (Command_Timing_TriggerMode==0x00) //Command trigger
@@ -465,10 +524,10 @@ int main()
                     // Set the PEV open in order to using 1479A control mode
                     // we also use pev control, but only to make it open about 100v
                     //set puff - PEV's Open voltage do we need a value to set?
-                   
-					VacuumValue_PID(PEV_FullyOpen_1479AMode, Cavity_627D_Pressure_Status, Package_Duty_P,Package_Duty_I,Package_Duty_D);
 
-              
+                    VacuumValue_PID(PEV_FullyOpen_1479AMode, Cavity_627D_Pressure_Status, Package_Duty_P,Package_Duty_I,Package_Duty_D);
+
+
 
 
                     printf("Flow Status:%f\n\n",Flow_1479A_Status);
@@ -476,8 +535,8 @@ int main()
 
                     //1479A adjustment DAC
 
-					Flow_1479A_Adjustment(Flow_1479A_Set);
-					//pay attention to this, if we directall 
+                    Flow_1479A_Adjustment(Flow_1479A_Set);
+                    //pay attention to this, if we directall
 
 
 
@@ -677,10 +736,57 @@ int main()
 
 
             }
+
+            //gonna swtich to debugrunning mode
+            if(Normal_Debug_RunningMode==0xff)
+            {
+                printf("In normal running mode, ready to debug mode\r\n");
+
+                //In this situation, you need to close the valve
+                //In this state, you need to Set the closed-loop to closed
+                //In this state, you need to set the dac conversion to the minimal
+                Valve_Operation_Status_Set[0]=0x00;
+                Valve_Operation_Status_Set[1]=0x00;
+                ValveStateChange(Valve_Operation_Status_Set);
+
+                //Flow_1479A_Adjustment(_1479A_FullyOpen_PEVMode);//to make it fully open
+
+
+                //VacuumValue_PID(PEV_FullyOpen_1479AMode, Cavity_627D_Pressure_Status, Package_Duty_P,Package_Duty_I,Package_Duty_D);
+
+
+
+            }
         }
         else
         {
             //Initial ALl the valve or mode we are using
+            		if(flag_Normal==1)
+				{
+					//gonna swtich to debugrunning mode
+			
+            	printf("In normal running mode,from debug mode\r\n");
+
+                //In this situation, you need to close the valve
+                //In this state, you need to Set the closed-loop to closed
+                //In this state, you need to set the dac conversion to the minimal
+                Valve_Operation_Status_Set[0]=0x00;
+                Valve_Operation_Status_Set[1]=0x00;
+                ValveStateChange(Valve_Operation_Status_Set);
+
+                //Flow_1479A_Adjustment(_1479A_FullyOpen_PEVMode);//to make it fully open
+
+
+                //VacuumValue_PID(PEV_FullyOpen_1479AMode, Cavity_627D_Pressure_Status, Package_Duty_P,Package_Duty_I,Package_Duty_D);
+
+				flag_Normal=0;
+
+            				
+				}
+			flag_Debug=1;
+
+
+
 
 
 
@@ -709,6 +815,27 @@ int main()
 
             printf("we are in dubug mode");
 
+            //need to close all the testing we are on
+
+            if(Normal_Debug_RunningMode==0x00)
+            {
+                printf("In debug mode, ready to normal running mode\r\n");
+                //In this situation, you need to close the valve
+                //In this state, you need to Set the closed-loop to closed
+                //In this state, you need to set the dac conversion to the minimal
+                Valve_Operation_Status_Set[0]=0x00;
+                Valve_Operation_Status_Set[1]=0x00;
+                ValveStateChange(Valve_Operation_Status_Set);
+
+                //Flow_1479A_Adjustment(_1479A_FullyOpen_PEVMode);//to make it fully open
+
+
+                //VacuumValue_PID(PEV_FullyOpen_1479AMode, Cavity_627D_Pressure_Status, Package_Duty_P,Package_Duty_I,Package_Duty_D);
+
+
+
+            }
+
 
 
 
@@ -721,6 +848,7 @@ int main()
 
 
 
+
         }
 
 
@@ -728,7 +856,11 @@ int main()
 
         //we should also set set currret status to the status register
 
-		Status_Register_Update();
+        Status_Register_Update();
+
+
+
+
 
 
     }
@@ -814,7 +946,7 @@ void Process_Socket_Data(SOCKET s)
 
 
 
-if (Rx_Buffer[0]==0x05) //Slave address 0x05
+    if (Rx_Buffer[0]==0x05) //Slave address 0x05
     {
         //  printf("\r\nSLocal Address ok!\r\n");
         //after the slave address, we use the length to make sure the package is complete
@@ -832,7 +964,7 @@ if (Rx_Buffer[0]==0x05) //Slave address 0x05
                         //Ad conversion
                         AD_Voltage_Status = AD_Conversion();
                         //AD_Voltage_Status[0 1 2]   分别表示1479A 627D 025d
-                       // Flow_1479A_Status=1.5;
+                        // Flow_1479A_Status=1.5;
 
                         //
                         temp = ADVoltage_2_Flow1479A(AD_Voltage_Status[0]);
@@ -865,7 +997,7 @@ if (Rx_Buffer[0]==0x05) //Slave address 0x05
                         //Ad conversion
                         AD_Voltage_Status = AD_Conversion();
                         AD_Voltage_Status[1]=1.5;
-                       // Cavity_627D_Pressure_Status=AD_Voltage_Status[1];
+                        // Cavity_627D_Pressure_Status=AD_Voltage_Status[1];
 
 
                         //AD_Voltage_Status[0 1 2]   分别表示1479A 627D 025d
@@ -953,7 +1085,7 @@ if (Rx_Buffer[0]==0x05) //Slave address 0x05
 
                 }
 
-
+                break;
             case 0x05:    //写入寄存器的状态
                 //设定12光路、设定真空度、设定流量值
                 //设定方案：通过全局变量传送出去，还是最后直接调用相关的函数呢？
@@ -1075,10 +1207,13 @@ if (Rx_Buffer[0]==0x05) //Slave address 0x05
 
                         break;
 
+                    default:
+                        break;
+
 
 
                 }
-
+                break;
             case 0x06:
                 switch(Rx_Buffer[2])
                 {
@@ -1103,6 +1238,7 @@ if (Rx_Buffer[0]==0x05) //Slave address 0x05
                         //Vacuum Value should be changed into Voltage value accoroding 627D manully
 
                         Package_Cavity_627D_Pressure_Set=testdata.floatData;
+                        printf("Case 0x0A: set 627D pressure\r\n");
 
 
 
@@ -1131,7 +1267,7 @@ if (Rx_Buffer[0]==0x05) //Slave address 0x05
                         //1479A Flow Set value
 
                         Package_Flow_1479A_Set=testdata.floatData;
-                        printf("Set 1479A Flow Data ");
+                        printf("Set 1479A Flow Data\r\n");
 
 
                         break;
@@ -1157,6 +1293,7 @@ if (Rx_Buffer[0]==0x05) //Slave address 0x05
 
                         Package_Cavity_627D_Puff_Set=testdata.floatData;
 
+                        printf("Case 0x0c: set puff pressure set\r\n");
 
                         break;
                     case 0x0d://pid code setting
@@ -1176,7 +1313,7 @@ if (Rx_Buffer[0]==0x05) //Slave address 0x05
                         testdata.byteData[1]=Rx_Buffer[13];
                         testdata.byteData[0]=Rx_Buffer[14];
                         Package_Duty_D=testdata.floatData;
-                        printf("Set PID parameter ok\n\n");
+                        printf("Case 0x0d Set PID parameter ok\r\n");
 
 
 
@@ -1192,6 +1329,7 @@ if (Rx_Buffer[0]==0x05) //Slave address 0x05
                     case 0x0E: //
                         Package_Valve_Status_Set[0]=Rx_Buffer[3];
                         Package_Valve_Status_Set[1]=Rx_Buffer[4];
+                        printf("Case 0x0E: set 627D pressure\r\n");
                         break;
 
                     case 0x0F: //puff mode auxiliary valve
@@ -1199,6 +1337,7 @@ if (Rx_Buffer[0]==0x05) //Slave address 0x05
                         Package_Valve_Puff_Status_Set[0]=Rx_Buffer[3];
                         Package_Valve_Puff_Status_Set[1]=Rx_Buffer[4];
 
+                        printf("Case 0x0f:Set Puff Mode auxiliary Valve\r\n");
 
                         break;
 

@@ -3,7 +3,7 @@
 <title>Static Call Graph - [.\output\工程模板.axf]</title></head>
 <body><HR>
 <H1>Static Call Graph for image .\output\工程模板.axf</H1><HR>
-<BR><P>#&#060CALLGRAPH&#062# ARM Linker, 5050106: Last Updated: Tue Apr 02 11:06:50 2019
+<BR><P>#&#060CALLGRAPH&#062# ARM Linker, 5050106: Last Updated: Tue Apr 02 13:45:39 2019
 <BR><P>
 <H3>Maximum Stack Usage =        336 bytes + Unknown(Cycles, Untraceable Function Pointers)</H3><H3>
 Call chain for Maximum Stack Depth:</H3>
@@ -650,11 +650,11 @@ Global Symbols
 </UL>
 <P><STRONG><a name="[78]"></a>Delay</STRONG> (Thumb, 18 bytes, Stack size 0 bytes, w5500.o(i.Delay))
 <BR><BR>[Called By]<UL><LI><a href="#[e7]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;W5500_Hardware_Reset
-<LI><a href="#[e8]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;W5500_Init
 <LI><a href="#[d1]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;Socket_UDP
 <LI><a href="#[d0]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;Socket_Listen
 <LI><a href="#[ce]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;Socket_Connect
 <LI><a href="#[75]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;Detect_Gateway
+<LI><a href="#[e8]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;W5500_Init
 </UL>
 
 <P><STRONG><a name="[75]"></a>Detect_Gateway</STRONG> (Thumb, 204 bytes, Stack size 16 bytes, w5500.o(i.Detect_Gateway))
@@ -745,10 +745,10 @@ Global Symbols
 <LI><a href="#[e4]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;ValveState_Init
 <LI><a href="#[a3]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;LED_Init
 <LI><a href="#[6a]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;Dac1_Init
-<LI><a href="#[d5]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;W5500_GPIO_Configuration
 <LI><a href="#[ca]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;SPI_Configuration
 <LI><a href="#[9a]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;SPI2_Init
 <LI><a href="#[98]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;LCD_GPIOInit
+<LI><a href="#[d5]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;W5500_GPIO_Configuration
 </UL>
 
 <P><STRONG><a name="[cb]"></a>GPIO_PinRemapConfig</STRONG> (Thumb, 138 bytes, Stack size 20 bytes, stm32f10x_gpio.o(i.GPIO_PinRemapConfig))
@@ -774,7 +774,6 @@ Global Symbols
 <LI><a href="#[ad]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;Write_SOCK_Data_Buffer
 <LI><a href="#[e7]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;W5500_Hardware_Reset
 <LI><a href="#[aa]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;Read_SOCK_Data_Buffer
-<LI><a href="#[d5]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;W5500_GPIO_Configuration
 <LI><a href="#[c0]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;Read_W5500_SOCK_2Byte
 <LI><a href="#[79]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;Read_W5500_SOCK_1Byte
 <LI><a href="#[c5]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;Read_W5500_1Byte
@@ -784,6 +783,7 @@ Global Symbols
 <LI><a href="#[77]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;Write_W5500_SOCK_1Byte
 <LI><a href="#[eb]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;Write_W5500_2Byte
 <LI><a href="#[e9]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;Write_W5500_1Byte
+<LI><a href="#[d5]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;W5500_GPIO_Configuration
 </UL>
 
 <P><STRONG><a name="[6e]"></a>GPIO_SetBits</STRONG> (Thumb, 4 bytes, Stack size 0 bytes, stm32f10x_gpio.o(i.GPIO_SetBits))
@@ -1513,11 +1513,11 @@ Global Symbols
 <P><STRONG><a name="[d3]"></a>System_Initialization</STRONG> (Thumb, 24 bytes, Stack size 8 bytes, w5500.o(i.System_Initialization))
 <BR><BR>[Stack]<UL><LI>Max Depth = 64<LI>Call Chain = System_Initialization &rArr; SPI_Configuration &rArr; GPIO_Init
 </UL>
-<BR>[Calls]<UL><LI><a href="#[d5]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;W5500_GPIO_Configuration
-<LI><a href="#[d4]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;Timer2_Init_Config
+<BR>[Calls]<UL><LI><a href="#[d4]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;Timer2_Init_Config
 <LI><a href="#[ca]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;SPI_Configuration
 <LI><a href="#[b1]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;RCC_Configuration
 <LI><a href="#[a4]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;NVIC_Configuration
+<LI><a href="#[d5]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;W5500_GPIO_Configuration
 </UL>
 <BR>[Called By]<UL><LI><a href="#[46]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;main
 </UL>
@@ -1728,11 +1728,11 @@ Global Symbols
 </UL>
 
 <P><STRONG><a name="[ec]"></a>W5500_Initialization</STRONG> (Thumb, 18 bytes, Stack size 8 bytes, w5500.o(i.W5500_Initialization))
-<BR><BR>[Stack]<UL><LI>Max Depth = 64<LI>Call Chain = W5500_Initialization &rArr; W5500_Init &rArr; Write_W5500_nByte &rArr; SPI3_Send_Short &rArr; SPI3_Send_Byte
+<BR><BR>[Stack]<UL><LI>Max Depth = 64<LI>Call Chain = W5500_Initialization &rArr; Detect_Gateway &rArr; Read_W5500_SOCK_1Byte &rArr; SPI3_Send_Short &rArr; SPI3_Send_Byte
 </UL>
-<BR>[Calls]<UL><LI><a href="#[e8]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;W5500_Init
-<LI><a href="#[cf]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;Socket_Init
+<BR>[Calls]<UL><LI><a href="#[cf]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;Socket_Init
 <LI><a href="#[75]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;Detect_Gateway
+<LI><a href="#[e8]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;W5500_Init
 </UL>
 <BR>[Called By]<UL><LI><a href="#[46]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;main
 </UL>
@@ -1817,11 +1817,11 @@ Global Symbols
 <BR>[Called By]<UL><LI><a href="#[ad]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;Write_SOCK_Data_Buffer
 <LI><a href="#[ed]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;W5500_Interrupt_Process
 <LI><a href="#[aa]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;Read_SOCK_Data_Buffer
-<LI><a href="#[e8]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;W5500_Init
 <LI><a href="#[d1]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;Socket_UDP
 <LI><a href="#[d0]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;Socket_Listen
 <LI><a href="#[ce]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;Socket_Connect
 <LI><a href="#[75]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;Detect_Gateway
+<LI><a href="#[e8]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;W5500_Init
 </UL>
 
 <P><STRONG><a name="[c4]"></a>Write_W5500_SOCK_2Byte</STRONG> (Thumb, 58 bytes, Stack size 16 bytes, w5500.o(i.Write_W5500_SOCK_2Byte))
@@ -1976,7 +1976,7 @@ Global Symbols
 <BR>[Called By]<UL><LI><a href="#[46]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;main
 </UL>
 
-<P><STRONG><a name="[46]"></a>main</STRONG> (Thumb, 960 bytes, Stack size 24 bytes, main.o(i.main))
+<P><STRONG><a name="[46]"></a>main</STRONG> (Thumb, 1640 bytes, Stack size 24 bytes, main.o(i.main))
 <BR><BR>[Stack]<UL><LI>Max Depth = 336<LI>Call Chain = main &rArr; Status_Register_Update &rArr; ADC_LCD_Out &rArr; Show_Str &rArr; LCD_ShowChar &rArr; LCD_DrawPoint &rArr; LCD_SetCursor &rArr; LCD_SetWindows &rArr; LCD_WriteRAM_Prepare &rArr; LCD_WR_REG
 </UL>
 <BR>[Calls]<UL><LI><a href="#[109]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;pwm_init
