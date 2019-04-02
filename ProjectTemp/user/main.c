@@ -273,6 +273,19 @@ int main()
             if(Valve_Signal_Open==0x00) //open valve or the system
             {
                 //Wait for opening
+                //In this state, you need to close the valve
+                //In this state, you need to Set the closed-loop to closed
+                //In this state, you need to set the dac conversion to the minimal
+                Valve_Operation_Status_Set[0]=0x00;
+				Valve_Operation_Status_Set[1]=0x00;
+                ValveStateChange(Valve_Operation_Status_Set);
+
+				//Flow_1479A_Adjustment(_1479A_FullyOpen_PEVMode);//to make it fully open
+				
+				
+				//VacuumValue_PID(PEV_FullyOpen_1479AMode, Cavity_627D_Pressure_Status, Package_Duty_P,Package_Duty_I,Package_Duty_D);
+				
+                
                 printf("Valve close\n");
             }
             else //Open command
