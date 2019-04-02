@@ -61,7 +61,7 @@ user\main.c(674): warning:  #167-D: argument of type "char *" is incompatible wi
 user\main.c(758): warning:  #167-D: argument of type "char *" is incompatible with parameter of type "u8 *"
                   ValveStateChange(Valve_Operation_Status_Set);
 user\main.c(780): warning:  #167-D: argument of type "char *" is incompatible with parameter of type "u8 *"
-              ValveStateChange(Valve_Operation_Status_Set);
+                  ValveStateChange(Valve_Operation_Status_Set);
 user\main.c(116): warning:  #177-D: variable "i" was declared but never referenced
       u8 i,j,k;
 user\main.c(116): warning:  #177-D: variable "j" was declared but never referenced
@@ -70,41 +70,37 @@ user\main.c(116): warning:  #177-D: variable "k" was declared but never referenc
       u8 i,j,k;
 user\main.c(117): warning:  #177-D: variable "temptofun" was declared but never referenced
       float temptofun;
-user\main.c(129): warning:  #177-D: variable "PEV_FullyClose_1479AMode" was declared but never referenced
-      float PEV_FullyClose_1479AMode=13.3;
-user\main.c(130): warning:  #177-D: variable "_1479A_FullyClose_PEVMode" was declared but never referenced
-      float _1479A_FullyClose_PEVMode=13.3;
 user\main.c(136): warning:  #177-D: variable "Valve_Default_Status_Set" was declared but never referenced
       char Valve_Default_Status_Set[2]= {0x00,0x00};
 user\main.c(138): warning:  #177-D: variable "Valve_Puff_Status_Set" was declared but never referenced
       char Valve_Puff_Status_Set[2];
-user\main.c(1184): warning:  #223-D: function "memcpy" declared implicitly
+user\main.c(1197): warning:  #223-D: function "memcpy" declared implicitly
                           memcpy(Tx_Buffer, Rx_Buffer, size);
-user\main.c(844): warning:  #177-D: variable "floattest" was declared but never referenced
+user\main.c(857): warning:  #177-D: variable "floattest" was declared but never referenced
       char floattest[10];
-user\main.c(845): warning:  #177-D: variable "test1" was declared but never referenced
+user\main.c(858): warning:  #177-D: variable "test1" was declared but never referenced
       char test1[4];
-user\main.c(849): warning:  #177-D: variable "ValveValue_Set" was declared but never referenced
+user\main.c(862): warning:  #177-D: variable "ValveValue_Set" was declared but never referenced
       u8 ValveValue_Set[12];  //来自网络传入过来的信号
-user\main.c(851): warning:  #177-D: variable "i" was declared but never referenced
+user\main.c(864): warning:  #177-D: variable "i" was declared but never referenced
       u8 i;
-user\main.c(855): warning:  #177-D: variable "Kp" was declared but never referenced
+user\main.c(868): warning:  #177-D: variable "Kp" was declared but never referenced
       float Kp,Ki,Kd;
-user\main.c(855): warning:  #177-D: variable "Ki" was declared but never referenced
+user\main.c(868): warning:  #177-D: variable "Ki" was declared but never referenced
       float Kp,Ki,Kd;
-user\main.c(855): warning:  #177-D: variable "Kd" was declared but never referenced
+user\main.c(868): warning:  #177-D: variable "Kd" was declared but never referenced
       float Kp,Ki,Kd;
-user\main.c(859): warning:  #177-D: variable "CRC_Mid" was declared but never referenced
+user\main.c(872): warning:  #177-D: variable "CRC_Mid" was declared but never referenced
       unsigned int CRC_Mid;
-user\main.c(870): warning:  #177-D: variable "temp1" was declared but never referenced
+user\main.c(883): warning:  #177-D: variable "temp1" was declared but never referenced
       uint8_t temp1[5];
-user\main.c(871): warning:  #177-D: variable "AD_Value" was declared but never referenced
+user\main.c(884): warning:  #177-D: variable "AD_Value" was declared but never referenced
       char AD_Value[50];
-user\main.c(1431): warning:  #167-D: argument of type "char *" is incompatible with parameter of type "u8 *"
+user\main.c(1444): warning:  #167-D: argument of type "char *" is incompatible with parameter of type "u8 *"
       Gas_StateLayerUpdate(ValveValue_Status_LCD);
-user\main.c(1424): warning:  #550-D: variable "ValveValue_Status" was set but never used
+user\main.c(1437): warning:  #550-D: variable "ValveValue_Status" was set but never used
       char *ValveValue_Status;
-user\main.c: 38 warnings, 0 errors
+user\main.c: 36 warnings, 0 errors
 compiling stm32f10x_it.c...
 compiling public.c...
 compiling core_cm3.c...
@@ -180,9 +176,9 @@ APP\VacuumGauge\VacuumG.c: 2 warnings, 0 errors
 compiling 1479A.c...
 compiling iwdg.c...
 linking...
-Program Size: Code=22784 RO-data=9440 RW-data=164 ZI-data=5148  
+Program Size: Code=22916 RO-data=9440 RW-data=164 ZI-data=5148  
 FromELF: creating hex file...
-".\output\工程模板.axf" - 0 Error(s), 51 Warning(s).
+".\output\工程模板.axf" - 0 Error(s), 49 Warning(s).
 
 <h2>Collection of Component include folders:</h2>
   E:\MasterWork\Master1\pcb\keilcode\Codesum\_2DAC_ADC_printf_LCD_w5500\current-project\ProjectTemp\RTE

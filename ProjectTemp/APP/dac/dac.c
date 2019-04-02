@@ -40,8 +40,9 @@ void Dac1_Init(void)
 
 }
 
-//ÉèÖÃÍ¨µÀ1Êä³öµçÑ¹
-//vol:0~3300,´ú±í0~3.3V
+//è®¾ç½®é€šé“1è¾“å‡ºç”µå‹
+//vol:0~3300,presentï¼š0~3.3V
+//we can set a ceiling to limit the value
 void Dac1_Set_Vol(u16 vol)
 {
 	float temp=vol;

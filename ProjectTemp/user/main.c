@@ -739,7 +739,7 @@ int main()
 
 
 
-			
+
         }
         else
         {
@@ -757,10 +757,10 @@ int main()
                 Valve_Operation_Status_Set[1]=0x00;
                 ValveStateChange(Valve_Operation_Status_Set);
 
-                //Flow_1479A_Adjustment(_1479A_FullyOpen_PEVMode);//to make it fully open
+                Flow_1479A_Adjustment(_1479A_FullyClose_PEVMode);//to make it fully open
 
 
-                //VacuumValue_PID(PEV_FullyOpen_1479AMode, Cavity_627D_Pressure_Status, Package_Duty_P,Package_Duty_I,Package_Duty_D);
+                VacuumValue_PID(PEV_FullyClose_1479AMode, Cavity_627D_Pressure_Status, Package_Duty_P,Package_Duty_I,Package_Duty_D);
 
                 flag_Normal=0;
 
@@ -770,30 +770,43 @@ int main()
 
 
 
+            if(Valve_Signal_Open==0xff)
+            {
+
+                //Test whether the valves can work noramlly
+                Valve_Operation_Status_Set[0]=Package_Valve_Status_Set[0];
+                Valve_Operation_Status_Set[1]=Package_Valve_Status_Set[1];
+                //Now, we just directly open the valve
+                ValveStateChange(Valve_Operation_Status_Set);
+
+                //Test whether the 1479A Flow Meter work normally
+                Flow_1479A_Set=Package_Flow_1479A_Set;
+                //Call DAC Translation funtion
+                /*      */
+
+                Flow_1479A_Adjustment(Flow_1479A_Set);
 
 
 
-            //Test whether the valves can work noramlly
-            Valve_Operation_Status_Set[0]=Package_Valve_Status_Set[0];
-            Valve_Operation_Status_Set[1]=Package_Valve_Status_Set[1];
-            //Now, we just directly open the valve
-            ValveStateChange(Valve_Operation_Status_Set);
+                //Test whether the PEV's closed-loop control can work normally
+                Cavity_627D_Pressure_Set=Package_Cavity_627D_Pressure_Set;
 
-            //Test whether the 1479A Flow Meter work normally
-            Flow_1479A_Set=Package_Flow_1479A_Set;
-            //Call DAC Translation funtion
-            /*      */
-
-
-            //Test whether the PEV's closed-loop control can work normally
-            Cavity_627D_Pressure_Set=Package_Cavity_627D_Pressure_Set;
-
-            //call pid adjustment function
+                //call pid adjustment function
+                VacuumValue_PID(Cavity_627D_Pressure_Set, Cavity_627D_Pressure_Status, Package_Duty_P,Package_Duty_I,Package_Duty_D);
 
 
 
-            //test pid parameter's function
-            //cannot be done with my code
+
+                //test pid parameter's function
+                //cannot be done with my code
+            }
+			else
+				{
+
+				printf("debug mode, valve closed");
+				}
+
+
 
 
             printf("we are in dubug mode");

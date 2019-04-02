@@ -1583,12 +1583,12 @@ Image Symbol Table
     i.gui_circle                             0x080051a8   Section        0  gui.o(i.gui_circle)
     i.iwdg_init                              0x08005242   Section        0  iwdg.o(i.iwdg_init)
     i.main                                   0x08005264   Section        0  main.o(i.main)
-    i.printf_init                            0x080058e4   Section        0  printf.o(i.printf_init)
-    i.pwm_init                               0x08005998   Section        0  pwm.o(i.pwm_init)
-    .constdata                               0x08005a30   Section        6  adc.o(.constdata)
-    .constdata                               0x08005a36   Section     5806  gui.o(.constdata)
-    .constdata                               0x080070e4   Section     3236  test.o(.constdata)
-    .conststring                             0x08007d88   Section       55  test.o(.conststring)
+    i.printf_init                            0x08005968   Section        0  printf.o(i.printf_init)
+    i.pwm_init                               0x08005a1c   Section        0  pwm.o(i.pwm_init)
+    .constdata                               0x08005ab4   Section        6  adc.o(.constdata)
+    .constdata                               0x08005aba   Section     5806  gui.o(.constdata)
+    .constdata                               0x08007168   Section     3236  test.o(.constdata)
+    .conststring                             0x08007e0c   Section       55  test.o(.conststring)
     .data                                    0x20000000   Section       64  main.o(.data)
     .data                                    0x20000040   Section        2  stm32f10x_it.o(.data)
     k                                        0x20000040   Data           1  stm32f10x_it.o(.data)
@@ -1953,17 +1953,17 @@ Image Symbol Table
     fputc                                    0x08005185   Thumb Code    32  printf.o(i.fputc)
     gui_circle                               0x080051a9   Thumb Code   154  gui.o(i.gui_circle)
     iwdg_init                                0x08005243   Thumb Code    34  iwdg.o(i.iwdg_init)
-    main                                     0x08005265   Thumb Code  1640  main.o(i.main)
-    printf_init                              0x080058e5   Thumb Code   170  printf.o(i.printf_init)
-    pwm_init                                 0x08005999   Thumb Code   138  pwm.o(i.pwm_init)
-    asc2_1206                                0x08005a36   Data        1140  gui.o(.constdata)
-    asc2_1608                                0x08005eaa   Data        1520  gui.o(.constdata)
-    tfont16                                  0x0800649a   Data        2108  gui.o(.constdata)
-    tfont24                                  0x08006cd6   Data         518  gui.o(.constdata)
-    tfont32                                  0x08006edc   Data         520  gui.o(.constdata)
-    gImage_qq                                0x080070e4   Data        3200  test.o(.constdata)
-    Region$$Table$$Base                      0x08007dc0   Number         0  anon$$obj.o(Region$$Table)
-    Region$$Table$$Limit                     0x08007de0   Number         0  anon$$obj.o(Region$$Table)
+    main                                     0x08005265   Thumb Code  1716  main.o(i.main)
+    printf_init                              0x08005969   Thumb Code   170  printf.o(i.printf_init)
+    pwm_init                                 0x08005a1d   Thumb Code   138  pwm.o(i.pwm_init)
+    asc2_1206                                0x08005aba   Data        1140  gui.o(.constdata)
+    asc2_1608                                0x08005f2e   Data        1520  gui.o(.constdata)
+    tfont16                                  0x0800651e   Data        2108  gui.o(.constdata)
+    tfont24                                  0x08006d5a   Data         518  gui.o(.constdata)
+    tfont32                                  0x08006f60   Data         520  gui.o(.constdata)
+    gImage_qq                                0x08007168   Data        3200  test.o(.constdata)
+    Region$$Table$$Base                      0x08007e44   Number         0  anon$$obj.o(Region$$Table)
+    Region$$Table$$Limit                     0x08007e64   Number         0  anon$$obj.o(Region$$Table)
     ADdataA                                  0x20000000   Data           7  main.o(.data)
     Package_Cavity_627D_Pressure_Set         0x20000008   Data           4  main.o(.data)
     Package_Flow_1479A_Set                   0x2000000c   Data           4  main.o(.data)
@@ -2018,9 +2018,9 @@ Memory Map of the image
 
   Image Entry point : 0x08000131
 
-  Load Region LR_IROM1 (Base: 0x08000000, Size: 0x00007e84, Max: 0x00080000, ABSOLUTE)
+  Load Region LR_IROM1 (Base: 0x08000000, Size: 0x00007f08, Max: 0x00080000, ABSOLUTE)
 
-    Execution Region ER_IROM1 (Base: 0x08000000, Size: 0x00007de0, Max: 0x00080000, ABSOLUTE)
+    Execution Region ER_IROM1 (Base: 0x08000000, Size: 0x00007e64, Max: 0x00080000, ABSOLUTE)
 
     Base Addr    Size         Type   Attr      Idx    E Section Name        Object
 
@@ -2257,15 +2257,15 @@ Memory Map of the image
     0x08005184   0x00000024   Code   RO         2241    i.fputc             printf.o
     0x080051a8   0x0000009a   Code   RO         2602    i.gui_circle        gui.o
     0x08005242   0x00000022   Code   RO         3317    i.iwdg_init         iwdg.o
-    0x08005264   0x00000680   Code   RO            5    i.main              main.o
-    0x080058e4   0x000000b4   Code   RO         2242    i.printf_init       printf.o
-    0x08005998   0x00000098   Code   RO         2211    i.pwm_init          pwm.o
-    0x08005a30   0x00000006   Data   RO         2559    .constdata          adc.o
-    0x08005a36   0x000016ae   Data   RO         2604    .constdata          gui.o
-    0x080070e4   0x00000ca4   Data   RO         2839    .constdata          test.o
-    0x08007d88   0x00000037   Data   RO         2840    .conststring        test.o
-    0x08007dbf   0x00000001   PAD
-    0x08007dc0   0x00000020   Data   RO         3662    Region$$Table       anon$$obj.o
+    0x08005264   0x00000704   Code   RO            5    i.main              main.o
+    0x08005968   0x000000b4   Code   RO         2242    i.printf_init       printf.o
+    0x08005a1c   0x00000098   Code   RO         2211    i.pwm_init          pwm.o
+    0x08005ab4   0x00000006   Data   RO         2559    .constdata          adc.o
+    0x08005aba   0x000016ae   Data   RO         2604    .constdata          gui.o
+    0x08007168   0x00000ca4   Data   RO         2839    .constdata          test.o
+    0x08007e0c   0x00000037   Data   RO         2840    .conststring        test.o
+    0x08007e43   0x00000001   PAD
+    0x08007e44   0x00000020   Data   RO         3662    Region$$Table       anon$$obj.o
 
 
     Execution Region RW_IRAM1 (Base: 0x20000000, Size: 0x000014c0, Max: 0x00010000, ABSOLUTE)
@@ -2306,7 +2306,7 @@ Image component sizes
         34          0          0          0          0        476   iwdg.o
       1224         66          0          6         14       8977   lcd.o
         48          4          0          0          0        503   led.o
-      3424       1262          0         64          0     288119   main.o
+      3556       1318          0         64          0     288155   main.o
        192         30          0          0          0       2959   misc.o
        216         14          0          0          0       1250   printf.o
        152         14          0          0          0        727   pwm.o
@@ -2330,7 +2330,7 @@ Image component sizes
       3194        218          0         44       4096      25483   w5500.o
 
     ----------------------------------------------------------------------
-     18356       2586       9440        160       5148     418913   Object Totals
+     18488       2642       9440        160       5148     418949   Object Totals
          0          0         32          0          0          0   (incl. Generated)
         30          0          1          0          2          0   (incl. Padding)
 
@@ -2395,15 +2395,15 @@ Image component sizes
 
       Code (inc. data)   RO Data    RW Data    ZI Data      Debug   
 
-     22784       2698       9440        164       5148     411433   Grand Totals
-     22784       2698       9440        164       5148     411433   ELF Image Totals
-     22784       2698       9440        164          0          0   ROM Totals
+     22916       2754       9440        164       5148     411469   Grand Totals
+     22916       2754       9440        164       5148     411469   ELF Image Totals
+     22916       2754       9440        164          0          0   ROM Totals
 
 ==============================================================================
 
-    Total RO  Size (Code + RO Data)                32224 (  31.47kB)
+    Total RO  Size (Code + RO Data)                32356 (  31.60kB)
     Total RW  Size (RW Data + ZI Data)              5312 (   5.19kB)
-    Total ROM Size (Code + RO Data + RW Data)      32388 (  31.63kB)
+    Total ROM Size (Code + RO Data + RW Data)      32520 (  31.76kB)
 
 ==============================================================================
 
