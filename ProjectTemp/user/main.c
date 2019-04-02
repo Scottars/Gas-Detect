@@ -290,6 +290,11 @@ int main()
                 Valve_Operation_Status_Set[1]=0x00;
                 ValveStateChange(Valve_Operation_Status_Set);
 
+				//to make sure the value is closed after changed the mode
+				Valve_Signal_Open=0x00;
+				//this sentence is simmilar to the last one, we can abandon the last sentence
+
+
                 //Flow_1479A_Adjustment(_1479A_FullyOpen_PEVMode);//to make it fully open
 
 
@@ -488,12 +493,6 @@ int main()
 
                                 //update the target presste value of PID adjustment
 
-
-
-
-
-
-
                             }
                             else
                             {
@@ -595,11 +594,7 @@ int main()
                                 Cavity_627D_Pressure_Set=Package_Cavity_627D_Puff_Set;
 
                                 //update the target presste value of PID adjustment
-
-
-
-
-
+								//we have already do this in the adjust part                               
 
                             }
                             else
@@ -757,10 +752,12 @@ int main()
                 Valve_Operation_Status_Set[1]=0x00;
                 ValveStateChange(Valve_Operation_Status_Set);
 
-                Flow_1479A_Adjustment(_1479A_FullyClose_PEVMode);//to make it fully open
+				Valve_Signal_Open=0x00;
+
+             //   Flow_1479A_Adjustment(_1479A_FullyClose_PEVMode);//to make it fully open
 
 
-                VacuumValue_PID(PEV_FullyClose_1479AMode, Cavity_627D_Pressure_Status, Package_Duty_P,Package_Duty_I,Package_Duty_D);
+              //  VacuumValue_PID(PEV_FullyClose_1479AMode, Cavity_627D_Pressure_Status, Package_Duty_P,Package_Duty_I,Package_Duty_D);
 
                 flag_Normal=0;
 
@@ -939,7 +936,7 @@ void Process_Socket_Data(SOCKET s)
 
                         //
                         temp = ADVoltage_2_Flow1479A(AD_Voltage_Status[0]);
-                        temp=3;
+                        //temp=3;
                         //Transfer the float data to hex data
                         testdata.floatData=temp;
 
@@ -967,7 +964,7 @@ void Process_Socket_Data(SOCKET s)
                         Tx_Buffer[2]=0x02;// register address
                         //Ad conversion
                         AD_Voltage_Status = AD_Conversion();
-                        AD_Voltage_Status[1]=1.5;
+        
                         // Cavity_627D_Pressure_Status=AD_Voltage_Status[1];
 
 
@@ -1010,7 +1007,7 @@ void Process_Socket_Data(SOCKET s)
                         //AD_Voltage_Status[0 1 2]   分别表示1479A 627D 025d
                         temp = ADVoltage_2_Pressure025D(AD_Voltage_Status[2]);
 
-                        temp=3;
+                       
                         //float to hex
                         testdata.floatData=temp;
 

@@ -17,18 +17,22 @@ float ADVoltage_2_Flow1479A(float ADValue_GasFlow)
 float ADVoltage_2_Pressure627D(float ADValue_Vacuum627D)
 
 {
+	float Pressure;
+	Pressure=20*13.3*ADValue_Vacuum627D/(3.9*10);
 
 
-    return  ADValue_Vacuum627D;
+    return  Pressure;
 
 }
 
 float ADVoltage_2_Pressure025D(float ADValue_Vacuum025D)
 
 {
-
-
-    return  ADValue_Vacuum025D;
+	float Pressure;
+		Pressure=20*13.3*ADValue_Vacuum025D/(3.9*10);
+	
+	
+		return	Pressure;
 
 }
 
@@ -38,7 +42,7 @@ float ADVoltage_2_Pressure025D(float ADValue_Vacuum025D)
 
 float Flow1479A_2_ADVoltage(float Flow_Value)
 {
-
+	
     return Flow_Value;
 
 }
@@ -47,15 +51,22 @@ float Flow1479A_2_ADVoltage(float Flow_Value)
 
 float Pressure627D_2_ADVoltage(float Pressure_Value)
 {
-    return Pressure_Value;
+	float AD_Volatge;
+	
+		AD_Volatge=Pressure_Value*10*3.9/(13.3*20);
+
+    return AD_Volatge;
 
 }
 
 
 float Pressure025D_2_ADVoltage(float Pressure_Value)
 {
+	float AD_Volatge;
+		
+			AD_Volatge=Pressure_Value*10*3.9/(13.3*20);
 
-    return Pressure_Value;
+    return AD_Volatge;
 
 
 }
