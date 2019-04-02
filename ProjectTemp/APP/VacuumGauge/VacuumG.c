@@ -70,6 +70,8 @@ float VacuumValue_PID(float VacuumValue_Set, float VacuumValue_Status,float Kp,f
 	// vacuumvalue_Setatus   0.3 to 13.3
 	//so error=-10 to 10
 	//we want duty in 0-3600, if it is linear, we can use the formular below
+
+	//
 	
 	Duty=D*180 +1800;
 

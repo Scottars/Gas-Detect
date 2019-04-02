@@ -106,6 +106,23 @@ float Cavity_627D_Pressure_Status;
 float Flow_1479A_Status;
 
 
+//////////////////The limit value set///////////
+/*
+*we need to use this parameters to check the number which get from the pc
+*
+*
+*/
+float Cavity_627D_Pressure_SetMax;
+float Cavity_627D_Pressure_SetMin;
+float Flow_1479A_SetMax;
+float Flow_1479A_SetMin;
+
+float PID_PMax;
+float PID_IMax;
+float PID_DMax;
+
+
+
 
 
 
@@ -114,6 +131,7 @@ float Flow_1479A_Status;
 int main()
 {
     u8 i,j,k;
+	u16 LCD_Display_Flag=1000;
     float temptofun;
     /**************variable define part************************/
 
@@ -126,6 +144,7 @@ int main()
     //////////////////use to 1479A mode or pev mode working alone///////
     float PEV_FullyOpen_1479AMode=13.3;
     float _1479A_FullyOpen_PEVMode=13.3;
+	//for debug mode
     float PEV_FullyClose_1479AMode=13.3;
     float _1479A_FullyClose_PEVMode=13.3;
 
@@ -207,7 +226,6 @@ int main()
     //////////////////ÍøÂç³õÊ¼»¯//////////////////////
 
 
-
     /*********************************************
     ËµÃ÷£º  PC
                             IP£º192.168.1.199
@@ -236,11 +254,6 @@ int main()
     iwdg_init();
 
     printf("watch dog working ");
-
-
-
-
-
 
 
     while(1)
@@ -290,9 +303,9 @@ int main()
                 Valve_Operation_Status_Set[1]=0x00;
                 ValveStateChange(Valve_Operation_Status_Set);
 
-				//to make sure the value is closed after changed the mode
-				Valve_Signal_Open=0x00;
-				//this sentence is simmilar to the last one, we can abandon the last sentence
+                //to make sure the value is closed after changed the mode
+                Valve_Signal_Open=0x00;
+                //this sentence is simmilar to the last one, we can abandon the last sentence
 
 
                 //Flow_1479A_Adjustment(_1479A_FullyOpen_PEVMode);//to make it fully open
@@ -502,17 +515,9 @@ int main()
 
                                 Flow_1479A_Set=Package_Flow_1479A_Puff_Set;   // we can get it from the package we receive
 
+                           }
 
-
-
-
-                            }
-
-
-
-
-
-                        }
+                       }
 
                     }
                 }
@@ -594,7 +599,7 @@ int main()
                                 Cavity_627D_Pressure_Set=Package_Cavity_627D_Puff_Set;
 
                                 //update the target presste value of PID adjustment
-								//we have already do this in the adjust part                               
+                                //we have already do this in the adjust part
 
                             }
                             else
@@ -606,13 +611,7 @@ int main()
                                 Flow_1479A_Set=Package_Flow_1479A_Puff_Set;   // we can get it from the package we receive
 
 
-
-
                             }
-
-
-
-
 
 
                         }
@@ -697,43 +696,15 @@ int main()
 
                                 Flow_1479A_Set=Package_Flow_1479A_Puff_Set;   // we can get it from the package we receive
 
-
-
-
-
                             }
-
-
-
-
 
                         }
 
-
-
-
-
                     }
-
-
-                    //send back the Pressure value
-                    //PEV control mode or 1479A control mode both ok
-                    //Cavity_Pressure_SendBack();
-
-
 
                 }
 
-
-
-
-
-
-
             }
-
-
-
 
         }
         else
@@ -752,24 +723,19 @@ int main()
                 Valve_Operation_Status_Set[1]=0x00;
                 ValveStateChange(Valve_Operation_Status_Set);
 
-				Valve_Signal_Open=0x00;
+                Valve_Signal_Open=0x00;
 
-             //   Flow_1479A_Adjustment(_1479A_FullyClose_PEVMode);//to make it fully open
+                //   Flow_1479A_Adjustment(_1479A_FullyClose_PEVMode);//to make it fully open
 
 
-              //  VacuumValue_PID(PEV_FullyClose_1479AMode, Cavity_627D_Pressure_Status, Package_Duty_P,Package_Duty_I,Package_Duty_D);
+                //  VacuumValue_PID(PEV_FullyClose_1479AMode, Cavity_627D_Pressure_Status, Package_Duty_P,Package_Duty_I,Package_Duty_D);
 
                 flag_Normal=0;
-
-
             }
             flag_Debug=1;
 
-
-
             if(Valve_Signal_Open==0xff)
             {
-
                 //Test whether the valves can work noramlly
                 Valve_Operation_Status_Set[0]=Package_Valve_Status_Set[0];
                 Valve_Operation_Status_Set[1]=Package_Valve_Status_Set[1];
@@ -783,53 +749,36 @@ int main()
 
                 Flow_1479A_Adjustment(Flow_1479A_Set);
 
-
-
-                //Test whether the PEV's closed-loop control can work normally
+               //Test whether the PEV's closed-loop control can work normally
                 Cavity_627D_Pressure_Set=Package_Cavity_627D_Pressure_Set;
 
                 //call pid adjustment function
                 VacuumValue_PID(Cavity_627D_Pressure_Set, Cavity_627D_Pressure_Status, Package_Duty_P,Package_Duty_I,Package_Duty_D);
-
-
-
-
                 //test pid parameter's function
                 //cannot be done with my code
             }
-			else
-				{
+            else
+            {
 
-				printf("debug mode, valve closed");
-				}
-
-
+                printf("debug mode, valve closed");
+            }
 
 
             printf("we are in dubug mode");
 
-
-
-
-
             //this mode is dubug running
-
-
-
 
         }
 
-
-
-
         //we should also set set currret status to the status register
-
-        Status_Register_Update();
-
-
-
-
-
+        //we can use flag to get if we need to update the lcd
+        if(LCD_Display_Flag==0)
+        	{
+        	printf("after 1000 times");
+        	LCD_Display_Flag=1000;
+        	  Status_Register_Update();
+        	}
+		LCD_Display_Flag--;
 
     }
 }
@@ -860,7 +809,6 @@ void Process_Socket_Data(SOCKET s)
     char *ValveValue_Status;
     u8 i;
 
-
     ////////////////PID²ÎÊýÉè¶¨/////////////////////////
     float Kp,Ki,Kd;
 
@@ -868,22 +816,11 @@ void Process_Socket_Data(SOCKET s)
     ////////////////CRC_Mid/////////////////////////
     unsigned int CRC_Mid;
 
-
-
-
-
-
-
     ///////////////////AD×ª»»²¿·Ö////////////////
     float *AD_Voltage_Status;
     float temp=0; // ÓÃÀ´½øÐÐAD×ª»»Ê¹ÓÃµÄ±äÁ¿
     uint8_t temp1[5];
     char AD_Value[50];
-
-
-
-
-
 
     size=Read_SOCK_Data_Buffer(s, Rx_Buffer);
 
@@ -909,9 +846,6 @@ void Process_Socket_Data(SOCKET s)
     */
 
     //run crc check
-
-
-
 
 
     if (Rx_Buffer[0]==0x05) //Slave address 0x05
@@ -964,14 +898,11 @@ void Process_Socket_Data(SOCKET s)
                         Tx_Buffer[2]=0x02;// register address
                         //Ad conversion
                         AD_Voltage_Status = AD_Conversion();
-        
-                        // Cavity_627D_Pressure_Status=AD_Voltage_Status[1];
 
+                        // Cavity_627D_Pressure_Status=AD_Voltage_Status[1];
 
                         //AD_Voltage_Status[0 1 2]   ·Ö±ð±íÊ¾1479A 627D 025d
                         temp = ADVoltage_2_Pressure627D(AD_Voltage_Status[1]);
-
-
 
                         //float value to hex
                         testdata.floatData=temp;
@@ -981,18 +912,13 @@ void Process_Socket_Data(SOCKET s)
                         Tx_Buffer[5]=testdata.byteData[1];
                         Tx_Buffer[6]=testdata.byteData[0];
 
-
-
                         //GetCRC16
                         crctestdata.CrcData=GetCRC16(Tx_Buffer,7);
-
 
                         Tx_Buffer[7]=crctestdata.byteData[1];
                         Tx_Buffer[8]=crctestdata.byteData[0];
 
-
                         Write_SOCK_Data_Buffer(s, Tx_Buffer, 9);
-
 
                         break;
 
@@ -1007,7 +933,7 @@ void Process_Socket_Data(SOCKET s)
                         //AD_Voltage_Status[0 1 2]   ·Ö±ð±íÊ¾1479A 627D 025d
                         temp = ADVoltage_2_Pressure025D(AD_Voltage_Status[2]);
 
-                       
+
                         //float to hex
                         testdata.floatData=temp;
 
@@ -1041,15 +967,11 @@ void Process_Socket_Data(SOCKET s)
                         //GetCRC16
                         crctestdata.CrcData=GetCRC16(Tx_Buffer,5);
 
-
                         Tx_Buffer[5]=crctestdata.byteData[1];
                         Tx_Buffer[6]=crctestdata.byteData[0];
 
-
                         Write_SOCK_Data_Buffer(s, Tx_Buffer, 7);
                         break;
-
-
 
                 }
 
@@ -1171,14 +1093,10 @@ void Process_Socket_Data(SOCKET s)
 
                         }
 
-
-
                         break;
 
                     default:
                         break;
-
-
 
                 }
                 break;
@@ -1191,12 +1109,6 @@ void Process_Socket_Data(SOCKET s)
 
                         size=Read_SOCK_Data_Buffer(s, Rx_Buffer);
 
-                        memcpy(Tx_Buffer, Rx_Buffer, size);
-                        Write_SOCK_Data_Buffer(s, Tx_Buffer,size);
-
-
-
-
                         //convert to float type
                         testdata.byteData[3]=Rx_Buffer[3];
                         testdata.byteData[2]=Rx_Buffer[4];
@@ -1205,9 +1117,20 @@ void Process_Socket_Data(SOCKET s)
 
                         //Vacuum Value should be changed into Voltage value accoroding 627D manully
 
+                        //we should set a critical value to limit the data
+                        //if it doesn't meet our requirements,we need to send the data error to the pc
+						
+                        
+                        /*
+                        	if(testdata.floatData<)
+                            {
+                            }
+                        */
                         Package_Cavity_627D_Pressure_Set=testdata.floatData;
                         printf("Case 0x0A: set 627D pressure\r\n");
 
+                        memcpy(Tx_Buffer, Rx_Buffer, size);
+                        Write_SOCK_Data_Buffer(s, Tx_Buffer,size);
 
 
                         break;
@@ -1220,9 +1143,14 @@ void Process_Socket_Data(SOCKET s)
 
                         size=Read_SOCK_Data_Buffer(s, Rx_Buffer);
 
-                        memcpy(Tx_Buffer, Rx_Buffer, size);
-                        Write_SOCK_Data_Buffer(s, Tx_Buffer,size);
-
+                      
+						//we should set a critical value to limit the dataï¼Œ
+						//if it doesn't meet our requirements,we need to send the data error to the pc
+										   /*
+											   if(testdata.floatData<)
+											   {
+											   }
+										   */
 
 
 
@@ -1236,6 +1164,8 @@ void Process_Socket_Data(SOCKET s)
 
                         Package_Flow_1479A_Set=testdata.floatData;
                         printf("Set 1479A Flow Data\r\n");
+						memcpy(Tx_Buffer, Rx_Buffer, size);
+											  Write_SOCK_Data_Buffer(s, Tx_Buffer,size);
 
 
                         break;
@@ -1245,10 +1175,14 @@ void Process_Socket_Data(SOCKET s)
 
                         size=Read_SOCK_Data_Buffer(s, Rx_Buffer);
 
-                        memcpy(Tx_Buffer, Rx_Buffer, size);
-                        Write_SOCK_Data_Buffer(s, Tx_Buffer,size);
-
-
+               		//we should set a critical value to limit the data
+               		//if it doesn't meet our requirements,we need to send the data error to the pc
+						
+										   /*
+											   if(testdata.floatData<)
+											   {
+											   }
+										   */
 
 
                         //convert to float type
@@ -1262,6 +1196,9 @@ void Process_Socket_Data(SOCKET s)
                         Package_Cavity_627D_Puff_Set=testdata.floatData;
 
                         printf("Case 0x0c: set puff pressure set\r\n");
+						memcpy(Tx_Buffer, Rx_Buffer, size);
+									   Write_SOCK_Data_Buffer(s, Tx_Buffer,size);
+						
 
                         break;
                     case 0x0d://pid code setting
@@ -1270,16 +1207,36 @@ void Process_Socket_Data(SOCKET s)
                         testdata.byteData[2]=Rx_Buffer[4];
                         testdata.byteData[1]=Rx_Buffer[5];
                         testdata.byteData[0]=Rx_Buffer[6];
+								//we should set a critical value to limit the data
+								//if it doesn't meet our requirements,we need to send the data error to the pc
+						
+										   /*
+											   if(testdata.floatData<)
+											   {
+											   }
+										   */
                         Package_Duty_P=testdata.floatData;
                         testdata.byteData[3]=Rx_Buffer[7];
                         testdata.byteData[2]=Rx_Buffer[8];
                         testdata.byteData[1]=Rx_Buffer[9];
                         testdata.byteData[0]=Rx_Buffer[10];
+								//we should set a critical value to limit the data
+										   /*
+											   if(testdata.floatData<)
+											   {
+											   }
+										   */
                         Package_Duty_I=testdata.floatData;
                         testdata.byteData[3]=Rx_Buffer[11];
                         testdata.byteData[2]=Rx_Buffer[12];
                         testdata.byteData[1]=Rx_Buffer[13];
                         testdata.byteData[0]=Rx_Buffer[14];
+								//we should set a critical value to limit the data
+										   /*
+											   if(testdata.floatData<)
+											   {
+											   }
+										   */
                         Package_Duty_D=testdata.floatData;
                         printf("Case 0x0d Set PID parameter ok\r\n");
 
@@ -1348,13 +1305,6 @@ void Process_Socket_Data(SOCKET s)
 
 
 }
-
-
-
-
-
-
-
 
 
 void Cavity_Pressure_SendBack()

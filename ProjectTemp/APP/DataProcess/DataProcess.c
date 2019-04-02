@@ -64,7 +64,7 @@ float Pressure025D_2_ADVoltage(float Pressure_Value)
 {
 	float AD_Volatge;
 		
-			AD_Volatge=Pressure_Value*10*3.9/(13.3*20);
+		AD_Volatge=Pressure_Value*10*3.9/(13.3*20);
 
     return AD_Volatge;
 
