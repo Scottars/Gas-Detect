@@ -30,6 +30,7 @@
 #include "pwm.h"
 
 #include "iwdg.h"
+#include "exti.h"
 
 /****************************************************************************
 * Function Name  : main
@@ -204,6 +205,7 @@ int main()
     LCD_Init();    //“∫æß∆¡≥ı ºªØ
 
 
+
     /////////////////////LED light initial////////////////////////////
 
     LED_Init(); //Initial
@@ -265,7 +267,9 @@ int main()
     iwdg_init();
 
     printf("watch dog working ");
-
+    ////////////////////////Exti interrupt /////////////////////////////
+    exti_init();
+		
 
     while(1)
     {

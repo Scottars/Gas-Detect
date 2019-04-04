@@ -30,4 +30,6 @@
 .\output\stm32f10x_it.o: .\Libraries\STM32F10x_StdPeriph_Driver\inc\stm32f10x_wwdg.h
 .\output\stm32f10x_it.o: .\Libraries\STM32F10x_StdPeriph_Driver\inc\misc.h
 .\output\stm32f10x_it.o: .\APP\SysTick\systick.h
+.\output\stm32f10x_it.o: .\APP\printf\printf.h
+.\output\stm32f10x_it.o: D:\Program Files\Keil5\ARM\ARMCC\Bin\..\include\stdio.h
 .\output\stm32f10x_it.o: .\APP\smg\smg.h

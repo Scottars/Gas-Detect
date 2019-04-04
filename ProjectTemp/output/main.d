@@ -47,3 +47,4 @@
 .\output\main.o: .\APP\1479A\1479A.h
 .\output\main.o: .\APP\PWM\pwm.h
 .\output\main.o: .\APP\IWDG\iwdg.h
+.\output\main.o: .\APP\exit\exti.h

@@ -24,6 +24,7 @@
 /* Includes ------------------------------------------------------------------*/
 #include "stm32f10x_it.h"
 #include "systick.h"
+#include "printf.h"
 #include "smg.h"
 /** @addtogroup STM32F10x_StdPeriph_Template
   * @{
@@ -86,6 +87,27 @@ void EXTI2_IRQHandler()	   //外部中断2中断函数
 }
 
 
+void EXTI1_IRQHandler()   //澶栭儴涓柇2涓柇鍑芥暟
+	
+{
+	printf("in the mid exti1");
+		
+			if(EXTI_GetITStatus(EXTI_Line1)==SET)
+			{
+				EXTI_ClearITPendingBit(EXTI_Line1);//娓呴櫎EXTI绾胯矾鎸傝捣浣?
+				delay_ms(10);//娑堟姈澶勭悊
+				if(GPIO_ReadInputDataBit(GPIOB,GPIO_Pin_1)==Bit_RESET)	   //k_left鎸夐敭鎸変笅 Low voltage
+				{
+					delay_ms(10);//娑堟姈澶勭悊
+					printf("we are in the middle of exti interrupt\r\n");
+					
+				} 
+				//while(GPIO_ReadInputDataBit(GPIOE,GPIO_Pin_2)==0);
+			}		
+		
+
+	}
+
 void USART1_IRQHandler(void)	//串口1中断函数
 {
 	static u8 k;
@@ -113,6 +135,8 @@ void USART2_IRQHandler(void)	//485通信中断函数
 		GPIO_ResetBits(GPIOG,GPIO_Pin_3);
 	}
 }
+
+
 void TIM3_IRQHandler()	  //定时器3中断函数
 {
 	TIM_ClearITPendingBit(TIM3,TIM_IT_Update);
