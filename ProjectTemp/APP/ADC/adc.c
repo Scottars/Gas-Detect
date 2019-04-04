@@ -131,7 +131,7 @@ u16 Get_ADC_Value(u8 channel,u8 times)
 
 		}
 		
-		return temp/(t+1);
+		return temp/(t);
 	
 	
 	
@@ -146,7 +146,7 @@ float *AD_Conversion()
 	u32 AD_Channel_10_Value,AD_Channel_11_Value,AD_Channel_12_Value;
 
 		//for (i=0;i<10;i=i+1)
-	//	{
+		//{
 			
 	
 		
@@ -161,9 +161,9 @@ float *AD_Conversion()
 			voltage[0] = (float)AD_Channel_10_Value*(3.3/4096);
 			voltage[1] = (float)AD_Channel_11_Value*(3.3/4096);
 			voltage[2] = (float)AD_Channel_12_Value*(3.3/4096);
-		//	printf("Voltage0 is %f\n",voltage[0]);
-		//	printf("Voltage1 is %f\n",voltage[1]);
-	//		printf("Voltage2 is %f\n",voltage[2]);
+			printf("Voltage0 is %f\r\n",voltage[0]);
+			printf("Voltage1 is %f\r\n",voltage[1]);
+			printf("Voltage2 is %f\r\n",voltage[2]);
 			//·µ»Øvoltage Êý×é
 		
 	//	}

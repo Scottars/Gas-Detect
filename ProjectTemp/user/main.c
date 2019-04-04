@@ -112,16 +112,27 @@ float Flow_1479A_Status;
 *
 *
 */
-float Cavity_627D_Pressure_SetMax;
-float Cavity_627D_Pressure_SetMin;
-float Flow_1479A_SetMax;
-float Flow_1479A_SetMin;
-
-float PID_PMax;
-float PID_IMax;
-float PID_DMax;
+float Cavity_627D_Pressure_SetMax=20;
+float Cavity_627D_Pressure_SetMin=0;
+float Flow_1479A_SetMax=20;
+float Flow_1479A_SetMin=0;
 
 
+float Cavity_627D_Puff_Pressure_SetMax=20;
+float Cavity_627D_Puff_Pressure_SetMin=0;
+float Flow_1479A_Puff_SetMax=20;
+float Flow_1479A_Puff_SetMin=0;
+
+
+
+float PID_P_SetMax=10;
+float PID_I_SetMax=10;
+float PID_D_SetMax=10;
+
+
+float PID_P_SetMin=0;
+float PID_I_SetMin=0;
+float PID_D_SetMin=0;
 
 
 
@@ -131,7 +142,7 @@ float PID_DMax;
 int main()
 {
     u8 i,j,k;
-	u16 LCD_Display_Flag=1000;
+    u16 LCD_Display_Flag=1000;
     float temptofun;
     /**************variable define part************************/
 
@@ -144,7 +155,7 @@ int main()
     //////////////////use to 1479A mode or pev mode working alone///////
     float PEV_FullyOpen_1479AMode=13.3;
     float _1479A_FullyOpen_PEVMode=13.3;
-	//for debug mode
+    //for debug mode
     float PEV_FullyClose_1479AMode=13.3;
     float _1479A_FullyClose_PEVMode=13.3;
 
@@ -515,9 +526,9 @@ int main()
 
                                 Flow_1479A_Set=Package_Flow_1479A_Puff_Set;   // we can get it from the package we receive
 
-                           }
+                            }
 
-                       }
+                        }
 
                     }
                 }
@@ -749,7 +760,7 @@ int main()
 
                 Flow_1479A_Adjustment(Flow_1479A_Set);
 
-               //Test whether the PEV's closed-loop control can work normally
+                //Test whether the PEV's closed-loop control can work normally
                 Cavity_627D_Pressure_Set=Package_Cavity_627D_Pressure_Set;
 
                 //call pid adjustment function
@@ -773,12 +784,13 @@ int main()
         //we should also set set currret status to the status register
         //we can use flag to get if we need to update the lcd
         if(LCD_Display_Flag==0)
-        	{
-        	printf("after 1000 times");
-        	LCD_Display_Flag=1000;
-        	  Status_Register_Update();
-        	}
-		LCD_Display_Flag--;
+        {
+            printf("after 1000 times");
+            LCD_Display_Flag=1000;
+            Status_Register_Update();
+        }
+        LCD_Display_Flag--;
+		 Status_Register_Update();
 
     }
 }
@@ -1119,18 +1131,25 @@ void Process_Socket_Data(SOCKET s)
 
                         //we should set a critical value to limit the data
                         //if it doesn't meet our requirements,we need to send the data error to the pc
-						
-                        
-                        /*
-                        	if(testdata.floatData<)
-                            {
-                            }
-                        */
-                        Package_Cavity_627D_Pressure_Set=testdata.floatData;
-                        printf("Case 0x0A: set 627D pressure\r\n");
 
-                        memcpy(Tx_Buffer, Rx_Buffer, size);
-                        Write_SOCK_Data_Buffer(s, Tx_Buffer,size);
+
+
+                        if((testdata.floatData>Flow_1479A_SetMax)|(testdata.floatData<Flow_1479A_SetMin))
+                        {
+                            //return the data over information
+
+
+                        }
+                        else //the set is okay
+                        {
+
+                            Package_Cavity_627D_Pressure_Set=testdata.floatData;
+                            printf("Case 0x0A: set 627D pressure\r\n");
+
+                            memcpy(Tx_Buffer, Rx_Buffer, size);
+                            Write_SOCK_Data_Buffer(s, Tx_Buffer,size);
+                        }
+
 
 
                         break;
@@ -1143,29 +1162,32 @@ void Process_Socket_Data(SOCKET s)
 
                         size=Read_SOCK_Data_Buffer(s, Rx_Buffer);
 
-                      
-						//we should set a critical value to limit the data，
-						//if it doesn't meet our requirements,we need to send the data error to the pc
-										   /*
-											   if(testdata.floatData<)
-											   {
-											   }
-										   */
+
+                        //we should set a critical value to limit the data，
+                        //if it doesn't meet our requirements,we need to send the data error to the pc
+                        if((testdata.floatData>Cavity_627D_Pressure_SetMax)|(testdata.floatData<Cavity_627D_Pressure_SetMin))
+                        {
+                            //return the data over information
 
 
+                        }
+                        else //the set is okay
+                        {
 
-                        //convert to float type
-                        testdata.byteData[3]=Rx_Buffer[3];
-                        testdata.byteData[2]=Rx_Buffer[4];
-                        testdata.byteData[1]=Rx_Buffer[5];
-                        testdata.byteData[0]=Rx_Buffer[6];
 
-                        //1479A Flow Set value
+                            //convert to float type
+                            testdata.byteData[3]=Rx_Buffer[3];
+                            testdata.byteData[2]=Rx_Buffer[4];
+                            testdata.byteData[1]=Rx_Buffer[5];
+                            testdata.byteData[0]=Rx_Buffer[6];
 
-                        Package_Flow_1479A_Set=testdata.floatData;
-                        printf("Set 1479A Flow Data\r\n");
-						memcpy(Tx_Buffer, Rx_Buffer, size);
-											  Write_SOCK_Data_Buffer(s, Tx_Buffer,size);
+                            //1479A Flow Set value
+
+                            Package_Flow_1479A_Set=testdata.floatData;
+                            printf("Set 1479A Flow Data\r\n");
+                            memcpy(Tx_Buffer, Rx_Buffer, size);
+                            Write_SOCK_Data_Buffer(s, Tx_Buffer,size);
+                        }
 
 
                         break;
@@ -1175,14 +1197,16 @@ void Process_Socket_Data(SOCKET s)
 
                         size=Read_SOCK_Data_Buffer(s, Rx_Buffer);
 
-               		//we should set a critical value to limit the data
-               		//if it doesn't meet our requirements,we need to send the data error to the pc
-						
-										   /*
-											   if(testdata.floatData<)
-											   {
-											   }
-										   */
+                        //we should set a critical value to limit the data
+                        //if it doesn't meet our requirements,we need to send the data error to the pc
+
+                        
+/*                           if(testdata.floatData<)
+                           {
+
+						   
+                           }*/
+                        
 
 
                         //convert to float type
@@ -1196,58 +1220,75 @@ void Process_Socket_Data(SOCKET s)
                         Package_Cavity_627D_Puff_Set=testdata.floatData;
 
                         printf("Case 0x0c: set puff pressure set\r\n");
-						memcpy(Tx_Buffer, Rx_Buffer, size);
-									   Write_SOCK_Data_Buffer(s, Tx_Buffer,size);
-						
+                        memcpy(Tx_Buffer, Rx_Buffer, size);
+                        Write_SOCK_Data_Buffer(s, Tx_Buffer,size);
+
 
                         break;
-                    case 0x0d://pid code setting
+                    case 0x0d://pid code setting , set pid together, you cannot set it alone
 
                         testdata.byteData[3]=Rx_Buffer[3];
                         testdata.byteData[2]=Rx_Buffer[4];
                         testdata.byteData[1]=Rx_Buffer[5];
                         testdata.byteData[0]=Rx_Buffer[6];
-								//we should set a critical value to limit the data
-								//if it doesn't meet our requirements,we need to send the data error to the pc
-						
-										   /*
-											   if(testdata.floatData<)
-											   {
-											   }
-										   */
-                        Package_Duty_P=testdata.floatData;
-                        testdata.byteData[3]=Rx_Buffer[7];
-                        testdata.byteData[2]=Rx_Buffer[8];
-                        testdata.byteData[1]=Rx_Buffer[9];
-                        testdata.byteData[0]=Rx_Buffer[10];
-								//we should set a critical value to limit the data
-										   /*
-											   if(testdata.floatData<)
-											   {
-											   }
-										   */
-                        Package_Duty_I=testdata.floatData;
-                        testdata.byteData[3]=Rx_Buffer[11];
-                        testdata.byteData[2]=Rx_Buffer[12];
-                        testdata.byteData[1]=Rx_Buffer[13];
-                        testdata.byteData[0]=Rx_Buffer[14];
-								//we should set a critical value to limit the data
-										   /*
-											   if(testdata.floatData<)
-											   {
-											   }
-										   */
-                        Package_Duty_D=testdata.floatData;
-                        printf("Case 0x0d Set PID parameter ok\r\n");
+                        //we should set a critical value to limit the data
+                        //if it doesn't meet our requirements,we need to send the data error to the pc
+
+                        if((testdata.floatData>PID_P_SetMax)|(testdata.floatData<PID_P_SetMin))
+                        {
+                            //return the data over information
+
+
+                        }
+                        else //the set is okay
+                        {
+
+                            Package_Duty_P=testdata.floatData;
+
+
+                            testdata.byteData[3]=Rx_Buffer[7];
+                            testdata.byteData[2]=Rx_Buffer[8];
+                            testdata.byteData[1]=Rx_Buffer[9];
+                            testdata.byteData[0]=Rx_Buffer[10];
+                            //we should set a critical value to limit the data
+                            if((testdata.floatData>PID_I_SetMax)|(testdata.floatData<PID_I_SetMin))
+                            {
+                                //return the data over information
+
+
+                            }
+                            else //the set is okay
+                            {
+                                Package_Duty_I=testdata.floatData;
+
+                                testdata.byteData[3]=Rx_Buffer[11];
+                                testdata.byteData[2]=Rx_Buffer[12];
+                                testdata.byteData[1]=Rx_Buffer[13];
+                                testdata.byteData[0]=Rx_Buffer[14];
+                                //we should set a critical value to limit the data
+                                if((testdata.floatData>PID_D_SetMax)|(testdata.floatData<PID_D_SetMin))
+                                {
+                                    //return the data over information
+
+
+                                }
+                                else //the set is okay
+                                {
+                                    Package_Duty_D=testdata.floatData;
+                                    printf("Case 0x0d Set PID parameter ok\r\n");
+
+                                    memcpy(Tx_Buffer, Rx_Buffer, size);
+                                    Write_SOCK_Data_Buffer(s, Tx_Buffer,size);
+
+
+
+                                }
+                            }
 
 
 
 
-
-
-                        //1479AFloatValue_Set=
-
-
+                        }
 
                         break;
 
@@ -1299,7 +1340,7 @@ void Process_Socket_Data(SOCKET s)
 
     }*/
 
-    //
+//
 
 
 
