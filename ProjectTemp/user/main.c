@@ -32,6 +32,7 @@
 #include "iwdg.h"
 #include "exti.h"
 
+
 /****************************************************************************
 * Function Name  : main
 * Description    : Main program.
@@ -268,8 +269,11 @@ int main()
 
     printf("watch dog working ");
     ////////////////////////Exti interrupt /////////////////////////////
-    exti_init();
-		
+    exti_disable();
+		//EXTI_DeInit();
+		//we can not mask all the exti ,beacause we use this for internet
+
+	
 
     while(1)
     {
@@ -392,13 +396,19 @@ int main()
                         printf("Command  Trigger Mode\n");
                         //all the mode needs to be default
                         //Only set to unpuff mode
-                        
 
+
+                        //we should set the timing mode's interrupt signal to die
+                        //disable exti1
+                        //exti_init();
+                        //CLEAR_BIT(EXTI_IMR,EXTI_IMR_IM1);
+											exti_disable();
+                        
 
                         if(Normal_Puff_RunningMode==0x00) //unpuff
                         {
 
-							//this just like that, we open the puff mode 
+                            //this just like that, we open the puff mode
                             printf("Unpuff Mode\n");
 
                             /*Switch those value to unpuff value, so that we can make it happen, during next pid adjustment*/
@@ -466,9 +476,11 @@ int main()
                     else // timing trigger mode
                     {
                         printf("Timing Trigger Mode \n");
+                        //enable exti1
+                       exti_init();
 
 
-
+                        //we change the normal_puff_Running Mode throught the Mid
                         if(Normal_Puff_RunningMode==0x00) //unpuff  mode off
                         {
                             printf("Unpuff mode");
@@ -568,6 +580,11 @@ int main()
                         //all the mode needs to be default
                         //Only set to unpuff mode
 
+                        //exti_init();
+                        //CLEAR_BIT(EXTI_IMR,EXTI_IMR_IM1);
+											exti_disable();
+                       
+
 
                         if(Normal_Puff_RunningMode==0x00) //unpuff
                         {
@@ -641,6 +658,10 @@ int main()
                     {
 
                         printf("Timing Trigger Mode \n");
+                      
+                        //CLEAR_BIT(EXTI_IMR,EXTI_IMR_IM1);
+                        //EXTI_DeInit();
+											exti_init();
 
 
 
@@ -796,7 +817,7 @@ int main()
             Status_Register_Update();
         }
         LCD_Display_Flag--;
-		 Status_Register_Update();
+        Status_Register_Update();
 
     }
 }
@@ -1206,13 +1227,13 @@ void Process_Socket_Data(SOCKET s)
                         //we should set a critical value to limit the data
                         //if it doesn't meet our requirements,we need to send the data error to the pc
 
-                        
-/*                           if(testdata.floatData<)
-                           {
 
-						   
-                           }*/
-                        
+                        /*                           if(testdata.floatData<)
+                                                   {
+
+
+                                                   }*/
+
 
 
                         //convert to float type

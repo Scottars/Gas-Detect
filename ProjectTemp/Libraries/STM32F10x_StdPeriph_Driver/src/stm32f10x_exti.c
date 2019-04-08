@@ -90,7 +90,12 @@ void EXTI_DeInit(void)
   EXTI->FTSR = 0x00000000; 
   EXTI->PR = 0x000FFFFF;
 }
-
+/*
+void EXTI_DeInitMy(void)
+{
+	 EXTI->IMR = 0x00000000
+}
+*/
 /**
   * @brief  Initializes the EXTI peripheral according to the specified
   *         parameters in the EXTI_InitStruct.

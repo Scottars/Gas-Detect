@@ -90,7 +90,7 @@ void EXTI2_IRQHandler()	   //外部中断2中断函数
 void EXTI1_IRQHandler()   //澶栭儴涓柇2涓柇鍑芥暟
 	
 {
-	printf("in the mid exti1");
+	printf("In the mid exti1"); //
 		
 			if(EXTI_GetITStatus(EXTI_Line1)==SET)
 			{
