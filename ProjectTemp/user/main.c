@@ -392,11 +392,13 @@ int main()
                         printf("Command  Trigger Mode\n");
                         //all the mode needs to be default
                         //Only set to unpuff mode
+                        
 
 
                         if(Normal_Puff_RunningMode==0x00) //unpuff
                         {
 
+							//this just like that, we open the puff mode 
                             printf("Unpuff Mode\n");
 
                             /*Switch those value to unpuff value, so that we can make it happen, during next pid adjustment*/

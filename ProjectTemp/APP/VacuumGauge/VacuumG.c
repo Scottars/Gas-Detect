@@ -30,7 +30,7 @@
 float VacuumValue_PID(float VacuumValue_Set, float VacuumValue_Status,float Kp,float Ki, float Kd)
 {	
 	float error_P;
-	float error_I=0;
+	float static error_I=0;
 	float error_D=0;
 	
 	float static error_last=0;
@@ -41,8 +41,8 @@ float VacuumValue_PID(float VacuumValue_Set, float VacuumValue_Status,float Kp,f
 	float D;
 	float Duty;
 	Kp=1;
-	Ki=0;
-	Kd=0;
+	//Ki=0;
+	//Kd=0;
 	printf("Set P parameter:%f\r\n",Kp);
 	printf("Set I parameter:%f\r\n",Ki);
 	printf("Set D parameter:%f\r\n",Kd);
@@ -60,7 +60,15 @@ float VacuumValue_PID(float VacuumValue_Set, float VacuumValue_Status,float Kp,f
 
 	error_D=VacuumValue_Status-Input_last;
 
+	printf("error_P:%f\r\n",error_P);
+	printf("error_I:%f\r\n",error_I);
+	printf("error_D:%f\r\n",error_D);
+	
+
+
 	Input_last = VacuumValue_Status;
+	
+	printf("Inputlast:%f\r\n",Input_last);
 
 
 		
