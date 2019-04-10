@@ -161,9 +161,9 @@ float *AD_Conversion()
 			voltage[0] = (float)AD_Channel_10_Value*(3.3/4096);
 			voltage[1] = (float)AD_Channel_11_Value*(3.3/4096);
 			voltage[2] = (float)AD_Channel_12_Value*(3.3/4096);
-			printf("Voltage0 is %f\r\n",voltage[0]);
-			printf("Voltage1 is %f\r\n",voltage[1]);
-			printf("Voltage2 is %f\r\n",voltage[2]);
+			//printf("Voltage0 is %f\r\n",voltage[0]);
+			//printf("Voltage1 is %f\r\n",voltage[1]);
+			//printf("Voltage2 is %f\r\n",voltage[2]);
 			//·µ»Øvoltage Êý×é
 		
 	//	}

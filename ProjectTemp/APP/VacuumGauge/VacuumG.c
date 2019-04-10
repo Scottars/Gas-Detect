@@ -77,7 +77,7 @@ float VacuumValue_PID(float VacuumValue_Set, float VacuumValue_Status,float Kp,f
 	//we think VacuumValueSet is 0.3 to 13.3  
 	// vacuumvalue_Setatus   0.3 to 13.3
 	//so error=-10 to 10
-	//we want duty in 0-3600, if it is linear, we can use the formular below
+	//we want duty in 0-3600, if it is linear, we can use the formular below 
 
 	//
 	
@@ -86,7 +86,8 @@ float VacuumValue_PID(float VacuumValue_Set, float VacuumValue_Status,float Kp,f
 	
 	printf("Set Duty parameter:%f\r\n",Duty);
 	//actually we need to call pwm duty change functiobn
-	//Duty's range is from 0 to 3600,So we can set our duty to 
+	//Duty's range is from 0 to 3600,So we can set our duty to 0-3600 present 0% to 100% or
+	//100% to 0%
 	
 	TIM_SetCompare2(TIM3,Duty);
 

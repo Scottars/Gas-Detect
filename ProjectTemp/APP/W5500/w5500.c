@@ -902,7 +902,7 @@ void W5500_Init(void)
 	//启动中断，参考W5500数据手册确定自己需要的中断类型
 	//IMR_CONFLICT是IP地址冲突异常中断,IMR_UNREACH是UDP通信时，地址无法到达的异常中断
 	//其它是Socket事件中断，根据需要添加
-	Write_W5500_1Byte(IMR,IM_IR7 | IM_IR6);
+	Write_W5500_1Byte(IMR_w5500,IM_IR7 | IM_IR6);
 	Write_W5500_1Byte(SIMR,S0_IMR);
 	Write_W5500_SOCK_1Byte(0, Sn_IMR, IMR_SENDOK | IMR_TIMEOUT | IMR_RECV | IMR_DISCON | IMR_CON);
 }

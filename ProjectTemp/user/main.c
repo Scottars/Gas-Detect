@@ -86,6 +86,12 @@ float Package_Duty_P,Package_Duty_I,Package_Duty_D;
 int flag_Debug=0;
 int flag_Normal=0;
 
+int flag_Command=0;
+int flag_Timing=0;
+
+int flag_627D=0;
+int flag_1479A=0;
+
 
 
 ////////////////////Singal to Open Part///////////////////
@@ -135,6 +141,14 @@ float PID_D_SetMax=10;
 float PID_P_SetMin=0;
 float PID_I_SetMin=0;
 float PID_D_SetMin=0;
+////////////////////error feedback/////////////////////
+//30 none error
+//31 an error
+u8 Error_Communicate=0x30;
+u8 Error_OverSet=0x30;
+
+//puff ready siganl
+u8 Ready_puff=0x30;
 
 
 
@@ -269,11 +283,14 @@ int main()
 
     printf("watch dog working ");
     ////////////////////////Exti interrupt /////////////////////////////
-    exti_disable();
-		//EXTI_DeInit();
-		//we can not mask all the exti ,beacause we use this for internet
+    exti_init();
+    //EXTI_DeInit();
+    //we can not mask all the exti ,beacause we use this for internet
+    CLEAR_BIT(EXTI->IMR,EXTI_Line1);
+    //      EXTI->IMR = EXTI_IMR_MR1;
+    //EXTI->RTSR = EXTI_RTSR_TR0;
 
-	
+
 
     while(1)
     {
@@ -337,12 +354,12 @@ int main()
 
             }
             flag_Normal=1;
-            if(Valve_Signal_Open==0x00) //open valve or the system
+            if(Valve_Signal_Open==0x00) //close  valve or the system
             {
                 //Wait for opening
                 //In this state, you need to close the valve
-                //In this state, you need to Set the closed-loop to closed
-                //In this state, you need to set the dac conversion to the minimal
+                //In this state, you need to Set the closed-loop to closed ---?
+                //In this state, you need to set the dac conversion to the minimal---?
                 Valve_Operation_Status_Set[0]=0x00;
                 Valve_Operation_Status_Set[1]=0x00;
                 ValveStateChange(Valve_Operation_Status_Set);
@@ -372,7 +389,7 @@ int main()
                 if (PEV_1479A_ControlMode==0x00) //PEV control Mode 1
                 {
                     //PEV,Default to PEV control
-                    printf("PEV_Control Mode 1 \n");
+                    printf("PEV_Control Mode 1 \r\n");
 
                     //Default Set
                     // Set 1479A to fully open , we can use it fully open command   or use the DAC control to make it the biggest
@@ -388,9 +405,22 @@ int main()
                     //we should also check the number's reasonable value
                     //execute the PID function to set the new pwm duty ratio
                     VacuumValue_PID(Cavity_627D_Pressure_Set, Cavity_627D_Pressure_Status, Package_Duty_P,Package_Duty_I,Package_Duty_D);
+                    //Cavity_627D_Pressure_Set
+                    ///////////////if we can switch to the puff mode /////////////////
 
+                    //we set the signal to enable puff mode
+                    //different mdoe , what paramters we should
+                    //we should test the set value and actual value's relation
 
-
+                    if (((Cavity_627D_Pressure_Status-Package_Cavity_627D_Pressure_Set)/(Package_Cavity_627D_Pressure_Set)<=0.5) & ((Cavity_627D_Pressure_Status-Package_Cavity_627D_Pressure_Set)/(Package_Cavity_627D_Pressure_Set)<=-0.5))
+                    {
+                        //we can send back the ready signal, there are several different comparison for 627d and 1479A
+                        Ready_puff=0x31;
+                    }
+                    else
+                    {
+                        Ready_puff=0x30;
+                    }
                     if (Command_Timing_TriggerMode==0x00) //Command trigger
                     {
                         printf("Command  Trigger Mode\n");
@@ -402,8 +432,9 @@ int main()
                         //disable exti1
                         //exti_init();
                         //CLEAR_BIT(EXTI_IMR,EXTI_IMR_IM1);
-											exti_disable();
-                        
+                        //exti_disable();
+                        CLEAR_BIT(EXTI->IMR,EXTI_Line1);
+
 
                         if(Normal_Puff_RunningMode==0x00) //unpuff
                         {
@@ -422,6 +453,7 @@ int main()
 
                             //1479A flow to normal
                             Flow_1479A_Set=Package_Flow_1479A_Set;
+
                             //627D Vacuum Pressire to normal
                             Cavity_627D_Pressure_Set=Package_Cavity_627D_Pressure_Set;
 
@@ -447,7 +479,7 @@ int main()
                             if (PEV_1479A_ControlMode==0x00) // Second layer to set puff value
                             {
                                 //In PEV control Mode
-                                printf("Pev control mode 2\n");
+                                printf("Pev control mode 2\r\n");
 
                                 Cavity_627D_Pressure_Set=Package_Cavity_627D_Puff_Set;
 
@@ -458,12 +490,9 @@ int main()
                             {
                                 //In 1479A control Mode
 
-                                printf("1479A control mode 2\n");
+                                printf("1479A control mode 2\r\n");
 
                                 Flow_1479A_Set=Package_Flow_1479A_Puff_Set;   // we can get it from the package we receive
-
-
-
 
                             }
 
@@ -475,15 +504,23 @@ int main()
                     }
                     else // timing trigger mode
                     {
-                        printf("Timing Trigger Mode \n");
+                        printf("Timing Trigger Mode\r\n");
+                        //open timing interuupt singal
                         //enable exti1
-                       exti_init();
+                        //exti_init();
+                        SET_BIT(EXTI->IMR,EXTI_Line1);
+
+
+                        //if we swtich from command trigger to timing trigger, we need to close puff mode
+                        //we can set a flag to judge
+
+
 
 
                         //we change the normal_puff_Running Mode throught the Mid
                         if(Normal_Puff_RunningMode==0x00) //unpuff  mode off
                         {
-                            printf("Unpuff mode");
+                            printf("Unpuff mode\r\n");
                             // Close all the puff valve
 
                             /*Switch those value to unpuff value, so that we can make it happen, during next pid adjustment*/
@@ -509,7 +546,7 @@ int main()
 
                             //open
                             //Open the puff valve   //about this we should know that  it's the best to set the whole puff valve instead of set an extra valve
-                            printf("puff Mode\n");
+                            printf("puff Mode\r\n");
 
 
 
@@ -540,7 +577,7 @@ int main()
                             {
                                 //In 1479A control Mode
 
-                                printf("1479A control mode 2 \n");
+                                printf("1479A control mode 2\r\n");
 
                                 Flow_1479A_Set=Package_Flow_1479A_Puff_Set;   // we can get it from the package we receive
 
@@ -573,6 +610,34 @@ int main()
 
 
 
+                    ///////////////if we can switch to the puff mode /////////////////
+
+                    //we set the signal to enable puff mode
+                    //different mdoe , what paramters we should
+                    //we should test the set value and actual value's relation
+
+                    if (((Cavity_627D_Pressure_Status-Package_Cavity_627D_Pressure_Set)/(Package_Cavity_627D_Pressure_Set)<=0.5) & ((Cavity_627D_Pressure_Status-Package_Cavity_627D_Pressure_Set)/(Package_Cavity_627D_Pressure_Set)<=-0.5))
+                    {
+                        //we can send back the ready signal, there are several different comparison for 627d and 1479A
+                        Ready_puff=0x31;
+                    }
+                    else
+                    {
+                        Ready_puff=0x30;
+                    }
+
+
+
+
+
+
+
+
+
+
+
+
+
                     //Send back the pressure of the cavity
                     if (Command_Timing_TriggerMode==0x00) //Command trigger
                     {
@@ -582,10 +647,8 @@ int main()
 
                         //exti_init();
                         //CLEAR_BIT(EXTI_IMR,EXTI_IMR_IM1);
-											exti_disable();
-                       
-
-
+                        //exti_disable();
+                        CLEAR_BIT(EXTI->IMR,EXTI_Line1);
                         if(Normal_Puff_RunningMode==0x00) //unpuff
                         {
 
@@ -658,10 +721,11 @@ int main()
                     {
 
                         printf("Timing Trigger Mode \n");
-                      
+
                         //CLEAR_BIT(EXTI_IMR,EXTI_IMR_IM1);
                         //EXTI_DeInit();
-											exti_init();
+                        //exti_init();
+                        SET_BIT(EXTI->IMR,EXTI_Line1);
 
 
 
@@ -717,10 +781,8 @@ int main()
                                 Cavity_627D_Pressure_Set=Package_Cavity_627D_Puff_Set;
 
 
+
                                 //update the target presste value of PID adjustment
-
-
-
 
 
 
@@ -797,6 +859,10 @@ int main()
             }
             else
             {
+                // we still need to make this better
+                Valve_Operation_Status_Set[0]=0x00;
+                Valve_Operation_Status_Set[1]=0x00;
+                ValveStateChange(Valve_Operation_Status_Set);
 
                 printf("debug mode, valve closed");
             }
@@ -902,6 +968,7 @@ void Process_Socket_Data(SOCKET s)
                         Tx_Buffer[0]=0x05; // Slave address
                         Tx_Buffer[1]=0x03;// function  code
                         Tx_Buffer[2]=0x01;// register address
+
                         //Ad conversion
                         AD_Voltage_Status = AD_Conversion();
                         //AD_Voltage_Status[0 1 2]   分别表示1479A 627D 025d
@@ -925,6 +992,7 @@ void Process_Socket_Data(SOCKET s)
                         Tx_Buffer[7]=crctestdata.byteData[1];
                         Tx_Buffer[8]=crctestdata.byteData[0];
 
+                        //  Tx_Buffer[0]=0xff;
 
                         Write_SOCK_Data_Buffer(s, Tx_Buffer, 9);
 
@@ -1013,7 +1081,6 @@ void Process_Socket_Data(SOCKET s)
                         break;
 
                 }
-
                 break;
             case 0x05:    //写入寄存器的状态
                 //设定12光路、设定真空度、设定流量值
@@ -1075,8 +1142,6 @@ void Process_Socket_Data(SOCKET s)
                         break;
 
                     case 0x07: //PEV control  mode or 1479A control mode
-
-
                         if(Rx_Buffer[3]==0x31)
 
                         {
@@ -1164,11 +1229,13 @@ void Process_Socket_Data(SOCKET s)
                         if((testdata.floatData>Flow_1479A_SetMax)|(testdata.floatData<Flow_1479A_SetMin))
                         {
                             //return the data over information
+                            Error_OverSet=0x31;
 
 
                         }
                         else //the set is okay
                         {
+                            Error_OverSet=0x30;
 
                             Package_Cavity_627D_Pressure_Set=testdata.floatData;
                             printf("Case 0x0A: set 627D pressure\r\n");
@@ -1195,12 +1262,14 @@ void Process_Socket_Data(SOCKET s)
                         if((testdata.floatData>Cavity_627D_Pressure_SetMax)|(testdata.floatData<Cavity_627D_Pressure_SetMin))
                         {
                             //return the data over information
+                            Error_OverSet=0x31;
 
 
                         }
                         else //the set is okay
                         {
 
+                            Error_OverSet=0x30;
 
                             //convert to float type
                             testdata.byteData[3]=Rx_Buffer[3];
@@ -1333,16 +1402,82 @@ void Process_Socket_Data(SOCKET s)
                         printf("Case 0x0f:Set Puff Mode auxiliary Valve\r\n");
 
                         break;
+                    case 0x13:  //clear error register
 
+                        Error_Communicate=0x30;
+                        Error_OverSet=0x30;
+                        break;
 
                 }
-
-
-
-
-
                 break;
 
+            case 0x08:
+                switch(Rx_Buffer[2])
+                {
+                    case 0x11://Read communicate error
+                        //ps: if we have this problem, how can we solve this problem
+
+                        printf("Case 0x11: set communicate error\r\n");
+
+                        Tx_Buffer[0]=0x05; // Slave address
+                        Tx_Buffer[1]=0x08;// function  code
+                        Tx_Buffer[2]=0x11;// register address
+
+                        if(Error_Communicate==1)
+                        {
+                            Tx_Buffer[3]=0x31;//there is an error
+                        }
+                        else
+                        {
+                            Tx_Buffer[3]=0x30;//none error
+                        }
+
+
+                        crctestdata.CrcData=GetCRC16(Tx_Buffer,4);
+
+
+                        Tx_Buffer[5]=crctestdata.byteData[1];
+                        Tx_Buffer[6]=crctestdata.byteData[0];
+
+                        //  Tx_Buffer[0]=0xff;
+
+                        Write_SOCK_Data_Buffer(s, Tx_Buffer, 7);
+
+                        break;
+
+
+                    case 0x12://set value error over
+
+
+                        printf("Case 0x12: set value over error\r\n");
+
+                        Tx_Buffer[0]=0x05; // Slave address
+                        Tx_Buffer[1]=0x08;// function  code
+                        Tx_Buffer[2]=0x12;// register address
+
+                        if(Error_OverSet==1)
+                        {
+                            Tx_Buffer[3]=0x31;//there is an error
+                        }
+                        else
+                        {
+                            Tx_Buffer[3]=0x30;//none error
+                        }
+
+
+                        crctestdata.CrcData=GetCRC16(Tx_Buffer,4);
+
+
+                        Tx_Buffer[5]=crctestdata.byteData[1];
+                        Tx_Buffer[6]=crctestdata.byteData[0];
+
+                        //  Tx_Buffer[0]=0xff;
+
+                        Write_SOCK_Data_Buffer(s, Tx_Buffer, 7);
+
+                        break;
+
+                }
 
             default:
                 break;
@@ -1353,7 +1488,8 @@ void Process_Socket_Data(SOCKET s)
     }
     else
     {
-        //如果不是本机的地址的情况 如何进行处理
+        //receive the wrong package
+
 
 
 
@@ -1441,7 +1577,6 @@ void Initial_DebugMode()
 
     PEV_1479A_ControlMode=0x00;
 
-
 }
 
 void Status_Register_Update()
@@ -1467,9 +1602,5 @@ void Status_Register_Update()
 
     Flow_1479A_Status=ADVoltage_2_Flow1479A(AD_Voltage_Status[0]);
     Cavity_627D_Pressure_Status=ADVoltage_2_Pressure627D(AD_Voltage_Status[1]);
-
-
-
-
 }
 

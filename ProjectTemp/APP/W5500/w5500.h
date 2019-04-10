@@ -21,7 +21,7 @@
 	#define PPPOE		0x20
 	#define MP			0x10
 
-#define IMR		0x0016
+#define IMR_w5500		0x0016
 	#define IM_IR7		0x80
 	#define IM_IR6		0x40
 	#define IM_IR5		0x20
