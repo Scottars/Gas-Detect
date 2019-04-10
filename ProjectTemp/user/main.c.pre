@@ -128,6 +128,7 @@ float Flow_1479A_SetMin=0;
 
 float Cavity_627D_Puff_Pressure_SetMax=20;
 float Cavity_627D_Puff_Pressure_SetMin=0;
+
 float Flow_1479A_Puff_SetMax=20;
 float Flow_1479A_Puff_SetMin=0;
 
@@ -354,7 +355,7 @@ int main()
 
             }
             flag_Normal=1;
-            if(Valve_Signal_Open==0x00) //close  valve or the system 
+            if(Valve_Signal_Open==0x00) //close  valve or the system
             {
                 //Wait for opening
                 //In this state, you need to close the valve
@@ -405,22 +406,22 @@ int main()
                     //we should also check the number's reasonable value
                     //execute the PID function to set the new pwm duty ratio
                     VacuumValue_PID(Cavity_627D_Pressure_Set, Cavity_627D_Pressure_Status, Package_Duty_P,Package_Duty_I,Package_Duty_D);
-									//Cavity_627D_Pressure_Set
-						///////////////if we can switch to the puff mode /////////////////
-												
-												//we set the signal to enable puff mode
-												//different mdoe , what paramters we should
-												//we should test the set value and actual value's relation
-												
-												if (((Cavity_627D_Pressure_Status-Package_Cavity_627D_Pressure_Set)/(Package_Cavity_627D_Pressure_Set)<=0.5) & ((Cavity_627D_Pressure_Status-Package_Cavity_627D_Pressure_Set)/(Package_Cavity_627D_Pressure_Set)<=-0.5))
-												{
-												//we can send back the ready signal, there are several different comparison for 627d and 1479A
-													Ready_puff=0x31;
-												}
-												else
-												{
-													Ready_puff=0x30;
-												}
+                    //Cavity_627D_Pressure_Set
+                    ///////////////if we can switch to the puff mode /////////////////
+
+                    //we set the signal to enable puff mode
+                    //different mdoe , what paramters we should
+                    //we should test the set value and actual value's relation
+
+                    if (((Cavity_627D_Pressure_Status-Package_Cavity_627D_Pressure_Set)/(Package_Cavity_627D_Pressure_Set)<=0.5) & ((Cavity_627D_Pressure_Status-Package_Cavity_627D_Pressure_Set)/(Package_Cavity_627D_Pressure_Set)<=-0.5))
+                    {
+                        //we can send back the ready signal, there are several different comparison for 627d and 1479A
+                        Ready_puff=0x31;
+                    }
+                    else
+                    {
+                        Ready_puff=0x30;
+                    }
                     if (Command_Timing_TriggerMode==0x00) //Command trigger
                     {
                         printf("Command  Trigger Mode\n");
@@ -453,7 +454,7 @@ int main()
 
                             //1479A flow to normal
                             Flow_1479A_Set=Package_Flow_1479A_Set;
-							
+
                             //627D Vacuum Pressire to normal
                             Cavity_627D_Pressure_Set=Package_Cavity_627D_Pressure_Set;
 
@@ -493,7 +494,7 @@ int main()
                                 printf("1479A control mode 2\r\n");
 
                                 Flow_1479A_Set=Package_Flow_1479A_Puff_Set;   // we can get it from the package we receive
-                                
+
                             }
 
                         }
@@ -505,8 +506,8 @@ int main()
                     else // timing trigger mode
                     {
                         printf("Timing Trigger Mode\r\n");
-						//open timing interuupt singal
-						//enable exti1
+                        //open timing interuupt singal
+                        //enable exti1
                         //exti_init();
                         SET_BIT(EXTI->IMR,EXTI_Line1);
 
@@ -610,29 +611,21 @@ int main()
 
 
 
-					///////////////if we can switch to the puff mode /////////////////
-					
-					//we set the signal to enable puff mode
-					//different mdoe , what paramters we should
-					//we should test the set value and actual value's relation
-					
-					if (((Cavity_627D_Pressure_Status-Package_Cavity_627D_Pressure_Set)/(Package_Cavity_627D_Pressure_Set)<=0.5) & ((Cavity_627D_Pressure_Status-Package_Cavity_627D_Pressure_Set)/(Package_Cavity_627D_Pressure_Set)<=-0.5))
-					{
-					//we can send back the ready signal, there are several different comparison for 627d and 1479A
-						Ready_puff=0x31;
-					}
-					else
-					{
-						Ready_puff=0x30;
-					}
+                    ///////////////if we can switch to the puff mode /////////////////
 
+                    //we set the signal to enable puff mode
+                    //different mdoe , what paramters we should
+                    //we should test the set value and actual value's relation
 
-
-
-
-
-
-
+                    if (((Cavity_627D_Pressure_Status-Package_Cavity_627D_Pressure_Set)/(Package_Cavity_627D_Pressure_Set)<=0.5) & ((Cavity_627D_Pressure_Status-Package_Cavity_627D_Pressure_Set)/(Package_Cavity_627D_Pressure_Set)<=-0.5))
+                    {
+                        //we can send back the ready signal, there are several different comparison for 627d and 1479A
+                        Ready_puff=0x31;
+                    }
+                    else
+                    {
+                        Ready_puff=0x30;
+                    }
 
 
 
@@ -726,9 +719,6 @@ int main()
                         //EXTI_DeInit();
                         //exti_init();
                         SET_BIT(EXTI->IMR,EXTI_Line1);
-
-
-
                         if(Normal_Puff_RunningMode==0x00) //unpuff  mode off
                         {
                             printf("Unpuff mode");
@@ -1079,7 +1069,24 @@ void Process_Socket_Data(SOCKET s)
 
                         Write_SOCK_Data_Buffer(s, Tx_Buffer, 7);
                         break;
+                    case 0x14:
 
+                        Tx_Buffer[0]=0x05; // Slave address
+                        Tx_Buffer[1]=0x03;// function  code
+                        Tx_Buffer[2]=0x14;// register address
+                        //read gas valve status
+                        printf("Read if we are ready to inspire \r\n");
+                        ValveValue_Status=Gas_State_Read();
+                        Tx_Buffer[3]=Ready_puff;
+
+                        //GetCRC16
+                        crctestdata.CrcData=GetCRC16(Tx_Buffer,4);
+
+                        Tx_Buffer[4]=crctestdata.byteData[1];
+                        Tx_Buffer[5]=crctestdata.byteData[0];
+
+                        Write_SOCK_Data_Buffer(s, Tx_Buffer, 6);
+                        break;
                 }
                 break;
             case 0x05:    //Ð´Èë¼Ä´æÆ÷µÄ×´Ì¬
@@ -1224,8 +1231,6 @@ void Process_Socket_Data(SOCKET s)
                         //we should set a critical value to limit the data
                         //if it doesn't meet our requirements,we need to send the data error to the pc
 
-
-
                         if((testdata.floatData>Flow_1479A_SetMax)|(testdata.floatData<Flow_1479A_SetMin))
                         {
                             //return the data over information
@@ -1243,11 +1248,7 @@ void Process_Socket_Data(SOCKET s)
                             memcpy(Tx_Buffer, Rx_Buffer, size);
                             Write_SOCK_Data_Buffer(s, Tx_Buffer,size);
                         }
-
-
-
                         break;
-
                     case 0x0B:  //1479A Gas  Flow value set
 
 
@@ -1296,13 +1297,15 @@ void Process_Socket_Data(SOCKET s)
                         //we should set a critical value to limit the data
                         //if it doesn't meet our requirements,we need to send the data error to the pc
 
-
-                        /*                           if(testdata.floatData<)
-                                                   {
-
-
-                                                   }*/
-
+					if((testdata.floatData>Flow_1479A_Puff_SetMax)|(testdata.floatData<Flow_1479A_Puff_SetMin))
+											{
+												//return the data over information
+												Error_OverSet=0x31;
+					
+					
+											}
+											else //the set is okay
+											{
 
 
                         //convert to float type
@@ -1319,7 +1322,7 @@ void Process_Socket_Data(SOCKET s)
                         memcpy(Tx_Buffer, Rx_Buffer, size);
                         Write_SOCK_Data_Buffer(s, Tx_Buffer,size);
 
-
+												}
                         break;
                     case 0x0d://pid code setting , set pid together, you cannot set it alone
 

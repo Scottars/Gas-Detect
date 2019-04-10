@@ -26,6 +26,12 @@
 #include "systick.h"
 #include "printf.h"
 #include "smg.h"
+
+
+
+
+
+extern u8 Normal_Puff_RunningMode;
 /** @addtogroup STM32F10x_StdPeriph_Template
   * @{
   */
@@ -96,13 +102,16 @@ void EXTI1_IRQHandler()   //外部中断2中断函数
 			{
 				EXTI_ClearITPendingBit(EXTI_Line1);//清除EXTI线路挂起�?
 				delay_ms(10);//消抖处理
-				if(GPIO_ReadInputDataBit(GPIOB,GPIO_Pin_1)==Bit_RESET)	   //k_left按键按下 Low voltage
-				{
+				if(GPIO_ReadInputDataBit(GPIOB,GPIO_Pin_1)==Bit_RESET)	   
+					{
 					delay_ms(10);//消抖处理
+					Normal_Puff_RunningMode=0xff; //to open the puff mode in the interru7pt mode 
+					
 					printf("we are in the middle of exti interrupt\r\n");
 					
+					
 				} 
-				//while(GPIO_ReadInputDataBit(GPIOE,GPIO_Pin_2)==0);
+
 			}		
 		
 

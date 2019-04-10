@@ -92,8 +92,6 @@ int flag_Timing=0;
 int flag_627D=0;
 int flag_1479A=0;
 
-
-
 ////////////////////Singal to Open Part///////////////////
 u8 Valve_Signal_Open=0x00;
 u8 Timing_Signal_Open=0x00;
@@ -128,6 +126,7 @@ float Flow_1479A_SetMin=0;
 
 float Cavity_627D_Puff_Pressure_SetMax=20;
 float Cavity_627D_Puff_Pressure_SetMin=0;
+
 float Flow_1479A_Puff_SetMax=20;
 float Flow_1479A_Puff_SetMin=0;
 
@@ -630,14 +629,6 @@ int main()
 
 
 
-
-
-
-
-
-
-
-
                     //Send back the pressure of the cavity
                     if (Command_Timing_TriggerMode==0x00) //Command trigger
                     {
@@ -726,9 +717,6 @@ int main()
                         //EXTI_DeInit();
                         //exti_init();
                         SET_BIT(EXTI->IMR,EXTI_Line1);
-
-
-
                         if(Normal_Puff_RunningMode==0x00) //unpuff  mode off
                         {
                             printf("Unpuff mode");
@@ -1079,7 +1067,24 @@ void Process_Socket_Data(SOCKET s)
 
                         Write_SOCK_Data_Buffer(s, Tx_Buffer, 7);
                         break;
+                    case 0x14:
 
+                        Tx_Buffer[0]=0x05; // Slave address
+                        Tx_Buffer[1]=0x03;// function  code
+                        Tx_Buffer[2]=0x14;// register address
+                        //read gas valve status
+                        printf("Read if we are ready to inspire \r\n");
+                        ValveValue_Status=Gas_State_Read();
+                        Tx_Buffer[3]=Ready_puff;
+
+                        //GetCRC16
+                        crctestdata.CrcData=GetCRC16(Tx_Buffer,4);
+
+                        Tx_Buffer[4]=crctestdata.byteData[1];
+                        Tx_Buffer[5]=crctestdata.byteData[0];
+
+                        Write_SOCK_Data_Buffer(s, Tx_Buffer, 6);
+                        break;
                 }
                 break;
             case 0x05:    //Ð´Èë¼Ä´æÆ÷µÄ×´Ì¬
@@ -1224,8 +1229,6 @@ void Process_Socket_Data(SOCKET s)
                         //we should set a critical value to limit the data
                         //if it doesn't meet our requirements,we need to send the data error to the pc
 
-
-
                         if((testdata.floatData>Flow_1479A_SetMax)|(testdata.floatData<Flow_1479A_SetMin))
                         {
                             //return the data over information
@@ -1243,11 +1246,7 @@ void Process_Socket_Data(SOCKET s)
                             memcpy(Tx_Buffer, Rx_Buffer, size);
                             Write_SOCK_Data_Buffer(s, Tx_Buffer,size);
                         }
-
-
-
                         break;
-
                     case 0x0B:  //1479A Gas  Flow value set
 
 
@@ -1296,30 +1295,31 @@ void Process_Socket_Data(SOCKET s)
                         //we should set a critical value to limit the data
                         //if it doesn't meet our requirements,we need to send the data error to the pc
 
-
-                        /*                           if(testdata.floatData<)
-                                                   {
-
-
-                                                   }*/
+                        if((testdata.floatData>Flow_1479A_Puff_SetMax)|(testdata.floatData<Flow_1479A_Puff_SetMin))
+                        {
+                            //return the data over information
+                            Error_OverSet=0x31;
 
 
+                        }
+                        else //the set is okay
+                        {
+							Error_OverSet=0x31;
+                           //convert to float type
+                            testdata.byteData[3]=Rx_Buffer[3];
+                            testdata.byteData[2]=Rx_Buffer[4];
+                            testdata.byteData[1]=Rx_Buffer[5];
+                            testdata.byteData[0]=Rx_Buffer[6];
 
-                        //convert to float type
-                        testdata.byteData[3]=Rx_Buffer[3];
-                        testdata.byteData[2]=Rx_Buffer[4];
-                        testdata.byteData[1]=Rx_Buffer[5];
-                        testdata.byteData[0]=Rx_Buffer[6];
+                            //Vacuum Value should be changed into Voltage value accoroding 627D manully
 
-                        //Vacuum Value should be changed into Voltage value accoroding 627D manully
+                            Package_Cavity_627D_Puff_Set=testdata.floatData;
 
-                        Package_Cavity_627D_Puff_Set=testdata.floatData;
+                            printf("Case 0x0c: set puff pressure set\r\n");
+                            memcpy(Tx_Buffer, Rx_Buffer, size);
+                            Write_SOCK_Data_Buffer(s, Tx_Buffer,size);
 
-                        printf("Case 0x0c: set puff pressure set\r\n");
-                        memcpy(Tx_Buffer, Rx_Buffer, size);
-                        Write_SOCK_Data_Buffer(s, Tx_Buffer,size);
-
-
+                        }
                         break;
                     case 0x0d://pid code setting , set pid together, you cannot set it alone
 
