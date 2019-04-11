@@ -40,25 +40,32 @@ float VacuumValue_PID(float VacuumValue_Set, float VacuumValue_Status,float Kp,f
 	float time_change;
 	float D;
 	float Duty;
-	Kp=1;
-	//Ki=0;
+	//Kp=1;
+	//Ki=0.0001;
 	//Kd=0;
+		//VacuumValue_Set=0.3;
+	//VacuumValue_Status=0;
+
+	//In this part, we need to set our VacuumValue set to AD value, and we compare them.
+	//VacuumValue_Set=Pressure627D_2_ADVoltage(VacuumValue_Set); //This is ad value
+	//VacuumValue_Status=Pressure627D_2_ADVoltage(VacuumValue_Status);//this is ad  value
+	
+	
 	printf("Set P parameter:%f\r\n",Kp);
 	printf("Set I parameter:%f\r\n",Ki);
 	printf("Set D parameter:%f\r\n",Kd);
+	printf("Actual Pressure value:%f\r\n",VacuumValue_Status);
 	printf("Set Pressure value:%f\r\n",VacuumValue_Set);
 	
 	
-	//VacuumValue_Set=0.3;
-	VacuumValue_Status=0.3;
-	
+
 	
 	time_change=0.1;
-	error_P=VacuumValue_Set-VacuumValue_Status;
+	error_P=(VacuumValue_Set-VacuumValue_Status)*Kp;
 	
-	error_I +=(VacuumValue_Set-VacuumValue_Status);  //error sum
+	error_I +=(VacuumValue_Set-VacuumValue_Status)*Ki;  //error sum
 
-	error_D=VacuumValue_Status-Input_last;
+	error_D=(VacuumValue_Status-Input_last)*Kd;
 
 	printf("error_P:%f\r\n",error_P);
 	printf("error_I:%f\r\n",error_I);
@@ -88,6 +95,16 @@ float VacuumValue_PID(float VacuumValue_Set, float VacuumValue_Status,float Kp,f
 	//actually we need to call pwm duty change functiobn
 	//Duty's range is from 0 to 3600,So we can set our duty to 0-3600 present 0% to 100% or
 	//100% to 0%
+		//we set the limit window so that the pwm adjustment will not be so dangerous
+	if(Duty>2880)
+		{
+		Duty=2880;
+		}
+	if(Duty<720)
+		{
+		Duty=720;
+		}
+
 	
 	TIM_SetCompare2(TIM3,Duty);
 

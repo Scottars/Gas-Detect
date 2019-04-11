@@ -119,16 +119,16 @@ float Flow_1479A_Status;
 *
 */
 float Cavity_627D_Pressure_SetMax=20;
-float Cavity_627D_Pressure_SetMin=0;
+float Cavity_627D_Pressure_SetMin=-20;
 float Flow_1479A_SetMax=20;
-float Flow_1479A_SetMin=0;
+float Flow_1479A_SetMin=-20;
 
 
 float Cavity_627D_Puff_Pressure_SetMax=20;
-float Cavity_627D_Puff_Pressure_SetMin=0;
+float Cavity_627D_Puff_Pressure_SetMin=-20;
 
 float Flow_1479A_Puff_SetMax=20;
-float Flow_1479A_Puff_SetMin=0;
+float Flow_1479A_Puff_SetMin=-20;
 
 
 
@@ -137,9 +137,9 @@ float PID_I_SetMax=10;
 float PID_D_SetMax=10;
 
 
-float PID_P_SetMin=0;
-float PID_I_SetMin=0;
-float PID_D_SetMin=0;
+float PID_P_SetMin=-10;
+float PID_I_SetMin=-10;
+float PID_D_SetMin=-10;
 ////////////////////error feedback/////////////////////
 //30 none error
 //31 an error
@@ -353,6 +353,7 @@ int main()
 
             }
             flag_Normal=1;
+			
             if(Valve_Signal_Open==0x00) //close  valve or the system
             {
                 //Wait for opening
@@ -403,7 +404,7 @@ int main()
                     //we have set our default value to  Package_P  I D
                     //we should also check the number's reasonable value
                     //execute the PID function to set the new pwm duty ratio
-                    VacuumValue_PID(Cavity_627D_Pressure_Set, Cavity_627D_Pressure_Status, Package_Duty_P,Package_Duty_I,Package_Duty_D);
+                     VacuumValue_PID(Cavity_627D_Pressure_Set, Cavity_627D_Pressure_Status, Package_Duty_P,Package_Duty_I,Package_Duty_D);
                     //Cavity_627D_Pressure_Set
                     ///////////////if we can switch to the puff mode /////////////////
 
@@ -864,13 +865,13 @@ int main()
 
         //we should also set set currret status to the status register
         //we can use flag to get if we need to update the lcd
-        if(LCD_Display_Flag==0)
+      /*  if(LCD_Display_Flag==0)
         {
             printf("after 1000 times");
             LCD_Display_Flag=1000;
             Status_Register_Update();
-        }
-        LCD_Display_Flag--;
+        }*/
+        //LCD_Display_Flag--;
         Status_Register_Update();
 
     }
@@ -1598,9 +1599,11 @@ void Status_Register_Update()
 
     //Alter current status ,
 
+	//printf("Update the voltage status in the funtion\r\n");
 
 
     Flow_1479A_Status=ADVoltage_2_Flow1479A(AD_Voltage_Status[0]);
     Cavity_627D_Pressure_Status=ADVoltage_2_Pressure627D(AD_Voltage_Status[1]);
+
 }
 

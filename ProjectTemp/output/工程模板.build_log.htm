@@ -26,7 +26,7 @@ Project File Date:  04/01/2019
 
 <h2>Output:</h2>
 *** Using Compiler 'V5.05 update 1 (build 106)', folder: 'D:\Program Files\Keil5\ARM\ARMCC\Bin'
-Build target 'Target 1'
+Rebuild target 'Target 1'
 compiling main.c...
 user\main.c(270): warning:  #223-D: function "System_Initialization" declared implicitly
       System_Initialization();    //STM32系统初始化函数(初始化STM32时钟及外设)
@@ -38,31 +38,31 @@ user\main.c(274): warning:  #223-D: function "W5500_Socket_Set" declared implici
       W5500_Socket_Set();//W5500端口初始化配置
 user\main.c(339): warning:  #167-D: argument of type "char *" is incompatible with parameter of type "u8 *"
                   ValveStateChange(Valve_Operation_Status_Set);
-user\main.c(364): warning:  #167-D: argument of type "char *" is incompatible with parameter of type "u8 *"
+user\main.c(365): warning:  #167-D: argument of type "char *" is incompatible with parameter of type "u8 *"
                   ValveStateChange(Valve_Operation_Status_Set);
-user\main.c(380): warning:  #167-D: argument of type "char *" is incompatible with parameter of type "u8 *"
+user\main.c(381): warning:  #167-D: argument of type "char *" is incompatible with parameter of type "u8 *"
                   ValveStateChange(Valve_Operation_Status_Set);
-user\main.c(451): warning:  #167-D: argument of type "char *" is incompatible with parameter of type "u8 *"
+user\main.c(452): warning:  #167-D: argument of type "char *" is incompatible with parameter of type "u8 *"
                               ValveStateChange(Valve_Operation_Status_Set);
-user\main.c(473): warning:  #167-D: argument of type "char *" is incompatible with parameter of type "u8 *"
+user\main.c(474): warning:  #167-D: argument of type "char *" is incompatible with parameter of type "u8 *"
                               ValveStateChange(Valve_Operation_Status_Set);
-user\main.c(532): warning:  #167-D: argument of type "char *" is incompatible with parameter of type "u8 *"
+user\main.c(533): warning:  #167-D: argument of type "char *" is incompatible with parameter of type "u8 *"
                               ValveStateChange(Valve_Operation_Status_Set);
-user\main.c(558): warning:  #167-D: argument of type "char *" is incompatible with parameter of type "u8 *"
+user\main.c(559): warning:  #167-D: argument of type "char *" is incompatible with parameter of type "u8 *"
                               ValveStateChange(Valve_Operation_Status_Set);
-user\main.c(655): warning:  #167-D: argument of type "char *" is incompatible with parameter of type "u8 *"
+user\main.c(656): warning:  #167-D: argument of type "char *" is incompatible with parameter of type "u8 *"
                               ValveStateChange(Valve_Operation_Status_Set);
-user\main.c(677): warning:  #167-D: argument of type "char *" is incompatible with parameter of type "u8 *"
+user\main.c(678): warning:  #167-D: argument of type "char *" is incompatible with parameter of type "u8 *"
                               ValveStateChange(Valve_Operation_Status_Set);
-user\main.c(732): warning:  #167-D: argument of type "char *" is incompatible with parameter of type "u8 *"
+user\main.c(733): warning:  #167-D: argument of type "char *" is incompatible with parameter of type "u8 *"
                               ValveStateChange(Valve_Operation_Status_Set);
-user\main.c(758): warning:  #167-D: argument of type "char *" is incompatible with parameter of type "u8 *"
+user\main.c(759): warning:  #167-D: argument of type "char *" is incompatible with parameter of type "u8 *"
                               ValveStateChange(Valve_Operation_Status_Set);
-user\main.c(812): warning:  #167-D: argument of type "char *" is incompatible with parameter of type "u8 *"
+user\main.c(813): warning:  #167-D: argument of type "char *" is incompatible with parameter of type "u8 *"
                   ValveStateChange(Valve_Operation_Status_Set);
-user\main.c(831): warning:  #167-D: argument of type "char *" is incompatible with parameter of type "u8 *"
+user\main.c(832): warning:  #167-D: argument of type "char *" is incompatible with parameter of type "u8 *"
                   ValveStateChange(Valve_Operation_Status_Set);
-user\main.c(853): warning:  #167-D: argument of type "char *" is incompatible with parameter of type "u8 *"
+user\main.c(854): warning:  #167-D: argument of type "char *" is incompatible with parameter of type "u8 *"
                   ValveStateChange(Valve_Operation_Status_Set);
 user\main.c(159): warning:  #177-D: variable "i" was declared but never referenced
       u8 i,j,k;
@@ -70,6 +70,8 @@ user\main.c(159): warning:  #177-D: variable "j" was declared but never referenc
       u8 i,j,k;
 user\main.c(159): warning:  #177-D: variable "k" was declared but never referenced
       u8 i,j,k;
+user\main.c(160): warning:  #177-D: variable "LCD_Display_Flag" was declared but never referenced
+      u16 LCD_Display_Flag=1000;
 user\main.c(161): warning:  #177-D: variable "temptofun" was declared but never referenced
       float temptofun;
 user\main.c(174): warning:  #177-D: variable "PEV_FullyClose_1479AMode" was declared but never referenced
@@ -80,45 +82,121 @@ user\main.c(181): warning:  #177-D: variable "Valve_Default_Status_Set" was decl
       char Valve_Default_Status_Set[2]= {0x00,0x00};
 user\main.c(183): warning:  #177-D: variable "Valve_Puff_Status_Set" was declared but never referenced
       char Valve_Puff_Status_Set[2];
-user\main.c(1246): warning:  #223-D: function "memcpy" declared implicitly
+user\main.c(1247): warning:  #223-D: function "memcpy" declared implicitly
                               memcpy(Tx_Buffer, Rx_Buffer, size);
-user\main.c(1283): warning:  #223-D: function "memcpy" declared implicitly
+user\main.c(1284): warning:  #223-D: function "memcpy" declared implicitly
                               memcpy(Tx_Buffer, Rx_Buffer, size);
-user\main.c(1319): warning:  #223-D: function "memcpy" declared implicitly
+user\main.c(1320): warning:  #223-D: function "memcpy" declared implicitly
                               memcpy(Tx_Buffer, Rx_Buffer, size);
-user\main.c(1376): warning:  #223-D: function "memcpy" declared implicitly
+user\main.c(1377): warning:  #223-D: function "memcpy" declared implicitly
                                       memcpy(Tx_Buffer, Rx_Buffer, size);
-user\main.c(896): warning:  #177-D: variable "floattest" was declared but never referenced
+user\main.c(897): warning:  #177-D: variable "floattest" was declared but never referenced
       char floattest[10];
-user\main.c(897): warning:  #177-D: variable "test1" was declared but never referenced
+user\main.c(898): warning:  #177-D: variable "test1" was declared but never referenced
       char test1[4];
-user\main.c(901): warning:  #177-D: variable "ValveValue_Set" was declared but never referenced
+user\main.c(902): warning:  #177-D: variable "ValveValue_Set" was declared but never referenced
       u8 ValveValue_Set[12];  //来自网络传入过来的信号
-user\main.c(903): warning:  #177-D: variable "i" was declared but never referenced
+user\main.c(904): warning:  #177-D: variable "i" was declared but never referenced
       u8 i;
-user\main.c(906): warning:  #177-D: variable "Kp" was declared but never referenced
+user\main.c(907): warning:  #177-D: variable "Kp" was declared but never referenced
       float Kp,Ki,Kd;
-user\main.c(906): warning:  #177-D: variable "Ki" was declared but never referenced
+user\main.c(907): warning:  #177-D: variable "Ki" was declared but never referenced
       float Kp,Ki,Kd;
-user\main.c(906): warning:  #177-D: variable "Kd" was declared but never referenced
+user\main.c(907): warning:  #177-D: variable "Kd" was declared but never referenced
       float Kp,Ki,Kd;
-user\main.c(910): warning:  #177-D: variable "CRC_Mid" was declared but never referenced
+user\main.c(911): warning:  #177-D: variable "CRC_Mid" was declared but never referenced
       unsigned int CRC_Mid;
-user\main.c(915): warning:  #177-D: variable "temp1" was declared but never referenced
+user\main.c(916): warning:  #177-D: variable "temp1" was declared but never referenced
       uint8_t temp1[5];
-user\main.c(916): warning:  #177-D: variable "AD_Value" was declared but never referenced
+user\main.c(917): warning:  #177-D: variable "AD_Value" was declared but never referenced
       char AD_Value[50];
-user\main.c(1594): warning:  #167-D: argument of type "char *" is incompatible with parameter of type "u8 *"
+user\main.c(1595): warning:  #167-D: argument of type "char *" is incompatible with parameter of type "u8 *"
       Gas_StateLayerUpdate(ValveValue_Status_LCD);
-user\main.c(1587): warning:  #550-D: variable "ValveValue_Status" was set but never used
+user\main.c(1588): warning:  #550-D: variable "ValveValue_Status" was set but never used
       char *ValveValue_Status;
-user\main.c: 42 warnings, 0 errors
+user\main.c: 43 warnings, 0 errors
 compiling stm32f10x_it.c...
+compiling public.c...
+compiling core_cm3.c...
+compiling system_stm32f10x.c...
+assembling startup_stm32f10x_hd.s...
+compiling stm32f10x_gpio.c...
+compiling stm32f10x_rcc.c...
+compiling stm32f10x_usart.c...
+compiling misc.c...
+compiling stm32f10x_exti.c...
+compiling stm32f10x_tim.c...
+compiling stm32f10x_adc.c...
+compiling stm32f10x_dac.c...
+compiling stm32f10x_spi.c...
+compiling stm32f10x_flash.c...
+compiling stm32f10x_iwdg.c...
+compiling led.c...
+compiling systick.c...
+APP\SysTick\systick.c(3): warning:  #550-D: variable "fac_ms" was set but never used
+  static u16 fac_ms=0;//ms延时倍乘数
+APP\SysTick\systick.c: 1 warning, 0 errors
+compiling pwm.c...
+compiling rs485.c...
+compiling printf.c...
+compiling iic.c...
+compiling AT24CXX.c...
+compiling ds18b20.c...
+compiling beep.c...
+compiling exti.c...
+compiling key.c...
+compiling smg.c...
+compiling time.c...
+compiling usart.c...
 compiling dac.c...
+compiling adc.c...
+APP\ADC\adc.c(165): warning:  #1166-D: returning pointer to local variable
+                return voltage ;
+APP\ADC\adc.c(167): warning:  #1-D: last line of file ends without a newline
+  }
+APP\ADC\adc.c(141): warning:  #177-D: variable "i" was declared but never referenced
+                        u8 i;           
+APP\ADC\adc.c(143): warning:  #177-D: variable "dacval" was declared but never referenced
+        u16 dacval;
+APP\ADC\adc.c(145): warning:  #177-D: variable "AD_Channel_Select" was declared but never referenced
+        u16 AD_Channel_Select[3]={ADC_Channel_10,ADC_Channel_11,ADC_Channel_12};//定义通道选择数组
+APP\ADC\adc.c: 5 warnings, 0 errors
+compiling gui.c...
+compiling lcd.c...
+compiling test.c...
+APP\LCD\test.c(114): warning:  #167-D: argument of type "char *" is incompatible with parameter of type "u8 *"
+        Show_Str(130,56+i*20,BLACK,WHITE,str,12,0);
+APP\LCD\test.c: 1 warning, 0 errors
+compiling spi.c...
+compiling IOState.c...
+APP\GPIO_State\IOState.c(72): warning:  #177-D: variable "s" was declared but never referenced
+        u8 s=0;
+APP\GPIO_State\IOState.c(291): warning:  #120-D: return value type does not match the function type
+        return GPIO_State_return ;
+APP\GPIO_State\IOState.c: 2 warnings, 0 errors
+compiling w5500.c...
+compiling DataProcess.c...
+APP\DataProcess\DataProcess.c(42): warning:  #550-D: variable "Pressure" was set but never used
+        float Pressure;
+APP\DataProcess\DataProcess.c(113): warning:  #550-D: variable "AD_Volatge" was set but never used
+        float AD_Volatge;
+APP\DataProcess\DataProcess.c(197): warning:  #177-D: variable "sum" was declared but never referenced
+      unsigned int CRCi,sum;
+APP\DataProcess\DataProcess.c(200): warning:  #177-D: variable "crc_return" was declared but never referenced
+      unsigned char *crc_return;
+APP\DataProcess\DataProcess.c: 4 warnings, 0 errors
+compiling VacuumG.c...
+APP\VacuumGauge\VacuumG.c(36): warning:  #177-D: variable "error_last" was declared but never referenced
+        float static error_last=0;
+APP\VacuumGauge\VacuumG.c(40): warning:  #550-D: variable "time_change" was set but never used
+        float time_change;
+APP\VacuumGauge\VacuumG.c: 2 warnings, 0 errors
+compiling 1479A.c...
+compiling iwdg.c...
 linking...
-Program Size: Code=24868 RO-data=9440 RW-data=244 ZI-data=5148  
+Program Size: Code=24912 RO-data=9440 RW-data=244 ZI-data=5148  
 FromELF: creating hex file...
-".\output\工程模板.axf" - 0 Error(s), 42 Warning(s).
+".\output\工程模板.axf" - 0 Error(s), 58 Warning(s).
 
 <h2>Collection of Component include folders:</h2>
   E:\MasterWork\Master1\pcb\keilcode\Codesum\_2DAC_ADC_printf_LCD_w5500\current-project\ProjectTemp\RTE

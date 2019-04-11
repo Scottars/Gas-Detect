@@ -127,7 +127,7 @@ u16 Get_ADC_Value(u8 channel,u8 times)
 			ADC_SoftwareStartConvCmd(ADC1, ENABLE);// 软件触发
 			while (!ADC_GetFlagStatus(ADC1,ADC_FLAG_EOC));  //??????   本身也有延迟，实际上如果
 			temp += ADC_GetConversionValue(ADC1);		 //用来读取我们的转换值。
-			delay_ms(5);
+			delay_ms(5);//this delay that we can delete 
 
 		}
 		
@@ -147,14 +147,9 @@ float *AD_Conversion()
 
 		//for (i=0;i<10;i=i+1)
 		//{
-			
-	
-		
 		
 		//	printf("The target dac boltage is : %f\n",dacval*3.3/3300);	
-	
-			
-			
+		
 			AD_Channel_10_Value = Get_ADC_Value(ADC_Channel_10,1); 
 			AD_Channel_11_Value = Get_ADC_Value(ADC_Channel_11,1);
 			AD_Channel_12_Value = Get_ADC_Value(ADC_Channel_12,1);

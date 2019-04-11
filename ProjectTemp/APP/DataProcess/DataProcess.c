@@ -1,7 +1,16 @@
 #include  "DataProcess.h"
 #include "printf.h"
-
-
+/*******************************************************************************
+* Function name  : ADVoltage_2_Flow1479A
+* Description  : Transfer the ad value to the flow value
+* Input :  actual ad value(we can get from the ad conversion )
+* Output  :  calculate -----actual pressure(to display 
+			on the screen or to the serial port)
+* Return Value :  Pressure
+* Attention: we can only use this function when we need 
+			 to display our value or tell the pc what flow it is now)
+						
+*******************************************************************************/
 
 float ADVoltage_2_Flow1479A(float ADValue_GasFlow)
 
@@ -13,17 +22,42 @@ float ADVoltage_2_Flow1479A(float ADValue_GasFlow)
 
 }
 
+/*******************************************************************************
+* Function name  : ADVoltage_2_Pressure627D
+* Description  : Transfer the ad value to the pressure value 
+* Input :  actual ad value(we can get from the ad conversion )
+* Output  :  calculate -----actual pressure(to display 
+			on the screen or to the serial port)
+* Return Value :  Pressure
+* Attention: we can only use this function when we need 
+			 to display our value or tell the pc what pressure it is now)
+						
+*******************************************************************************/
+
+
 
 float ADVoltage_2_Pressure627D(float ADValue_Vacuum627D)
-
 {
+	
 	float Pressure;
 	Pressure=20*13.3*ADValue_Vacuum627D/(3.9*10);
 
 
-    return  Pressure;
+    return  ADValue_Vacuum627D;
 
 }
+/*******************************************************************************
+* Function name  : ADVoltage_2_Pressure025D
+* Description  : Transfer the ad value to the pressure value 
+* Input :  actual ad value(we can get from the ad conversion )
+* Output  :  calculate -----actual pressure(to display 
+			on the screen or to the serial port)
+* Return Value :  Pressure
+* Attention: we can only use this function when we need 
+			 to display our value or tell the pc what pressure it is now)
+						
+*******************************************************************************/
+
 
 float ADVoltage_2_Pressure025D(float ADValue_Vacuum025D)
 
@@ -40,6 +74,22 @@ float ADVoltage_2_Pressure025D(float ADValue_Vacuum025D)
 
 
 
+
+
+
+
+
+/*******************************************************************************
+* Function name  : Flow1479A_2_ADVoltage
+* Description  : transfer the flow value to the ad value
+* Input : actual flow value
+* Output  :  AD voltage
+* Return Value :  AD_Voltage
+* Attention: we can only use this function when we get our flow
+			or pressure from the pc 		
+*******************************************************************************/
+
+
 float Flow1479A_2_ADVoltage(float Flow_Value)
 {
 	
@@ -47,6 +97,15 @@ float Flow1479A_2_ADVoltage(float Flow_Value)
 
 }
 
+/*******************************************************************************
+* Function name  : Pressure627D_2_ADVoltage
+* Description  : transfer the flow value to the ad value
+* Input : actual flow value
+* Output  :  AD voltage
+* Return Value :  AD_Voltage
+* Attention: we can only use this function when we get our flow
+			or pressure from the pc 		
+*******************************************************************************/
 
 
 float Pressure627D_2_ADVoltage(float Pressure_Value)
@@ -55,10 +114,19 @@ float Pressure627D_2_ADVoltage(float Pressure_Value)
 	
 		AD_Volatge=Pressure_Value*10*3.9/(13.3*20);
 
-    return AD_Volatge;
+    return Pressure_Value;
 
 }
 
+/*******************************************************************************
+* Function name  : Pressure025D_2_ADVoltage
+* Description  : transfer the flow value to the ad value
+* Input : actual flow value
+* Output  :  AD voltage
+* Return Value :  AD_Voltage
+* Attention: we can only use this function when we get our flow
+			or pressure from the pc 		
+*******************************************************************************/
 
 float Pressure025D_2_ADVoltage(float Pressure_Value)
 {

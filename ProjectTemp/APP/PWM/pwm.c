@@ -20,7 +20,7 @@ void pwm_init(u16 pre, u16 psc)
 	RCC_APB2PeriphClockCmd(RCC_APB2Periph_AFIO,ENABLE);
 
 	/*  配置GPIO的模式和IO口 */
-	GPIO_InitStructure.GPIO_Pin=GPIO_Pin_7;    //TIM1 CH2  pa9
+	GPIO_InitStructure.GPIO_Pin=GPIO_Pin_7;    //TIM3 PC7
 	GPIO_InitStructure.GPIO_Speed=GPIO_Speed_50MHz;
 	GPIO_InitStructure.GPIO_Mode=GPIO_Mode_AF_PP;//复用推挽输出
 	GPIO_Init(GPIOC,&GPIO_InitStructure);
