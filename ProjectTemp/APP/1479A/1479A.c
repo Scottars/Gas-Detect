@@ -41,9 +41,6 @@ void Flow_1479A_Adjustment(float Flow_Value)
 	//Call Dac conversion function 
 	//Flow_ADVolatage should be at 0-3300  represent 0-3.3 v
 	
-
-
-
 	Flow_ADVoltage=(int)(Flow_Value*100);
 
 	printf("Set Actuall value parameter:%f\r\n",Flow_ADVoltage);

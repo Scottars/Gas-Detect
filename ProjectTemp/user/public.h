@@ -14,6 +14,8 @@ void delay(u32 i);
 
 void Cavity_Pressure_SendBack(void);
 void Status_Register_Update(void);
+void Status_LCD_Update(void);
+
 
 
 

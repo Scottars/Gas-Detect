@@ -71,7 +71,7 @@ void adc_init()
 	while(ADC_GetCalibrationStatus(ADC1));//获取指定ADC的校准程序
 	
 //设置指定ADC的规则组通道，设置它们的转化顺序和采样时间
-	ADC_RegularChannelConfig(ADC1,ADC_Channel_10,1,ADC_SampleTime_239Cycles5);
+	ADC_RegularChannelConfig(ADC1,ADC_Channel_11,1,ADC_SampleTime_239Cycles5);
 	                       //通道选择    通道数量    采样时间（ADC）有采样周期
 	ADC_SoftwareStartConvCmd(ADC1, ENABLE);//使能或者失能指定的ADC的软件转换启动功能   开始
 
@@ -80,7 +80,7 @@ void adc_init()
 
 //////////////////////AD1 通道12////////////////////////////////////////
 	
-	GPIO_InitStructure.GPIO_Pin=GPIO_Pin_2;//ADC  PA1口  PA2口
+	GPIO_InitStructure.GPIO_Pin=GPIO_Pin_2;//ADC  PC2
 	GPIO_InitStructure.GPIO_Mode=GPIO_Mode_AIN;	//模拟输入
 	GPIO_InitStructure.GPIO_Speed=GPIO_Speed_50MHz;
 	GPIO_Init(GPIOC,&GPIO_InitStructure);
@@ -103,7 +103,7 @@ void adc_init()
 	while(ADC_GetCalibrationStatus(ADC1));//获取指定ADC的校准程序
 	
 //设置指定ADC的规则组通道，设置它们的转化顺序和采样时间
-	ADC_RegularChannelConfig(ADC1,ADC_Channel_10,1,ADC_SampleTime_239Cycles5);
+	ADC_RegularChannelConfig(ADC1,ADC_Channel_12,1,ADC_SampleTime_239Cycles5);
 	                       //通道选择    通道数量    采样时间（ADC）有采样周期
 	ADC_SoftwareStartConvCmd(ADC1, ENABLE);//使能或者失能指定的ADC的软件转换启动功能   开始
 
@@ -145,23 +145,73 @@ float *AD_Conversion()
 	u16 AD_Channel_Select[3]={ADC_Channel_10,ADC_Channel_11,ADC_Channel_12};//定义通道选择数组
 	u32 AD_Channel_10_Value,AD_Channel_11_Value,AD_Channel_12_Value;
 
-		//for (i=0;i<10;i=i+1)
-		//{
-		
-		//	printf("The target dac boltage is : %f\n",dacval*3.3/3300);	
-		
 			AD_Channel_10_Value = Get_ADC_Value(ADC_Channel_10,1); 
 			AD_Channel_11_Value = Get_ADC_Value(ADC_Channel_11,1);
 			AD_Channel_12_Value = Get_ADC_Value(ADC_Channel_12,1);
 			voltage[0] = (float)AD_Channel_10_Value*(3.3/4096);
 			voltage[1] = (float)AD_Channel_11_Value*(3.3/4096);
 			voltage[2] = (float)AD_Channel_12_Value*(3.3/4096);
-			//printf("Voltage0 is %f\r\n",voltage[0]);
-			//printf("Voltage1 is %f\r\n",voltage[1]);
-			//printf("Voltage2 is %f\r\n",voltage[2]);
-			//返回voltage 数组
+		//	printf("Voltage0 is %f\r\n",voltage[0]);
+//printf("Voltage1 is %f\r\n",voltage[1]);
+			
+		//	printf("Voltage2 is %f\r\n",voltage[2]);
+			//返回voltage 数组	
+
+		return voltage ;	
+}
+
+float AD_Conversion_1479A()
+{
 		
-	//	}
-		return voltage ;
+			float voltage;
+	////////////////////AD part/////////////////////////
 	
+	u32 AD_Channel_10_Value,AD_Channel_11_Value,AD_Channel_12_Value;
+
+			AD_Channel_10_Value = Get_ADC_Value(ADC_Channel_10,1); 
+	
+			voltage = (float)AD_Channel_10_Value*(0.0008056640625);
+	
+			//printf("AD conversion mid  1479A is %f\r\n",voltage);
+		
+			//返回voltage 数组	
+
+		return voltage ;	
+}
+
+float AD_Conversion_627D()
+{
+		
+			float voltage;
+	////////////////////AD part/////////////////////////
+	
+	u32 AD_Channel_10_Value,AD_Channel_11_Value,AD_Channel_12_Value;
+
+			AD_Channel_11_Value = Get_ADC_Value(ADC_Channel_11,1); 
+	
+			voltage = (float)AD_Channel_11_Value*(0.0008056640625);
+	
+			//printf("AD conversion mid  627Dis %f\r\n",voltage);
+		
+			//返回voltage 数组	
+
+		return voltage ;	
+}
+float AD_Conversion_025D()
+{
+		
+			float voltage;
+	////////////////////AD part/////////////////////////
+	
+	u32 AD_Channel_10_Value,AD_Channel_11_Value,AD_Channel_12_Value;
+
+			AD_Channel_12_Value = Get_ADC_Value(ADC_Channel_12,1); 
+	
+			voltage = (float)AD_Channel_12_Value*(0.0008056640625);
+	
+			//printf("AD conversion mid  025D is %f\r\n",voltage);
+		
+			//返回voltage 数组	
+
+		return voltage ;	
 }

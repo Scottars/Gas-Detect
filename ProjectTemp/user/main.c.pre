@@ -92,8 +92,6 @@ int flag_Timing=0;
 int flag_627D=0;
 int flag_1479A=0;
 
-
-
 ////////////////////Singal to Open Part///////////////////
 u8 Valve_Signal_Open=0x00;
 u8 Timing_Signal_Open=0x00;
@@ -112,6 +110,7 @@ u8 PEV_1479A_ControlMode=0x00;
 ///////////////////Value to PID/////////////////
 float Cavity_627D_Pressure_Status;
 float Flow_1479A_Status;
+float Cavity_025D_Pressure_Status;
 
 
 //////////////////The limit value set///////////
@@ -121,16 +120,16 @@ float Flow_1479A_Status;
 *
 */
 float Cavity_627D_Pressure_SetMax=20;
-float Cavity_627D_Pressure_SetMin=0;
+float Cavity_627D_Pressure_SetMin=-20;
 float Flow_1479A_SetMax=20;
-float Flow_1479A_SetMin=0;
+float Flow_1479A_SetMin=-20;
 
 
 float Cavity_627D_Puff_Pressure_SetMax=20;
-float Cavity_627D_Puff_Pressure_SetMin=0;
+float Cavity_627D_Puff_Pressure_SetMin=-20;
 
 float Flow_1479A_Puff_SetMax=20;
-float Flow_1479A_Puff_SetMin=0;
+float Flow_1479A_Puff_SetMin=-20;
 
 
 
@@ -139,9 +138,9 @@ float PID_I_SetMax=10;
 float PID_D_SetMax=10;
 
 
-float PID_P_SetMin=0;
-float PID_I_SetMin=0;
-float PID_D_SetMin=0;
+float PID_P_SetMin=-10;
+float PID_I_SetMin=-10;
+float PID_D_SetMin=-10;
 ////////////////////error feedback/////////////////////
 //30 none error
 //31 an error
@@ -170,7 +169,7 @@ int main()
 
 
     //////////////////use to 1479A mode or pev mode working alone///////
-    float PEV_FullyOpen_1479AMode=13.3;
+    float PEV_FullyOpen_1479AMode=13.3;// ---we should 
     float _1479A_FullyOpen_PEVMode=13.3;
     //for debug mode
     float PEV_FullyClose_1479AMode=13.3;
@@ -268,6 +267,7 @@ int main()
 
 
     **********************************************/
+	printf("before lcd display");
 
     System_Initialization();    //STM32œµÕ≥≥ı ºªØ∫Ø ˝(≥ı ºªØSTM32 ±÷”º∞Õ‚…Ë)
     Load_Net_Parameters();      //◊∞‘ÿÕ¯¬Á≤Œ ˝
@@ -355,6 +355,7 @@ int main()
 
             }
             flag_Normal=1;
+			
             if(Valve_Signal_Open==0x00) //close  valve or the system
             {
                 //Wait for opening
@@ -399,19 +400,20 @@ int main()
                     //Directly use the value we set
 
 
-                    printf("Call PID funtion\n\n\n");
+                    printf("Call PID funtion\r\n");
 
                     //set pid parameter to the function
                     //we have set our default value to  Package_P  I D
                     //we should also check the number's reasonable value
                     //execute the PID function to set the new pwm duty ratio
-                    VacuumValue_PID(Cavity_627D_Pressure_Set, Cavity_627D_Pressure_Status, Package_Duty_P,Package_Duty_I,Package_Duty_D);
+                     VacuumValue_PID(Cavity_627D_Pressure_Set, Cavity_627D_Pressure_Status, Package_Duty_P,Package_Duty_I,Package_Duty_D);
                     //Cavity_627D_Pressure_Set
                     ///////////////if we can switch to the puff mode /////////////////
 
                     //we set the signal to enable puff mode
                     //different mdoe , what paramters we should
                     //we should test the set value and actual value's relation
+                    //PSÔºöActually we should not set the pressure to zero, 
 
                     if (((Cavity_627D_Pressure_Status-Package_Cavity_627D_Pressure_Set)/(Package_Cavity_627D_Pressure_Set)<=0.5) & ((Cavity_627D_Pressure_Status-Package_Cavity_627D_Pressure_Set)/(Package_Cavity_627D_Pressure_Set)<=-0.5))
                     {
@@ -489,7 +491,8 @@ int main()
                             }
                             else
                             {
-                                //In 1479A control Mode
+                            	/**************Actually we cannot enter this mode *********************/
+                                //In 1479A control ModeÔºå
 
                                 printf("1479A control mode 2\r\n");
 
@@ -870,10 +873,12 @@ int main()
         {
             printf("after 1000 times");
             LCD_Display_Flag=1000;
-            Status_Register_Update();
+            
+			Status_LCD_Update();
         }
         LCD_Display_Flag--;
-        Status_Register_Update();
+       // Status_Register_Update();
+			Status_LCD_Update();
 
     }
 }
@@ -913,6 +918,8 @@ void Process_Socket_Data(SOCKET s)
 
     ///////////////////AD◊™ªª≤ø∑÷////////////////
     float *AD_Voltage_Status;
+	float AD_temp;
+	
     float temp=0; // ”√¿¥Ω¯––AD◊™ªª π”√µƒ±‰¡ø
     uint8_t temp1[5];
     char AD_Value[50];
@@ -960,13 +967,14 @@ void Process_Socket_Data(SOCKET s)
                         Tx_Buffer[2]=0x01;// register address
 
                         //Ad conversion
-                        AD_Voltage_Status = AD_Conversion();
+                      //  AD_Voltage_Status = AD_Conversion();
                         //AD_Voltage_Status[0 1 2]   ∑÷±±Ì æ1479A 627D 025d
                         // Flow_1479A_Status=1.5;
+                        AD_temp=AD_Conversion_1479A();
 
                         //
-                        temp = ADVoltage_2_Flow1479A(AD_Voltage_Status[0]);
-                        //temp=3;
+                        temp = ADVoltage_2_Flow1479A(AD_temp);
+                       printf("1479A Actual value:%f\r\n",temp);
                         //Transfer the float data to hex data
                         testdata.floatData=temp;
 
@@ -999,7 +1007,11 @@ void Process_Socket_Data(SOCKET s)
                         // Cavity_627D_Pressure_Status=AD_Voltage_Status[1];
 
                         //AD_Voltage_Status[0 1 2]   ∑÷±±Ì æ1479A 627D 025d
-                        temp = ADVoltage_2_Pressure627D(AD_Voltage_Status[1]);
+                          AD_temp=AD_Conversion_627D();
+
+                        //
+                        temp = ADVoltage_2_Pressure627D(AD_temp);
+						printf("627D Actual value:%f\r\n",temp);
 
                         //float value to hex
                         testdata.floatData=temp;
@@ -1028,7 +1040,11 @@ void Process_Socket_Data(SOCKET s)
 
 
                         //AD_Voltage_Status[0 1 2]   ∑÷±±Ì æ1479A 627D 025d
-                        temp = ADVoltage_2_Pressure025D(AD_Voltage_Status[2]);
+                           AD_temp=AD_Conversion_025D();
+
+                        //
+                        temp = ADVoltage_2_Pressure025D(AD_temp);
+						printf("025D Actual value:%f\r\n",temp);
 
 
                         //float to hex
@@ -1297,32 +1313,31 @@ void Process_Socket_Data(SOCKET s)
                         //we should set a critical value to limit the data
                         //if it doesn't meet our requirements,we need to send the data error to the pc
 
-					if((testdata.floatData>Flow_1479A_Puff_SetMax)|(testdata.floatData<Flow_1479A_Puff_SetMin))
-											{
-												//return the data over information
-												Error_OverSet=0x31;
-					
-					
-											}
-											else //the set is okay
-											{
+                        if((testdata.floatData>Flow_1479A_Puff_SetMax)|(testdata.floatData<Flow_1479A_Puff_SetMin))
+                        {
+                            //return the data over information
+                            Error_OverSet=0x31;
 
 
-                        //convert to float type
-                        testdata.byteData[3]=Rx_Buffer[3];
-                        testdata.byteData[2]=Rx_Buffer[4];
-                        testdata.byteData[1]=Rx_Buffer[5];
-                        testdata.byteData[0]=Rx_Buffer[6];
+                        }
+                        else //the set is okay
+                        {
+							Error_OverSet=0x31;
+                           //convert to float type
+                            testdata.byteData[3]=Rx_Buffer[3];
+                            testdata.byteData[2]=Rx_Buffer[4];
+                            testdata.byteData[1]=Rx_Buffer[5];
+                            testdata.byteData[0]=Rx_Buffer[6];
 
-                        //Vacuum Value should be changed into Voltage value accoroding 627D manully
+                            //Vacuum Value should be changed into Voltage value accoroding 627D manully
 
-                        Package_Cavity_627D_Puff_Set=testdata.floatData;
+                            Package_Cavity_627D_Puff_Set=testdata.floatData;
 
-                        printf("Case 0x0c: set puff pressure set\r\n");
-                        memcpy(Tx_Buffer, Rx_Buffer, size);
-                        Write_SOCK_Data_Buffer(s, Tx_Buffer,size);
+                            printf("Case 0x0c: set puff pressure set\r\n");
+                            memcpy(Tx_Buffer, Rx_Buffer, size);
+                            Write_SOCK_Data_Buffer(s, Tx_Buffer,size);
 
-												}
+                        }
                         break;
                     case 0x0d://pid code setting , set pid together, you cannot set it alone
 
@@ -1583,27 +1598,86 @@ void Initial_DebugMode()
 }
 
 void Status_Register_Update()
+	{
+		float AD_Voltage_Status[3];
+		char *ValveValue_Status;
+
+
+		ValveValue_Status=Gas_State_Read(); //∫Ø ˝ µœ÷∂¡»°IOø⁄µƒ∏ﬂµÕµÁ∆Ω÷µ
+
+		AD_Voltage_Status[0]=AD_Conversion_1479A();
+		
+			AD_Voltage_Status[1]=AD_Conversion_627D();
+			AD_Voltage_Status[2]=AD_Conversion_025D();	
+
+
+
+
+Flow_1479A_Status=ADVoltage_2_Flow1479A(AD_Voltage_Status[0]);
+Cavity_627D_Pressure_Status=ADVoltage_2_Pressure627D(AD_Voltage_Status[1]);
+Cavity_025D_Pressure_Status=ADVoltage_2_Pressure025D(AD_Voltage_Status[2]);
+
+
+    
+
+	
+}
+void Status_LCD_Update()
 {
+	float AD_Voltage_Status[3];
+		
+		char *ValveValue_Status;
+		char *ValveValue_Status_LCD;
+		float Set_Voltage[3];
+		/* In this part we need to update the devices to LCD or the internet  */  //use timer to send my status to the pc
+		//LCD to update
+		ValveValue_Status=Gas_State_Read(); //∫Ø ˝ µœ÷∂¡»°IOø⁄µƒ∏ﬂµÕµÁ∆Ω÷µ
+		ValveValue_Status_LCD = Gas_State_Read_LCD();
+		Gas_StateLayerUpdate(ValveValue_Status_LCD);
+		//AD_Voltage_Status=AD_Conversion();
+
+		AD_Voltage_Status[0]=AD_Conversion_1479A();
+	
+		AD_Voltage_Status[1]=AD_Conversion_627D();
+		AD_Voltage_Status[2]=AD_Conversion_025D();	
+
+		
+		
+		
+		//this sentence destroy the value
+		printf("AD_Voltage_Status[0]:%f\r\n",AD_Voltage_Status[0]);
+		printf("AD_Voltage_Status[1]:%f\r\n",AD_Voltage_Status[1]);
+		printf("AD_Voltage_Status[2]:%f\r\n",AD_Voltage_Status[2]);
+		//
 
 
-    float *AD_Voltage_Status;
-    char *ValveValue_Status;
-    char *ValveValue_Status_LCD;
-
-    /* In this part we need to update the devices to LCD or the internet  */  //use timer to send my status to the pc
-    //LCD to update
-    ValveValue_Status=Gas_State_Read(); //∫Ø ˝ µœ÷∂¡»°IOø⁄µƒ∏ﬂµÕµÁ∆Ω÷µ
-    ValveValue_Status_LCD = Gas_State_Read_LCD();
-    Gas_StateLayerUpdate(ValveValue_Status_LCD);
-    AD_Voltage_Status=AD_Conversion();
-    ADC_LCD_Out(AD_Voltage_Status);
 
 
-    //Alter current status ,
+		
+	
+		Set_Voltage[0]=Package_Flow_1479A_Set;
+		Set_Voltage[1]=Package_Cavity_627D_Pressure_Set;
+		Set_Voltage[2]=12;
+
+	
 
 
 
-    Flow_1479A_Status=ADVoltage_2_Flow1479A(AD_Voltage_Status[0]);
-    Cavity_627D_Pressure_Status=ADVoltage_2_Pressure627D(AD_Voltage_Status[1]);
+	
+
+
+	
+		Flow_1479A_Status=ADVoltage_2_Flow1479A(AD_Voltage_Status[0]);
+		Cavity_627D_Pressure_Status=ADVoltage_2_Pressure627D(AD_Voltage_Status[1]);
+		Cavity_025D_Pressure_Status=ADVoltage_2_Pressure025D(AD_Voltage_Status[2]);
+	
+		ADC_LCD_Out(AD_Voltage_Status,Set_Voltage);
+		printf("Flow_1479A_Status:%f\r\n",Flow_1479A_Status);
+		printf("Cavity_627D_Pressure_Status:%f\r\n",Cavity_627D_Pressure_Status);
+		printf("Cavity_025D_Pressure_Status:%f\r\n",Cavity_025D_Pressure_Status);
+		//Alter current status ,  
+	
+		//printf("Update the voltage status in the funtion\r\n");
+
 }
 

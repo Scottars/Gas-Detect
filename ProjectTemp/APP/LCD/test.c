@@ -92,7 +92,7 @@ Gui_StrCenter(0,lcddev.height-18,WHITE,BLUE,"http://www.lcdwiki.com",16,1);//æ”÷
 }
 
 
-void ADC_LCD_Out(float voltage[3])
+void ADC_LCD_Out(float voltage[3],float Set_Voltage[3])
 {
 	
 //u8 TEXT_Buffer[19]={"FLASH SPI TEST OK!"};
@@ -115,7 +115,24 @@ void ADC_LCD_Out(float voltage[3])
 	//delay_ms(10);		
 	//delay_ms(10);
 	}
+
+	for(i=0;i<3;i++)
+	{
+
+	sprintf(str,"%f%.20s",Set_Voltage[i],description);
+	
+
+	//sprintf(str,"%.3s%.3s",s1,s2); Ω´∂‡∏ˆ◊÷∑˚¥Æ¡¨Ω”∆¿¥
+	//Gui_StrCenter(0,90,WHITE,RED,str,16,1);//æ”÷–œ‘ æ
+	Show_Str(60,56+i*20,BLACK,WHITE,str,12,0);
+	//delay_ms(10);		
+	//delay_ms(10);
+	}
+
+
+	
 }
+
 
 
 

@@ -93,23 +93,22 @@ void Timing_Signal_init()
 
     /*  配置GPIO的模式和IO口 */
     GPIO_InitStructure.GPIO_Pin=GPIO_Pin_1;  //选择你要设置的IO口
-    GPIO_InitStructure.GPIO_Mode=GPIO_Mode_IN_FLOATING;   //设置推挽输出模式
+    GPIO_InitStructure.GPIO_Mode=GPIO_Mode_IPU;   //设置推挽输出模式
     GPIO_InitStructure.GPIO_Speed=GPIO_Speed_50MHz;   //设置传输速率
     GPIO_Init(GPIOB,&GPIO_InitStructure); /* 初始化GPIO */
 
 }
-void Timing_Signal_Check()  //外部中断初始化
+void Timing_Signal()  //外部中断初始化
 {
-    if(GPIO_ReadInputDataBit(GPIOB,GPIO_Pin_1)==1)
-    {
+  if(GPIO_ReadInputDataBit(GPIOB,GPIO_Pin_1)==1)
+	{
         Normal_Puff_RunningMode=0xff;
-        printf("Timing signal is here");
-    }
-    else
-    {
-        Normal_Puff_RunningMode=0x00;
+	printf("Timing signal is here");
+	}else
+{
+    Normal_Puff_RunningMode=0x00;
 
-    }
+}
 
 }
 

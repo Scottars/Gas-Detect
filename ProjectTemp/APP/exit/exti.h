@@ -8,4 +8,9 @@
 void exti_init(void);  //外部中断初始化
 
 void exti_disable(void);  //外部中断初始化
+
+void Timing_Signal_init(void);
+
+void Timing_Signal_Check(void); // get the timing signal is here or not  
+
 #endif 
