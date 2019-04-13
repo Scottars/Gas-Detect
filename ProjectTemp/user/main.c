@@ -227,7 +227,8 @@ int main()
     LED_Init(); //Initial
 
     ///////////////ADC Initial///////////////////ADC模块使用了三个片上AD PC0 PC1 PC2  分别是 AD10 11 12 通道
-    adc_init();  //ADC初始化
+  //  adc1_init();
+		 //ADC初始化
 
     /////////////////Serial port initial//////////////用来进行串口通讯的，printf 实现了重定向
     printf_init(); //printf初始化
