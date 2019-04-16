@@ -8,6 +8,7 @@
 * 输    出         : 无
 *******************************************************************************/
 extern u32 Normal_Puff_RunningMode;
+extern u32 PEV_1479A_ControlMode;
 void exti_init()  //外部中断初始化
 {
     GPIO_InitTypeDef GPIO_InitStructure;
@@ -93,22 +94,67 @@ void Timing_Signal_init()
 
     /*  配置GPIO的模式和IO口 */
     GPIO_InitStructure.GPIO_Pin=GPIO_Pin_1;  //选择你要设置的IO口
-    GPIO_InitStructure.GPIO_Mode=GPIO_Mode_IPU;   //设置推挽输出模式
+    GPIO_InitStructure.GPIO_Mode=GPIO_Mode_IN_FLOATING;   //floating in , the voltage is fully up to the outside circut
     GPIO_InitStructure.GPIO_Speed=GPIO_Speed_50MHz;   //设置传输速率
     GPIO_Init(GPIOB,&GPIO_InitStructure); /* 初始化GPIO */
 
 }
-void Timing_Signal()  //外部中断初始化
+void Timing_Signal_Check()  //外部中断初始化
 {
-  if(GPIO_ReadInputDataBit(GPIOB,GPIO_Pin_1)==1)
-	{
+	if(PEV_1479A_ControlMode==0x00)
+									  {
+										  printf("it has been changed to pev mode timing aa\r\n");
+				
+									  }
+									  else
+									  {
+										  printf("it still in 1479A mode  timing aa\r\n");
+									  }
+
+    if(GPIO_ReadInputDataBit(GPIOB,GPIO_Pin_1)==1)
+    {
         Normal_Puff_RunningMode=0xff;
-	printf("Timing signal is here");
-	}else
-{
-    Normal_Puff_RunningMode=0x00;
+        printf("Timing signal is here \r\n");
+    }
+    else
+    {
+    
+	{
+		if(PEV_1479A_ControlMode==0x00)
+										  {
+											  printf("it has been changed to pev mode timing ccc\r\n");
+					
+										  }
+										  else
+										  {
+											  printf("it still in 1479A mode  timing ccc\r\n");
+										  }
+        Normal_Puff_RunningMode=0x00;
+										  
+		{
+			if(PEV_1479A_ControlMode==0x00)
+											  {
+												  printf("it has been changed to pev mode timing dddd\r\n");
+						
+											  }
+											  else
+											  {
+												  printf("it still in 1479A mode  timing dddd\r\n");
+											  }
+		printf("Timing signal is not here\r\n");
+
+    }
+	
+	if(PEV_1479A_ControlMode==0x00)
+									  {
+										  printf("it has been changed to pev mode timing bb \r\n");
+				
+									  }
+									  else
+									  {
+										  printf("it still in 1479A mode  timingbb\r\n");
+									  }
 
 }
-
-}
+    	}
 

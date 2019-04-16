@@ -61,5 +61,10 @@ void pwm_init(u16 pre, u16 psc)
 	TIM_OC2PreloadConfig(TIM3, TIM_OCPreload_Enable);//使能或者失能TIMx在CCR2上的预装载寄存器
 					
 	
+
+}
+void pwm_enable()
+{
 	TIM_Cmd(TIM3,ENABLE);//使能或者失能TIMx外设
+
 }

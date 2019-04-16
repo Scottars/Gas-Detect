@@ -157,29 +157,29 @@ float Pressure_error;
 
 ////////////////////Value to control///////////////////
 
- float Cavity_627D_Pressure_Set;
- float Cavity_627D_Pressure_Default=0.5;
+float Cavity_627D_Pressure_Set;
+float Cavity_627D_Pressure_Default=0.5;
 
 
- //////////////////use to 1479A mode or pev mode working alone///////
- float PEV_FullyOpen_1479AMode=13.3;// ---we should
- float _1479A_FullyOpen_PEVMode=13.3;
- //for debug mode
- float PEV_FullyClose_1479AMode=0;
- float _1479A_FullyClose_PEVMode=0;
+//////////////////use to 1479A mode or pev mode working alone///////
+float PEV_FullyOpen_1479AMode=2;// ---we should translation this to the actual ad voltage
+float _1479A_FullyOpen_PEVMode=1.5;
+//for debug mode
+float PEV_FullyClose_1479AMode=0;
+float _1479A_FullyClose_PEVMode=0;
 
 
- float Flow_1479A_Set;
- float Flow_1479A_Default=0.5;
- ////////////////////Valve IO part////////////////
- char Valve_Default_Status_Set[2]= {0x00,0x00};
- char Valve_Operation_Status_Set[2];
- char Valve_Puff_Status_Set[2];
+float Flow_1479A_Set;
+float Flow_1479A_Default=0.5;
+////////////////////Valve IO part////////////////
+char Valve_Default_Status_Set[2]= {0x00,0x00};
+char Valve_Operation_Status_Set[2];
+char Valve_Puff_Status_Set[2];
 
 
 
- ///////////////////PID Duty Adjustment part//////
- float Duty_P=1,Duty_I=0,Duty_D=0; // we can set it later
+///////////////////PID Duty Adjustment part//////
+float Duty_P=1,Duty_I=0,Duty_D=0; // we can set it later
 
 
 int main()
@@ -189,7 +189,7 @@ int main()
     float temptofun;
     /**************variable define part************************/
 
- 
+
     ////////////////////1479A part/////////////////////////
     /*we need to set target value*/
 
@@ -227,8 +227,11 @@ int main()
     LED_Init(); //Initial
 
     ///////////////ADC Initial///////////////////ADC模块使用了三个片上AD PC0 PC1 PC2  分别是 AD10 11 12 通道
-  //  adc1_init();
-		 //ADC初始化
+    //  adc1_init(); we did not use the dma mode , so we cannot make it correctly
+
+
+
+
 
     /////////////////Serial port initial//////////////用来进行串口通讯的，printf 实现了重定向
     printf_init(); //printf初始化
@@ -239,7 +242,7 @@ int main()
 
 
     /////////////PWM Initial//////////////////////
-    pwm_init(3599,0);
+    pwm_init(3599,0);  //we should just initialize it but not enable it
 
 
 
@@ -289,7 +292,7 @@ int main()
     Timing_Signal_init();
     //EXTI_DeInit();
     //we can not mask all the exti ,beacause we use this for internet
-   // CLEAR_BIT(EXTI->IMR,EXTI_Line1);
+    // CLEAR_BIT(EXTI->IMR,EXTI_Line1);
     //      EXTI->IMR = EXTI_IMR_MR1;
     //EXTI->RTSR = EXTI_RTSR_TR0;
 
@@ -308,7 +311,7 @@ int main()
         IWDG_ReloadCounter();
         printf("Watch dog in while\r\n");
 //
-
+ 
 
 
         /****************************************网络处理通讯处理********************************************/
@@ -325,10 +328,11 @@ int main()
             //考虑二：直接在数据处理部分就直接调用我们的进行实际的操作部分。
         }
 
+   
         if(Normal_Debug_RunningMode==0x00)
         {
 
-            printf("Normal Running Mode\n");
+            printf("Normal Running Mode\r\n");
             if(flag_Debug==1)
             {
                 //gonna swtich to debugrunning mode
@@ -347,10 +351,10 @@ int main()
                 //this sentence is simmilar to the last one, we can abandon the last sentence
 
 
-                //Flow_1479A_Adjustment(_1479A_FullyOpen_PEVMode);//to make it fully open
+                Flow_1479A_Adjustment(_1479A_FullyClose_PEVMode);//to make it fully open
 
 
-                //VacuumValue_PID(PEV_FullyOpen_1479AMode, Cavity_627D_Pressure_Status, Package_Duty_P,Package_Duty_I,Package_Duty_D);
+                VacuumValue_PID(PEV_FullyClose_1479AMode, Cavity_627D_Pressure_Status, Package_Duty_P,Package_Duty_I,Package_Duty_D);
 
                 flag_Debug=0;
 
@@ -373,11 +377,11 @@ int main()
                 VacuumValue_PID(PEV_FullyClose_1479AMode, Cavity_627D_Pressure_Status, Package_Duty_P,Package_Duty_I,Package_Duty_D);
 
 
-                printf("Valve close\n");
+                printf("Valve close\r\n");
             }
             else //Open command
             {
-                printf("Valve Open\n");
+                printf("Valve Open\r\n");
                 //Set actual valve should be opened
                 Valve_Operation_Status_Set[0]=Package_Valve_Status_Set[0];//Get the valves to open from the package
                 Valve_Operation_Status_Set[1]=Package_Valve_Status_Set[1];
@@ -414,8 +418,8 @@ int main()
                     //different mdoe , what paramters we should
                     //we should test the set value and actual value's relation
                     //PS锛欰ctually we should not set the pressure to zero,
-					Pressure_error=(Cavity_627D_Pressure_Status-Package_Cavity_627D_Pressure_Set)/(Package_Cavity_627D_Pressure_Set);
-					
+                    Pressure_error=(Cavity_627D_Pressure_Status-Package_Cavity_627D_Pressure_Set)/(Package_Cavity_627D_Pressure_Set);
+
 
                     if ((Pressure_error<=0.5) & (Pressure_error>=-0.5))
                     {
@@ -428,7 +432,7 @@ int main()
                     }
                     if (Command_Timing_TriggerMode==0x00) //Command trigger
                     {
-                        printf("Command  Trigger Mode\n");
+                        printf("Command  Trigger Mode\r\n");
                         //all the mode needs to be default
                         //Only set to unpuff mode
 
@@ -438,23 +442,23 @@ int main()
                         //exti_init();
                         //CLEAR_BIT(EXTI_IMR,EXTI_IMR_IM1);
                         //exti_disable();
-                       // CLEAR_BIT(EXTI->IMR,EXTI_Line1);
+                        // CLEAR_BIT(EXTI->IMR,EXTI_Line1);
 
 
                         if(Normal_Puff_RunningMode==0x00) //unpuff
                         {
 
                             //this just like that, we open the puff mode
-                            printf("Unpuff Mode\n");
+                            printf("Unpuff Mode\r\n");
 
                             /*Switch those value to unpuff value, so that we can make it happen, during next pid adjustment*/
                             // valve to normal
-                           /* Valve_Operation_Status_Set[0]=Package_Valve_Status_Set[0];// we can get it from the Internet
-                           Actually we won't execite this sentence
-                            Valve_Operation_Status_Set[1]=Package_Valve_Status_Set[1];*/
+                            /* Valve_Operation_Status_Set[0]=Package_Valve_Status_Set[0];// we can get it from the Internet
+                            Actually we won't execite this sentence
+                             Valve_Operation_Status_Set[1]=Package_Valve_Status_Set[1];*/
 
                             //to close Puff mode status directly
-                          //  ValveStateChange(Valve_Operation_Status_Set);
+                            //  ValveStateChange(Valve_Operation_Status_Set);
 
                             //1479A flow to fully open
                             Flow_1479A_Set=_1479A_FullyOpen_PEVMode; //make the 1479a fully open
@@ -469,7 +473,7 @@ int main()
                         }
                         else //In  the PUff Mode
                         {
-                            printf("puff Mode\n");
+                            printf("puff Mode\r\n");
 
                             //to open Puff mode status
                             Valve_Operation_Status_Set[0]=Package_Valve_Status_Set[0] | Package_Valve_Puff_Status_Set[0];// we can get it from the Internet
@@ -514,8 +518,8 @@ int main()
                         //open timing interuupt singal
                         //enable exti1
                         //exti_init();
-                      //  SET_BIT(EXTI->IMR,EXTI_Line1);
-						Timing_Signal_Check();
+                        //  SET_BIT(EXTI->IMR,EXTI_Line1);
+                        Timing_Signal_Check();
 
 
                         //if we swtich from command trigger to timing trigger, we need to close puff mode
@@ -532,10 +536,10 @@ int main()
 
                             /*Switch those value to unpuff value, so that we can make it happen, during next pid adjustment*/
                             // valve to normal
-                           /* Valve_Operation_Status_Set[0]=Package_Valve_Status_Set[0];// we can get it from the Internet
+                            /* Valve_Operation_Status_Set[0]=Package_Valve_Status_Set[0];// we can get it from the Internet
 
-                            Valve_Operation_Status_Set[1]=Package_Valve_Status_Set[1];
-*/
+                             Valve_Operation_Status_Set[1]=Package_Valve_Status_Set[1];
+                            */
                             //to close Puff mode status directly
                             ValveStateChange(Valve_Operation_Status_Set);
 
@@ -572,7 +576,7 @@ int main()
                             if (PEV_1479A_ControlMode==0x00) //// Second layer to set puff value
                             {
                                 //In PEV control Mode
-                                printf("Pev control mode 2 \n");
+                                printf("Pev control mode 2 \r\n");
 
                                 Cavity_627D_Pressure_Set=Package_Cavity_627D_Puff_Set;
 
@@ -597,7 +601,7 @@ int main()
                 else //1479A control mode 1
                 {
 
-                    printf("1479A_Control Mode 1\n\n");
+                    printf("1479A_Control Mode 1\r\n");
                     // Set the PEV open in order to using 1479A control mode
                     // we also use pev control, but only to make it open about 100v
                     //set puff - PEV's Open voltage do we need a value to set?
@@ -607,8 +611,8 @@ int main()
 
 
 
-                    printf("Flow Status:%f\n\n",Flow_1479A_Status);
-                    printf("Target Flow Value:%f\n\n",Flow_1479A_Set);
+                    //printf("Flow Status:%f\n\n",Flow_1479A_Status);
+                    // printf("Target Flow Value:%f\n\n",Flow_1479A_Set);
 
                     //1479A adjustment DAC
 
@@ -634,14 +638,12 @@ int main()
                         Pressure_Okay=0x30;
                     }
 
-
-
-
+            
 
                     //Send back the pressure of the cavity
                     if (Command_Timing_TriggerMode==0x00) //Command trigger
                     {
-                        printf("Command	Trigger Mode\n");
+                        printf("Command	Trigger Mode\r\n");
                         //all the mode needs to be default
                         //Only set to unpuff mode
 
@@ -652,14 +654,14 @@ int main()
                         if(Normal_Puff_RunningMode==0x00) //unpuff
                         {
 
-                            printf("Unpuff Mode\n");
+                            printf("Unpuff Mode\r\n");
 
                             /*Switch those value to unpuff value, so that we can make it happen, during next pid adjustment*/
                             // valve to normal
-                          /*  Valve_Operation_Status_Set[0]=Package_Valve_Status_Set[0];// we can get it from the Internet
+                            /*  Valve_Operation_Status_Set[0]=Package_Valve_Status_Set[0];// we can get it from the Internet
 
-                            Valve_Operation_Status_Set[1]=Package_Valve_Status_Set[1];
-*/
+                              Valve_Operation_Status_Set[1]=Package_Valve_Status_Set[1];
+                            */
                             //to close Puff mode status directly
                             ValveStateChange(Valve_Operation_Status_Set);
 
@@ -676,7 +678,7 @@ int main()
                         }
                         else //In  the PUff Mode
                         {
-                            printf("puff Mode\n");
+                            printf("puff Mode\r\n");
 
                             //to open Puff mode status
                             Valve_Operation_Status_Set[0]=Package_Valve_Status_Set[0] | Package_Valve_Puff_Status_Set[0];// we can get it from the Internet
@@ -689,10 +691,10 @@ int main()
                             /*which pressure control mode  we are right now   second layer */
 
                             if (PEV_1479A_ControlMode==0x00) // Second layer to set puff value
-                            /*Actually we cannot be in this area*/
+                                /*Actually we cannot be in this area*/
                             {
                                 //In PEV control Mode
-                                printf("Pev control mode 2\n");
+                                printf("Pev control mode 2\r\n");
 
                                 Cavity_627D_Pressure_Set=Package_Cavity_627D_Puff_Set;
 
@@ -704,7 +706,7 @@ int main()
                             {
                                 //In 1479A control Mode
 
-                                printf("1479A control mode 2\n");
+                                printf("1479A control mode 2\r\n");
 
                                 Flow_1479A_Set=Package_Flow_1479A_Puff_Set;   // we can get it from the package we receive
 
@@ -721,42 +723,44 @@ int main()
                     else // timing trigger mode
                     {
 
-                        printf("Timing Trigger Mode \n");
+
+                        printf("Timing Trigger Mode \r\n");
 
                         //CLEAR_BIT(EXTI_IMR,EXTI_IMR_IM1);
                         //EXTI_DeInit();
                         //exti_init();
                         //SET_BIT(EXTI->IMR,EXTI_Line1);
                         Timing_Signal_Check();
+		
+
                         if(Normal_Puff_RunningMode==0x00) //unpuff  mode off
                         {
-                            printf("Unpuff mode");
+                            printf("Unpuff mode \r\n");
                             // Close all the puff valve
 
                             /*Switch those value to unpuff value, so that we can make it happen, during next pid adjustment*/
                             // valve to normal
-                           /* Valve_Operation_Status_Set[0]=Package_Valve_Status_Set[0];// we can get it from the Internet
+                            /* Valve_Operation_Status_Set[0]=Package_Valve_Status_Set[0];// we can get it from the Internet
 
-                            Valve_Operation_Status_Set[1]=Package_Valve_Status_Set[1];*/
+                             Valve_Operation_Status_Set[1]=Package_Valve_Status_Set[1];*/
 
                             //to close Puff mode status directly
-                            ValveStateChange(Valve_Operation_Status_Set);
+                            // ValveStateChange(Valve_Operation_Status_Set);
 
                             //1479A flow to normal
                             Flow_1479A_Set=Package_Flow_1479A_Set;
                             //627D Vacuum Pressire to normal
                             Cavity_627D_Pressure_Set=PEV_FullyOpen_1479AMode;
                             //this mode we jump out to exexute the pid adjustment again
+                      
 
                         }
-
-
                         else // PUff Mode on
                         {
 
                             //open
                             //Open the puff valve   //about this we should know that  it's the best to set the whole puff valve instead of set an extra valve
-                            printf("puff Mode\n");
+                            printf("puff Mode \r\n");
 
 
 
@@ -775,7 +779,7 @@ int main()
                             if (PEV_1479A_ControlMode==0x00) //// Second layer to set puff value
                             {
                                 //In PEV control Mode
-                                printf("Pev control mode 2 \n");
+                                printf("Pev control mode 2 \r\n");
 
                                 Cavity_627D_Pressure_Set=Package_Cavity_627D_Puff_Set;
 
@@ -791,13 +795,17 @@ int main()
                             {
                                 //In 1479A control Mode
 
-                                printf("1479A control mode 2 \n");
+                                printf("1479A control mode 2 \r\n");
 
                                 Flow_1479A_Set=Package_Flow_1479A_Puff_Set;   // we can get it from the package we receive
 
                             }
 
+
+
                         }
+
+     
 
                     }
 
@@ -883,10 +891,10 @@ int main()
             Status_LCD_Update();
         }
         LCD_Display_Flag--;
-        Status_Register_Update();
-		Status_LCD_Update();
+        Status_Register_Update();//we use this sentence to pid or dac adjust
+        Status_LCD_Update();
 
-		
+
 
     }
 }
@@ -1080,11 +1088,11 @@ void Process_Socket_Data(SOCKET s)
                         Tx_Buffer[1]=0x03;// function  code
                         Tx_Buffer[2]=0x04;// register address
                         //read gas valve status
-                      
+
                         ValveValue_Status=Gas_State_Read();
                         Tx_Buffer[3]=ValveValue_Status[0];
                         Tx_Buffer[4]=ValveValue_Status[1];
-       
+
                         //GetCRC16
                         crctestdata.CrcData=GetCRC16(Tx_Buffer,5);
 
@@ -1586,24 +1594,7 @@ void Cavity_Pressure_SendBack()
 
 }
 
-void Initial_DebugMode()
-{
-    ////////////////////Singal to Open Part///////////////////
-    Valve_Signal_Open=0x00;
-    Timing_Signal_Open=0x00;
-    Command_Signal_Open=0x00;
 
-
-    ////////////////////Mode Switch/////////////////// this should be able to change though the w5500
-    Normal_Debug_RunningMode=0x00;
-
-    Command_Timing_TriggerMode=0x00;
-
-    Normal_Puff_RunningMode=0x00;
-
-    PEV_1479A_ControlMode=0x00;
-
-}
 
 void Status_Register_Update()
 {
@@ -1653,11 +1644,11 @@ void Status_LCD_Update()
 
 
     //this sentence destroy the value
-   /* printf("AD_Voltage_Status[0]:%f\r\n",AD_Voltage_Status[0]);
-    printf("AD_Voltage_Status[1]:%f\r\n",AD_Voltage_Status[1]);
-    printf("AD_Voltage_Status[2]:%f\r\n",AD_Voltage_Status[2]);
-    //
-	*/
+    /* printf("AD_Voltage_Status[0]:%f\r\n",AD_Voltage_Status[0]);
+     printf("AD_Voltage_Status[1]:%f\r\n",AD_Voltage_Status[1]);
+     printf("AD_Voltage_Status[2]:%f\r\n",AD_Voltage_Status[2]);
+     //
+    */
 
 
 
@@ -1681,9 +1672,9 @@ void Status_LCD_Update()
     Cavity_025D_Pressure_Status=ADVoltage_2_Pressure025D(AD_Voltage_Status[2]);
 
     ADC_LCD_Out(AD_Voltage_Status,Set_Voltage);
-  /*  printf("Flow_1479A_Status:%f\r\n",Flow_1479A_Status);
-    printf("Cavity_627D_Pressure_Status:%f\r\n",Cavity_627D_Pressure_Status);
-    printf("Cavity_025D_Pressure_Status:%f\r\n",Cavity_025D_Pressure_Status);*/
+    /*  printf("Flow_1479A_Status:%f\r\n",Flow_1479A_Status);
+      printf("Cavity_627D_Pressure_Status:%f\r\n",Cavity_627D_Pressure_Status);
+      printf("Cavity_025D_Pressure_Status:%f\r\n",Cavity_025D_Pressure_Status);*/
     //Alter current status ,
 
     //printf("Update the voltage status in the funtion\r\n");

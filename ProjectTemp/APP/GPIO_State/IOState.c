@@ -86,15 +86,6 @@ void ValveStateChange(u8 Valve_Status_Set[2] )
             ValveSet_Value[i+8]=0;
     }
 
-
-
-
-
-
-
-
-
-
     if (ValveSet_Value[0] == 1)
     {
         Valve_1=1; //设置高电平为亮

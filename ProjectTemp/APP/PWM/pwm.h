@@ -3,6 +3,7 @@
 #include "stm32f10x.h"
 
 void pwm_init(u16 pre, u16 psc);
+void pwm_enable(void);
 
 
 

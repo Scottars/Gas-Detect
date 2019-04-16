@@ -77,14 +77,6 @@ float ADVoltage_2_Pressure025D(float ADValue_Vacuum025D)
 }
 
 
-
-
-
-
-
-
-
-
 /*******************************************************************************
 * Function name  : Flow1479A_2_ADVoltage
 * Description  : transfer the flow value to the ad value
@@ -136,28 +128,16 @@ float Pressure627D_2_ADVoltage(float Pressure_Value)
 
 float Pressure025D_2_ADVoltage(float Pressure_Value)
 {
-	float AD_Volatge;
-		
+	float AD_Volatge;	
 		AD_Volatge=Pressure_Value*10*3.9/(13.3*20);
-
     return AD_Volatge;
-
-
 }
 
 
 
 
-
-
-
-
-
 void    float2hex(uint8_t *char_array,float data)
-{
-
-
-    uint8_t i;
+{    uint8_t i;
     for (i = 0; i<4; i++)
     {
         char_array[i] = ((uint8_t*)(&data))[i];
@@ -167,9 +147,6 @@ void    float2hex(uint8_t *char_array,float data)
     printf("%x",char_array[2]);
     printf("%x",char_array[3]);
 }
-
-
-
 int CheckCRC16(unsigned char *pdat, unsigned char len)
 {
     unsigned int CRCi,sum;
@@ -197,7 +174,6 @@ int CheckCRC16(unsigned char *pdat, unsigned char len)
     if (sum == crc) return 1;
     return 0;
 }
-
 unsigned int  GetCRC16(unsigned char *pdat,int len)
 {
     unsigned int CRCi,sum;
@@ -222,12 +198,6 @@ unsigned int  GetCRC16(unsigned char *pdat,int len)
         }
     }
 
-
-
-
     return crc;
-
-
-
 }
 
