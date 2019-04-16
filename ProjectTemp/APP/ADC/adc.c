@@ -130,8 +130,15 @@ void adc12_init()
 
 
 
+/*******************************************************************************
+* Function name  : Get_ADC_Value
+* Description  : Get the result of ad conversion which concludes three channels to be choosed
+* Input : the channel you want get, and the sample times you want  ,get the mean of these times
+* Output  :  the ad result 
+* Return Value :  ad result(which is related to the reference)
+* Attention: we can only choose channel10 11 12 which mean pc0 pc1 pc2
 
-
+*******************************************************************************/
 u16 Get_ADC_Value(u8 channel,u8 times)
 {
     u8 t;  //times 用来实现多次采样的平均值~
@@ -178,6 +185,18 @@ float *AD_Conversion()
     return voltage ;
 }
 
+
+/*******************************************************************************
+* Function name  : AD_Conversion_1479A
+* Description  : Get the result of AD_Conversion_1479A
+* Input : none
+* Output  : the float value  of 1479A channel--channel 10--pc0
+* Return Value :  ad voltage (which is related to the reference)
+* Attention: the reference voltage value is 3.3V
+
+*******************************************************************************/
+
+
 float AD_Conversion_1479A()
 {
 
@@ -188,7 +207,7 @@ float AD_Conversion_1479A()
     ADC_DeInit(ADC1);
 
     adc10_init();
-    AD_Channel_10_Value = Get_ADC_Value(ADC_Channel_10,1);
+    AD_Channel_10_Value = Get_ADC_Value(ADC_Channel_10,10);
     voltage = (float)AD_Channel_10_Value*(0.0008056640625);
 
   //  printf("AD conversion mid  1479A is %f\r\n",voltage);
@@ -197,6 +216,16 @@ float AD_Conversion_1479A()
 
     return voltage ;
 }
+/*******************************************************************************
+* Function name  : AD_Conversion_627D
+* Description  : Get the result of AD_Conversion_627D
+* Input : none
+* Output  : the float value  of 627D channel--channel 11--pc1
+* Return Value :  ad voltage (which is related to the reference)
+* Attention: the reference voltage value is 3.3V
+
+*******************************************************************************/
+
 
 float AD_Conversion_627D()
 {
@@ -206,7 +235,7 @@ float AD_Conversion_627D()
     u32 AD_Channel_10_Value,AD_Channel_11_Value,AD_Channel_12_Value;
     ADC_DeInit(ADC1);
     adc11_init();
-    AD_Channel_11_Value = Get_ADC_Value(ADC_Channel_11,1);
+    AD_Channel_11_Value = Get_ADC_Value(ADC_Channel_11,10);
     voltage = (float)AD_Channel_11_Value*(0.0008056640625);
 
     //printf("AD conversion mid  627Dis %f\r\n",voltage);
@@ -214,6 +243,17 @@ float AD_Conversion_627D()
     //返回voltage 数组
     return voltage ;
 }
+
+/*******************************************************************************
+* Function name  : AD_Conversion_025D
+* Description  : Get the result of AD_Conversion_025D
+* Input : none
+* Output  : the float value  of 025D channel--channel 12--pc2
+* Return Value :  ad voltage (which is related to the reference)
+* Attention: the reference voltage value is 3.3V
+
+*******************************************************************************/
+
 float AD_Conversion_025D()
 {
     float voltage;
@@ -224,10 +264,10 @@ float AD_Conversion_025D()
     ADC_DeInit(ADC1);
     adc12_init();
 
-    AD_Channel_12_Value = Get_ADC_Value(ADC_Channel_12,1);
+    AD_Channel_12_Value = Get_ADC_Value(ADC_Channel_12,10);
 
     voltage = (float)AD_Channel_12_Value*(0.0008056640625);
-    //
+    
     //printf("AD conversion mid  025D is %f\r\n",voltage);
 
     //返回voltage 数组

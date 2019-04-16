@@ -104,11 +104,11 @@ user\main.c(940): warning:  #177-D: variable "temp1" was declared but never refe
       uint8_t temp1[5];
 user\main.c(941): warning:  #177-D: variable "AD_Value" was declared but never referenced
       char AD_Value[50];
-user\main.c(1602): warning:  #550-D: variable "ValveValue_Status" was set but never used
+user\main.c(1604): warning:  #550-D: variable "ValveValue_Status" was set but never used
       char *ValveValue_Status;
-user\main.c(1635): warning:  #167-D: argument of type "char *" is incompatible with parameter of type "u8 *"
+user\main.c(1637): warning:  #167-D: argument of type "char *" is incompatible with parameter of type "u8 *"
       Gas_StateLayerUpdate(ValveValue_Status_LCD);
-user\main.c(1628): warning:  #550-D: variable "ValveValue_Status" was set but never used
+user\main.c(1630): warning:  #550-D: variable "ValveValue_Status" was set but never used
       char *ValveValue_Status;
 user\main.c: 41 warnings, 0 errors
 compiling stm32f10x_it.c...
@@ -197,29 +197,23 @@ compiling w5500.c...
                 void adc12_init();
 APP\W5500\w5500.c: 3 warnings, 0 errors
 compiling DataProcess.c...
-APP\DataProcess\DataProcess.c(43): warning:  #550-D: variable "Pressure627D" was set but never used
-        float Pressure627D;
-APP\DataProcess\DataProcess.c(68): warning:  #550-D: variable "Pressure025D" was set but never used
-        float Pressure025D;
-APP\DataProcess\DataProcess.c(111): warning:  #550-D: variable "AD_Volatge" was set but never used
-        float AD_Volatge;
 APP\DataProcess\DataProcess.c(179): warning:  #177-D: variable "sum" was declared but never referenced
       unsigned int CRCi,sum;
 APP\DataProcess\DataProcess.c(182): warning:  #177-D: variable "crc_return" was declared but never referenced
       unsigned char *crc_return;
-APP\DataProcess\DataProcess.c: 5 warnings, 0 errors
+APP\DataProcess\DataProcess.c: 2 warnings, 0 errors
 compiling VacuumG.c...
-APP\VacuumGauge\VacuumG.c(34): warning:  #177-D: variable "error_last" was declared but never referenced
-      float static error_last=0;
-APP\VacuumGauge\VacuumG.c(38): warning:  #550-D: variable "time_change" was set but never used
-      float time_change;
+APP\VacuumGauge\VacuumG.c(40): warning:  #177-D: variable "error_last" was declared but never referenced
+                float static error_last=0;
+APP\VacuumGauge\VacuumG.c(42): warning:  #550-D: variable "Input_last" was set but never used
+                float static Input_last=0;
 APP\VacuumGauge\VacuumG.c: 2 warnings, 0 errors
 compiling 1479A.c...
 compiling iwdg.c...
 linking...
-Program Size: Code=25032 RO-data=9440 RW-data=304 ZI-data=5152  
+Program Size: Code=25364 RO-data=9440 RW-data=304 ZI-data=5152  
 FromELF: creating hex file...
-".\output\工程模板.axf" - 0 Error(s), 69 Warning(s).
+".\output\工程模板.axf" - 0 Error(s), 66 Warning(s).
 
 <h2>Collection of Component include folders:</h2>
   E:\MasterWork\Master1\pcb\keilcode\Codesum\_2DAC_ADC_printf_LCD_w5500\current-project\ProjectTemp\RTE

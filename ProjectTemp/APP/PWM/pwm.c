@@ -63,6 +63,15 @@ void pwm_init(u16 pre, u16 psc)
 	
 
 }
+/*******************************************************************************
+* Function name  :  pwm_enable
+* Description  : to enable pwm
+* Input : None
+* Output  :  None
+* Return Value :  None
+* Attention: we do not want pwm to open any time, so we want to use it when we need to 
+*******************************************************************************/
+
 void pwm_enable()
 {
 	TIM_Cmd(TIM3,ENABLE);//使能或者失能TIMx外设

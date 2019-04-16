@@ -32,3 +32,4 @@
 .\output\vacuumg.o: .\Libraries\STM32F10x_StdPeriph_Driver\inc\misc.h
 .\output\vacuumg.o: D:\Program Files\Keil5\ARM\ARMCC\Bin\..\include\stdio.h
 .\output\vacuumg.o: .\APP\PWM\pwm.h
+.\output\vacuumg.o: .\APP\DataProcess\DataProcess.h

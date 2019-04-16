@@ -76,6 +76,8 @@ u16 ColorTab[5]={RED,GREEN,BLUE,YELLOW,BRED};//¶¨ÒåÑÕÉ«Êý×é
  * @parameters :str:the start address of the Chinese and English strings
  * @retvalue   :None
 ******************************************************************************/ 
+
+
 void DrawTestPage(u8 *str)
 {
 
@@ -91,6 +93,15 @@ Gui_StrCenter(0,lcddev.height-18,WHITE,BLUE,"http://www.lcdwiki.com",16,1);//¾ÓÖ
 //LCD_Fill(0,20,lcddev.width,lcddev.height-20,WHITE);
 }
 
+/*******************************************************************************
+* Function name  :  ADC_LCD_Out
+* Description  : update the adc part
+* Input : the adc part voltage(Pressure,we need to display) , the target value we need to set 
+* Output  :  None
+* Return Value :  None
+* Attention: the input is tuple
+
+*******************************************************************************/
 
 void ADC_LCD_Out(float voltage[3],float Set_Voltage[3])
 {
@@ -126,6 +137,16 @@ void ADC_LCD_Out(float voltage[3],float Set_Voltage[3])
 	//delay_ms(10);
 	}
 }
+/*******************************************************************************
+* Function name  :  GridLayer
+* Description  : draw the basic page we put on the screen
+* Input :None 
+* Output  :  None
+* Return Value :  None
+* Attention: we do this only to make refresh the page
+
+*******************************************************************************/
+
 void GridLayer()
 {	
 	int i;
@@ -184,6 +205,15 @@ void GridLayer()
 	
 }
 
+/*******************************************************************************
+* Function name  :  Gas_StateLayer
+* Description  : draw the state of valve state, it only shows the default value 
+* Input :None 
+* Output  :  None
+* Return Value :  None
+* Attention: 
+
+*******************************************************************************/
 
 void Gas_StateLayer(void )
 {
@@ -203,6 +233,16 @@ void Gas_StateLayer(void )
 	
 	delay_ms(1500);
 }
+/*******************************************************************************
+* Function name  :  Gas_StateLayerUpdate
+* Description  : if we want to update the status, we need to call this funtion to make this change
+* Input :None 
+* Output  :  None
+* Return Value :  None
+* Attention:  the input is 12 tuple,so that we can judge it one by one 
+
+*******************************************************************************/
+
 void Gas_StateLayerUpdate(u8 Value_State[12] )
 {
 	//´«ÈëÒ»¸öÊý×é£¬ÓÃÀ´Ö¸Ê¾¸üÐÂ¸÷¸öµÆµÄ×´Ì¬

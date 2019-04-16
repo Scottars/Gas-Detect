@@ -82,6 +82,18 @@ void exti_disable()  //外部中断初始化
 
     printf("we disable the \r\n");
 }
+
+/*******************************************************************************
+* Function name  : Timing_Signal_init
+* Description  : Intial the gpio pin , in order to read the pin voltage to judge the signal is here or not 
+* Input : None
+* Output  :  None
+* Return Value :  None
+* Attention: In the Timing mode, we initialize the gpio to input down so we 
+		judge the signal is here or not to decide if we should open the puff mode 
+
+*******************************************************************************/
+
 void Timing_Signal_init()
 {
 
@@ -98,6 +110,16 @@ void Timing_Signal_init()
     GPIO_Init(GPIOA,&GPIO_InitStructure); /* 初始化GPIO */
 
 }
+/*******************************************************************************
+* Function name  :  Timing_Signal_Check
+* Description  : Timing check if the signal is here or not 
+* Input : None
+* Output  :  None
+* Return Value :  None
+* Attention: we judge the signal is PA8 pin, which is five voltage torlerance
+
+*******************************************************************************/
+
 void Timing_Signal_Check()  //外部中断初始化
 {
 

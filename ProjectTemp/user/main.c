@@ -892,7 +892,7 @@ int main()
         }
         LCD_Display_Flag--;
         Status_Register_Update();//we use this sentence to pid or dac adjust
-        Status_LCD_Update();
+       //Status_LCD_Update();
 
 
 
@@ -900,16 +900,14 @@ int main()
 }
 
 /*******************************************************************************
-* 函数名  : Process_Socket_Data
-* 描述    : W5500接收并发送接收到的数据
-* 输入    : s:端口号
-* 输出    : 无
-* 返回值  : 无
-* 说明    : 本过程先调用S_rx_process()从W5500的端口接收数据缓冲区读取数据,
-*           然后将读取的数据从Rx_Buffer拷贝到Temp_Buffer缓冲区进行处理。
-*           处理完毕，将数据从Temp_Buffer拷贝到Tx_Buffer缓冲区。调用S_tx_process()
-*           发送数据。
+* Function name  :  Process_Socket_Data
+* Description  : Analysis the package we receive from the pc 
+* Input : Socket 0-7 
+* Output  :  None
+* Return Value :  None
+* Attention: we process the data we get from the pc 
 *******************************************************************************/
+
 
 void Process_Socket_Data(SOCKET s)
 {
@@ -1153,7 +1151,7 @@ void Process_Socket_Data(SOCKET s)
                         else
                         {
                             Normal_Debug_RunningMode=0x00;
-                            printf("ase 05 to open Normal Running Mode\n");
+                            printf("Case 05 to open Normal Running Mode\n");
 
 
                         }
@@ -1191,7 +1189,7 @@ void Process_Socket_Data(SOCKET s)
                         else
                         {
                             PEV_1479A_ControlMode=0x00;
-                            printf("ase 06 to PEV control mode\r\n");
+                            printf("Case 07 to PEV control mode\r\n");
 
 
                         }
@@ -1226,13 +1224,13 @@ void Process_Socket_Data(SOCKET s)
                         if(Rx_Buffer[3]==0x31) //表示关闭当前喷出模式 x
                         {
                             Normal_Puff_RunningMode=0xff;
-                            printf("Case 07 puff mode on\r\n");
+                            printf("Case 09 puff mode on\r\n");
 
                         }
                         else
                         {
                             Normal_Puff_RunningMode=0x00;
-                            printf("Case 07 puff mode off\r\n");
+                            printf("Case 09 puff mode off\r\n");
 
                         }
 
@@ -1313,7 +1311,7 @@ void Process_Socket_Data(SOCKET s)
                             //1479A Flow Set value
 
                             Package_Flow_1479A_Set=testdata.floatData;
-                            printf("Set 1479A Flow Data\r\n");
+                            printf("Case 0x0B Set 1479A Flow Data\r\n");
                             memcpy(Tx_Buffer, Rx_Buffer, size);
                             Write_SOCK_Data_Buffer(s, Tx_Buffer,size);
                         }
@@ -1440,6 +1438,8 @@ void Process_Socket_Data(SOCKET s)
 
                         Error_Communicate=0x30;
                         Error_OverSet=0x30;
+
+						
                         break;
 
                 }
@@ -1595,6 +1595,14 @@ void Cavity_Pressure_SendBack()
 }
 
 
+/*******************************************************************************
+* Function name  :  Status_Register_Update
+* Description  : Status_Register_Update,in order to do pwm adjustment and the 1479a flow adjustment
+* Input : None
+* Output  :  None
+* Return Value :  None
+* Attention: we process the data we get from the pc 
+*******************************************************************************/
 
 void Status_Register_Update()
 {
@@ -1621,6 +1629,15 @@ void Status_Register_Update()
 
 
 }
+/*******************************************************************************
+* Function name  :  Status_LCD_Update
+* Description  : to update the lcd display 
+* Input : None
+* Output  :  None
+* Return Value :  None
+* Attention: it costs a lot of time, which we cannot use this function every time
+*******************************************************************************/
+
 void Status_LCD_Update()
 {
     float AD_Voltage_Status[3];

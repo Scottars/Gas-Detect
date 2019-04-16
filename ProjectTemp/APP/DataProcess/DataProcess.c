@@ -46,7 +46,7 @@ float ADVoltage_2_Pressure627D(float ADValue_Vacuum627D)
 	Pressure627D=6.820512821*ADValue_Vacuum627D;
 		
 
-    return  ADValue_Vacuum627D;
+    return  Pressure627D;
 
 }
 /*******************************************************************************
@@ -72,7 +72,7 @@ float ADVoltage_2_Pressure025D(float ADValue_Vacuum025D)
 	
 	
 	
-		return	ADValue_Vacuum025D;
+		return	Pressure025D;
 
 }
 
@@ -112,7 +112,7 @@ float Pressure627D_2_ADVoltage(float Pressure_Value)
 	
 		AD_Volatge=Pressure_Value*10*3.9/(13.3*20);
 
-    return Pressure_Value;
+    return AD_Volatge;
 
 }
 
@@ -147,6 +147,15 @@ void    float2hex(uint8_t *char_array,float data)
     printf("%x",char_array[2]);
     printf("%x",char_array[3]);
 }
+/*******************************************************************************
+* Function name  : CheckCRC16
+* Description  : Determine whether the CRC is correct from the pc 
+* Input : The package we received, and the actual data length we 
+* Output  :  Crc check okay or not true=1 false = 0 
+* Return Value :  1 or 0
+* Attention: we use this function to judge the package we get from the pc is correct or not	
+*******************************************************************************/
+
 int CheckCRC16(unsigned char *pdat, unsigned char len)
 {
     unsigned int CRCi,sum;
@@ -174,6 +183,16 @@ int CheckCRC16(unsigned char *pdat, unsigned char len)
     if (sum == crc) return 1;
     return 0;
 }
+/*******************************************************************************
+* Function name  : GetCRC16
+* Description  : to get the crc we have put the data we need to send to the internet 
+* Input :  The data we need to send to the internet and the length of the data(actually it is a package)
+* Output  :  the crc code 
+* Return Value :  crc code 
+* Attention: we use this function to get the crc code in order to put it at the end of the package
+
+*******************************************************************************/
+
 unsigned int  GetCRC16(unsigned char *pdat,int len)
 {
     unsigned int CRCi,sum;

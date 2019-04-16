@@ -46,6 +46,7 @@ void Flow_1479A_Adjustment(float Flow_Value)
 //	printf("Set Actuall value parameter:%f\r\n",Flow_ADVoltage);
 	
 	Dac1_Set_Vol(Flow_ADVoltage);
+//adtually we donnot need to use pid, beacause we have set the flow value 
 
 	
 

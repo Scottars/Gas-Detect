@@ -1,17 +1,16 @@
 #include "dac.h"
 
-//////////////////////////////////////////////////////////////////////////////////	 
-//±¾³ÌĞòÖ»¹©Ñ§Ï°Ê¹ÓÃ£¬Î´¾­×÷ÕßĞí¿É£¬²»µÃÓÃÓÚÆäËüÈÎºÎÓÃÍ¾
-//ALIENTEKÕ½½¢STM32¿ª·¢°å
-//DAC ´úÂë	   
-//ÕıµãÔ­×Ó@ALIENTEK
-//¼¼ÊõÂÛÌ³:www.openedv.com
-//ĞŞ¸ÄÈÕÆÚ:2012/9/8
-//°æ±¾£ºV1.0
-//°æÈ¨ËùÓĞ£¬µÁ°æ±Ø¾¿¡£
-//Copyright(C) ¹ãÖİÊĞĞÇÒíµç×Ó¿Æ¼¼ÓĞÏŞ¹«Ë¾ 2009-2019
-//All rights reserved									  
-//////////////////////////////////////////////////////////////////////////////////
+
+/*******************************************************************************
+* Function name  : Dac1_Init
+* Description  : We initialize the dac pin
+* Input : None
+* Output  :  None
+* Return Value :  None
+* Attention: this function is to initiallize the Dac1  
+
+*******************************************************************************/
+
 //DACÍ¨µÀ1Êä³ö³õÊ¼»¯
 void Dac1_Init(void)
 {
@@ -40,9 +39,19 @@ void Dac1_Init(void)
 
 }
 
-//è®¾ç½®é€šé“1è¾“å‡ºç”µå‹
-//vol:0~3300,presentï¼š0~3.3V
-//we can set a ceiling to limit the value
+/*******************************************************************************
+* Function name  : Dac1_Set_Vol
+* Description  : we use this function to set Dac pin output 
+* Input : the volatage you want to set(actually it is the voltage * 1000)
+* Output  :  None
+* Return Value :  None
+* Attention: we actually  set the dac channel 
+				vol:0~3300,presentï¼š0~3.3V
+				we can set a ceiling to limit the value
+
+*******************************************************************************/
+
+
 void Dac1_Set_Vol(u16 vol)
 {
 	float temp=vol;
