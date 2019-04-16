@@ -92,17 +92,17 @@ void Timing_Signal_init()
     RCC_APB2PeriphClockCmd(RCC_APB2Periph_GPIOB,ENABLE); /* 开启GPIO时钟 */
 
     /*  配置GPIO的模式和IO口 */
-    GPIO_InitStructure.GPIO_Pin=GPIO_Pin_1;  //选择你要设置的IO口
-    GPIO_InitStructure.GPIO_Mode=GPIO_Mode_IN_FLOATING;   //floating in , the voltage is fully up to the outside circut
+    GPIO_InitStructure.GPIO_Pin=GPIO_Pin_8;  //选择你要设置的IO口
+    GPIO_InitStructure.GPIO_Mode=GPIO_Mode_IPD;   //floating in , the voltage is fully up to the outside circut
     GPIO_InitStructure.GPIO_Speed=GPIO_Speed_50MHz;   //设置传输速率
-    GPIO_Init(GPIOB,&GPIO_InitStructure); /* 初始化GPIO */
+    GPIO_Init(GPIOA,&GPIO_InitStructure); /* 初始化GPIO */
 
 }
 void Timing_Signal_Check()  //外部中断初始化
 {
 
 
-    if(GPIO_ReadInputDataBit(GPIOB,GPIO_Pin_1)==1)
+    if(GPIO_ReadInputDataBit(GPIOA,GPIO_Pin_8)==1)
     {
         Normal_Puff_RunningMode=0xff;
         printf("Timing signal is here \r\n");
@@ -116,5 +116,5 @@ void Timing_Signal_Check()  //外部中断初始化
             
         
     }
-}extern u32 Normal_Puff_RunningMode;
+}
 

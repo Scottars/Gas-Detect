@@ -3,7 +3,7 @@
 <title>Static Call Graph - [.\output\工程模板.axf]</title></head>
 <body><HR>
 <H1>Static Call Graph for image .\output\工程模板.axf</H1><HR>
-<BR><P>#&#060CALLGRAPH&#062# ARM Linker, 5050106: Last Updated: Tue Apr 16 10:49:14 2019
+<BR><P>#&#060CALLGRAPH&#062# ARM Linker, 5050106: Last Updated: Tue Apr 16 16:13:31 2019
 <BR><P>
 <H3>Maximum Stack Usage =        344 bytes + Unknown(Cycles, Untraceable Function Pointers)</H3><H3>
 Call chain for Maximum Stack Depth:</H3>
@@ -1768,7 +1768,7 @@ Global Symbols
 <BR>[Called By]<UL><LI><a href="#[de]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;System_Initialization
 </UL>
 
-<P><STRONG><a name="[e6]"></a>Timing_Signal_Check</STRONG> (Thumb, 122 bytes, Stack size 8 bytes, exti.o(i.Timing_Signal_Check))
+<P><STRONG><a name="[e6]"></a>Timing_Signal_Check</STRONG> (Thumb, 38 bytes, Stack size 8 bytes, exti.o(i.Timing_Signal_Check))
 <BR><BR>[Stack]<UL><LI>Max Depth = 32<LI>Call Chain = Timing_Signal_Check &rArr; __2printf
 </UL>
 <BR>[Calls]<UL><LI><a href="#[88]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;GPIO_ReadInputDataBit
@@ -1777,7 +1777,7 @@ Global Symbols
 <BR>[Called By]<UL><LI><a href="#[46]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;main
 </UL>
 
-<P><STRONG><a name="[e7]"></a>Timing_Signal_init</STRONG> (Thumb, 42 bytes, Stack size 8 bytes, exti.o(i.Timing_Signal_init))
+<P><STRONG><a name="[e7]"></a>Timing_Signal_init</STRONG> (Thumb, 44 bytes, Stack size 8 bytes, exti.o(i.Timing_Signal_init))
 <BR><BR>[Stack]<UL><LI>Max Depth = 36<LI>Call Chain = Timing_Signal_init &rArr; SystemInit &rArr; SetSysClock &rArr; SetSysClockTo72
 </UL>
 <BR>[Calls]<UL><LI><a href="#[77]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;GPIO_Init
@@ -2214,7 +2214,7 @@ Global Symbols
 <BR>[Called By]<UL><LI><a href="#[46]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;main
 </UL>
 
-<P><STRONG><a name="[46]"></a>main</STRONG> (Thumb, 1950 bytes, Stack size 8 bytes, main.o(i.main))
+<P><STRONG><a name="[46]"></a>main</STRONG> (Thumb, 1930 bytes, Stack size 8 bytes, main.o(i.main))
 <BR><BR>[Stack]<UL><LI>Max Depth = 344<LI>Call Chain = main &rArr; Status_LCD_Update &rArr; ADC_LCD_Out &rArr; Show_Str &rArr; LCD_ShowChar &rArr; LCD_DrawPoint &rArr; LCD_SetCursor &rArr; LCD_SetWindows &rArr; LCD_WriteRAM_Prepare &rArr; LCD_WR_REG
 </UL>
 <BR>[Calls]<UL><LI><a href="#[116]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;pwm_init
