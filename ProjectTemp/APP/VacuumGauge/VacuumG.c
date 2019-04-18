@@ -55,13 +55,13 @@
 		pwm_enable();
 	
 		error_AD=Pressure627D_2_ADVoltage(VacuumValue_Set-VacuumValue_Status);
-	    printf("Set P parameter:%f\r\n",Kp);
+	  /*  printf("Set P parameter:%f\r\n",Kp);
 	    printf("Set I parameter:%f\r\n",Ki);
 	    printf("Set D parameter:%f\r\n",Kd);
 	    printf("Actual Pressure value:%f\r\n",VacuumValue_Status);
 	    printf("Set Pressure value:%f\r\n",VacuumValue_Set);
 	
-	
+	*/
 		//time_change=0.1;
 		error_P=(error_AD)*Kp;
 	
@@ -87,7 +87,7 @@
 		//
 	
 		Duty=D*180 +1800;
-	    printf("Set Duty parameter:%f\r\n",Duty/3600.0);
+	  //  printf("Set Duty parameter:%f\r\n",Duty/3600.0);
 		//actually we need to call pwm duty change functiobn
 		//Duty's range is from 0 to 3600,So we can set our duty to 0-3600 present 0% to 100% or
 		//100% to 0%

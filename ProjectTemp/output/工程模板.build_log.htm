@@ -39,9 +39,9 @@ user\main.c(277): warning:  #223-D: function "System_Initialization" declared im
 user\main.c(278): warning:  #223-D: function "Load_Net_Parameters" declared implicitly
       Load_Net_Parameters();      //装载网络参数
 user\main.c(280): warning:  #223-D: function "W5500_Initialization" declared implicitly
-      W5500_Initialization();     //W5500初始货配置
+      W5500_Initialization();     //W5500 intial set
 user\main.c(281): warning:  #223-D: function "W5500_Socket_Set" declared implicitly
-      W5500_Socket_Set();//W5500端口初始化配置
+      W5500_Socket_Set();//W5500 port initial , we set the w5500 to tcp server mode
 user\main.c(347): warning:  #167-D: argument of type "char *" is incompatible with parameter of type "u8 *"
                   ValveStateChange(Valve_Operation_Status_Set);
 user\main.c(373): warning:  #167-D: argument of type "char *" is incompatible with parameter of type "u8 *"
@@ -74,43 +74,45 @@ user\main.c(187): warning:  #177-D: variable "k" was declared but never referenc
       u8 i,j,k;
 user\main.c(189): warning:  #177-D: variable "temptofun" was declared but never referenced
       float temptofun;
-user\main.c(1316): warning:  #223-D: function "memcpy" declared implicitly
-                                  memcpy(Tx_Buffer, Rx_Buffer, size);
-user\main.c(1353): warning:  #223-D: function "memcpy" declared implicitly
-                                  memcpy(Tx_Buffer, Rx_Buffer, size);
-user\main.c(1389): warning:  #223-D: function "memcpy" declared implicitly
-                                  memcpy(Tx_Buffer, Rx_Buffer, size);
-user\main.c(1446): warning:  #223-D: function "memcpy" declared implicitly
-                                          memcpy(Tx_Buffer, Rx_Buffer, size);
-user\main.c(917): warning:  #177-D: variable "floattest" was declared but never referenced
+user\main.c(904): warning:  #177-D: variable "RX_Buffer_Receive" was declared but never referenced
+      unsigned char RX_Buffer_Receive[2048];
+user\main.c(906): warning:  #177-D: variable "i" was declared but never referenced
+      int i;
+user\main.c(1469): warning:  #223-D: function "memcpy" declared implicitly
+                              memcpy(Tx_Buffer, Rx_Buffer, size);
+user\main.c(1506): warning:  #223-D: function "memcpy" declared implicitly
+                              memcpy(Tx_Buffer, Rx_Buffer, size);
+user\main.c(1542): warning:  #223-D: function "memcpy" declared implicitly
+                              memcpy(Tx_Buffer, Rx_Buffer, size);
+user\main.c(1599): warning:  #223-D: function "memcpy" declared implicitly
+                                      memcpy(Tx_Buffer, Rx_Buffer, size);
+user\main.c(1001): warning:  #177-D: variable "floattest" was declared but never referenced
       char floattest[10];
-user\main.c(918): warning:  #177-D: variable "test1" was declared but never referenced
+user\main.c(1002): warning:  #177-D: variable "test1" was declared but never referenced
       char test1[4];
-user\main.c(922): warning:  #177-D: variable "ValveValue_Set" was declared but never referenced
+user\main.c(1006): warning:  #177-D: variable "ValveValue_Set" was declared but never referenced
       u8 ValveValue_Set[12];  //来自网络传入过来的信号
-user\main.c(924): warning:  #177-D: variable "i" was declared but never referenced
+user\main.c(1008): warning:  #177-D: variable "i" was declared but never referenced
       u8 i;
-user\main.c(927): warning:  #177-D: variable "Kp" was declared but never referenced
+user\main.c(1011): warning:  #177-D: variable "Kp" was declared but never referenced
       float Kp,Ki,Kd;
-user\main.c(927): warning:  #177-D: variable "Ki" was declared but never referenced
+user\main.c(1011): warning:  #177-D: variable "Ki" was declared but never referenced
       float Kp,Ki,Kd;
-user\main.c(927): warning:  #177-D: variable "Kd" was declared but never referenced
+user\main.c(1011): warning:  #177-D: variable "Kd" was declared but never referenced
       float Kp,Ki,Kd;
-user\main.c(931): warning:  #177-D: variable "CRC_Mid" was declared but never referenced
+user\main.c(1015): warning:  #177-D: variable "CRC_Mid" was declared but never referenced
       unsigned int CRC_Mid;
-user\main.c(934): warning:  #550-D: variable "AD_Voltage_Status" was set but never used
+user\main.c(1018): warning:  #550-D: variable "AD_Voltage_Status" was set but never used
       float *AD_Voltage_Status;
-user\main.c(938): warning:  #177-D: variable "temp1" was declared but never referenced
-      uint8_t temp1[5];
-user\main.c(939): warning:  #177-D: variable "AD_Value" was declared but never referenced
-      char AD_Value[50];
-user\main.c(1683): warning:  #550-D: variable "ValveValue_Status" was set but never used
+user\main.c(1024): warning:  #177-D: variable "Actual_size" was declared but never referenced
+      unsigned short Actual_size;
+user\main.c(1822): warning:  #550-D: variable "ValveValue_Status" was set but never used
       char *ValveValue_Status;
-user\main.c(1725): warning:  #167-D: argument of type "char *" is incompatible with parameter of type "u8 *"
+user\main.c(1864): warning:  #167-D: argument of type "char *" is incompatible with parameter of type "u8 *"
       Gas_StateLayerUpdate(ValveValue_Status_LCD);
-user\main.c(1718): warning:  #550-D: variable "ValveValue_Status" was set but never used
+user\main.c(1857): warning:  #550-D: variable "ValveValue_Status" was set but never used
       char *ValveValue_Status;
-user\main.c: 41 warnings, 0 errors
+user\main.c: 42 warnings, 0 errors
 compiling stm32f10x_it.c...
 compiling public.c...
 compiling core_cm3.c...
@@ -211,9 +213,9 @@ APP\VacuumGauge\VacuumG.c: 2 warnings, 0 errors
 compiling 1479A.c...
 compiling iwdg.c...
 linking...
-Program Size: Code=25632 RO-data=9440 RW-data=304 ZI-data=5152  
+Program Size: Code=25288 RO-data=9440 RW-data=304 ZI-data=5152  
 FromELF: creating hex file...
-".\output\工程模板.axf" - 0 Error(s), 66 Warning(s).
+".\output\工程模板.axf" - 0 Error(s), 67 Warning(s).
 
 <h2>Collection of Component include folders:</h2>
   E:\MasterWork\Master1\pcb\keilcode\Codesum\_2DAC_ADC_printf_LCD_w5500\current-project\ProjectTemp\RTE

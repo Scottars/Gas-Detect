@@ -731,6 +731,7 @@ unsigned short Read_SOCK_Data_Buffer(SOCKET s, unsigned char *dat_ptr)
 	
 	if((offset+rx_size)<S_RX_SIZE)//如果最大地址未超过W5500接收缓冲区寄存器的最大地址
 	{
+																
 		for(i=0;i<rx_size;i++)//循环读取rx_size个字节数据
 		{
 			SPI3_Send_Byte(0x00);//发送一个哑数据
@@ -884,7 +885,7 @@ void W5500_Init(void)
 	//注意，网关IP必须与本机IP属于同一个子网，否则本机将无法找到网关
 	Write_W5500_nByte(SIPR,IP_Addr,4);		
 	
-	//设置发送缓冲区和接收缓冲区的大小，参考W5500数据手册
+	//设置发送缓冲区和接收缓冲区的大小，参考W5500数据手册 //ps,
 	for(i=0;i<8;i++)
 	{
 		Write_W5500_SOCK_1Byte(i,Sn_RXBUF_SIZE, 0x02);//Socket Rx memory size=2k
