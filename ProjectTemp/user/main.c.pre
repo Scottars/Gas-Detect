@@ -278,7 +278,7 @@ int main()
     Load_Net_Parameters();      //装载网络参数
     W5500_Hardware_Reset();     //硬件复位W5500
     W5500_Initialization();     //W5500 intial set
-    W5500_Socket_Set();//W5500 port initial , we set the w5500 to tcp server mode 
+    W5500_Socket_Set();//W5500 port initial , we set the w5500 to tcp server mode
 
 
 
@@ -309,7 +309,7 @@ int main()
 
         /////////////Update the watch dog  register//////////////////////
         IWDG_ReloadCounter();
-        printf("Watch dog in while\r\n");
+        //   printf("Watch dog in while\r\n");
 //
 
 
@@ -323,7 +323,7 @@ int main()
         if((S0_Data & S_RECEIVE) == S_RECEIVE)//  this is flag to tell if we receive the data
         {
             S0_Data&=~S_RECEIVE; //we set that we didnot receive a package data
-            Process_Socket_Data(0);//W5500接收并发送接收到的数据
+            Process_Package_Receive();//W5500接收并发送接收到的数据
             //对于传下来的整个的接收的数据包，我们有两种方法进行考虑，考虑1：将寄存器中的数据分出来，然后在主函数中进行各种的调用情况
             //考虑二：直接在数据处理部分就直接调用我们的进行实际的操作部分。
         }
@@ -332,7 +332,7 @@ int main()
         if(Normal_Debug_RunningMode==0x00)
         {
 
-            printf("Normal Running Mode\r\n");
+            //printf("Normal Running Mode\r\n");
             if(flag_Debug==1)
             {
                 //gonna swtich to debugrunning mode
@@ -377,7 +377,7 @@ int main()
                 VacuumValue_PID(PEV_FullyClose_1479AMode, Cavity_627D_Pressure_Status, Package_Duty_P,Package_Duty_I,Package_Duty_D);
 
 
-                printf("Valve close\r\n");
+                //  printf("Valve close\r\n");
             }
             else //Open command
             {
@@ -901,164 +901,87 @@ int main()
 
 void Process_Package_Receive()
 {
-	unsigned char *RX_Buffer_Receive;
-	int size;
-	int i;
-	int packCount;
-	int start_point=;
-	size=Read_SOCK_Data_Buffer(s, Rx_Buffer);
-	RX_Buffer_Receive=Rx_Buffer;
+    unsigned char RX_Buffer_Receive[2048];
+    int size;
+    int i=100;
+    int PackageSize;
+    int start_point=0;
+    size=Read_SOCK_Data_Buffer(0, Rx_Buffer);
+
+    //printf("Process_Package_Receive:%d\r\n",size);
+
+    while ((i>0)&(size>0))
+    {
+
+        switch (Rx_Buffer[start_point+1])
+        {
+
+            case 0x03:
+                //printf("In the Rx_bufffer part\r\n");
+
+                Process_Socket_Data(0,start_point);
+
+                PackageSize=6;
+                start_point += PackageSize;
+                size -= 6;
+                i--;
+                break;
+            case 0x05:
+                //printf("In the Rx_bufffer part\r\n");
+
+                Process_Socket_Data(0,start_point);
+
+                PackageSize=6;
+                start_point += PackageSize;
+                size -= 6;
+                i--;
+                break;
+
+            case 0x06:
+
+                if(CheckCRC16(Rx_Buffer,3+1+(int)Rx_Buffer[3])) //CRC check, correct crc
+                {
+                    printf("CRC check okay\r\n");
+                }
+                else //CRC check, wrong crc, set communication error
+                {
+                    printf("CRC check wrong\r\n");
+                    Error_Communicate=0x31;
+                }
+                //Actual_size=6+Rx_Buffer[3];
+
+                //printf("In the Rx_bufffer part\r\n");
 
 
-	while (size)
-		{
-		
-		switch (Rx_Buffer[1])
-				   {
-				
-					   case 0x03:
-				
-				
-						   if(CheckCRC16(Rx_Buffer,4)) //CRC check, correct crc
-						   {
-							   printf("CRC check okay\r\n");
-						   }
-				
-						   else //CRC check, wrong crc, set communication error
-						   {
-							   printf("CRC check wrong\r\n");
-							   Error_Communicate=0x31;
-						   }
-						   Actual_size=6;
-						   
-						   break;
-					   case 0x05:
-						   if(CheckCRC16(Rx_Buffer,4)) //CRC check, correct crc
-						   {
-							   printf("CRC check okay\r\n");
-						   }
-						   else //CRC check, wrong crc, set communication error
-						   {
-							   printf("CRC check wrong\r\n");
-							   Error_Communicate=0x31;
-						   }
-				
-						   Actual_size=6;
-						   break;
-					   case 0x06:
-				
-						   if(CheckCRC16(Rx_Buffer,3+1+(int)Rx_Buffer[3])) //CRC check, correct crc
-						   {
-							   printf("CRC check okay\r\n");
-						   }
-						   else //CRC check, wrong crc, set communication error
-						   {
-							   printf("CRC check wrong\r\n");
-							   Error_Communicate=0x31;
-						   }
-						   Actual_size=6+Rx_Buffer[3];
-				
-					   case 0x08:
-						   if(CheckCRC16(Rx_Buffer,4)) //CRC check, correct crc
-						   {
-							   printf("CRC check okay\r\n");
-						   }
-				
-						   else //CRC check, wrong crc, set communication error
-						   {
-							   printf("CRC check wrong\r\n");
-							   Error_Communicate=0x31;
-						   }
-				
-				
-						   Actual_size=6;
-						   break;
-				
-				   }
+                Process_Socket_Data(0,start_point);
 
-		
-		
-	
-		}
+                PackageSize=4+Rx_Buffer[start_point+3];
+                start_point += PackageSize;
+                size -= PackageSize;
+                i--;
+                break;
+            case 0x08:
+                //printf("In the Rx_bufffer part\r\n");
+
+                Process_Socket_Data(0,start_point);
+
+                PackageSize=6;
+                start_point += PackageSize;
+                size -= 6;
+                i--;
+                break;
+
+
+        }
 
 
 
 
-	
-	switch (Rx_Buffer[1])
-	   {
-	
-		   case 0x03:
-	
-	
-			   if(CheckCRC16(Rx_Buffer,4)) //CRC check, correct crc
-			   {
-				   printf("CRC check okay\r\n");
-			   }
-	
-			   else //CRC check, wrong crc, set communication error
-			   {
-				   printf("CRC check wrong\r\n");
-				   Error_Communicate=0x31;
-			   }
-			   Actual_size=6;
-			   
-			   break;
-		   case 0x05:
-			   if(CheckCRC16(Rx_Buffer,4)) //CRC check, correct crc
-			   {
-				   printf("CRC check okay\r\n");
-			   }
-			   else //CRC check, wrong crc, set communication error
-			   {
-				   printf("CRC check wrong\r\n");
-				   Error_Communicate=0x31;
-			   }
-	
-			   Actual_size=6;
-			   break;
-		   case 0x06:
-	
-			   if(CheckCRC16(Rx_Buffer,3+1+(int)Rx_Buffer[3])) //CRC check, correct crc
-			   {
-				   printf("CRC check okay\r\n");
-			   }
-			   else //CRC check, wrong crc, set communication error
-			   {
-				   printf("CRC check wrong\r\n");
-				   Error_Communicate=0x31;
-			   }
-			   Actual_size=6+Rx_Buffer[3];
-	
-		   case 0x08:
-			   if(CheckCRC16(Rx_Buffer,4)) //CRC check, correct crc
-			   {
-				   printf("CRC check okay\r\n");
-			   }
-	
-			   else //CRC check, wrong crc, set communication error
-			   {
-				   printf("CRC check wrong\r\n");
-				   Error_Communicate=0x31;
-			   }
-	
-	
-			   Actual_size=6;
-			   break;
-	
-	   }
-	
-	   //when we transfer the data very fast, it is not okay to recive the enough package
-	   if(size==Actual_size)  
-	   {
-		   printf("Length check okay\r\n");
-	   }
-	   else
-	   {
-	
-		   printf("Length check wrong: %d\r\n",size);
-	   }
-	   
+    }
+
+
+
+
 
 
 
@@ -1074,7 +997,7 @@ void Process_Package_Receive()
 * Return Value :  None
 * Attention: we process the data we get from the pc
 *******************************************************************************/
-void Process_Socket_Data(SOCKET s)
+void Process_Socket_Data(SOCKET s,int Package_Start)
 {
 
     FLOAT_BYTE testdata;
@@ -1100,89 +1023,89 @@ void Process_Socket_Data(SOCKET s)
     float AD_temp;
 
     float temp=0; // 用来进行AD转换使用的变量
-    
-   
+
+
     unsigned short Actual_size;
 
 
-    size=Read_SOCK_Data_Buffer(s, Rx_Buffer);
+    //  size=Read_SOCK_Data_Buffer(s, Rx_Buffer);
     //we should judge the size so we can process more data
 
+    /*
+        switch (Rx_Buffer[1])
+        {
 
-    switch (Rx_Buffer[1])
-    {
-
-        case 0x03:
-
-
-            if(CheckCRC16(Rx_Buffer,4)) //CRC check, correct crc
-            {
-                printf("CRC check okay\r\n");
-            }
-
-            else //CRC check, wrong crc, set communication error
-            {
-                printf("CRC check wrong\r\n");
-                Error_Communicate=0x31;
-            }
-            Actual_size=6;
-			
-            break;
-        case 0x05:
-            if(CheckCRC16(Rx_Buffer,4)) //CRC check, correct crc
-            {
-                printf("CRC check okay\r\n");
-            }
-            else //CRC check, wrong crc, set communication error
-            {
-                printf("CRC check wrong\r\n");
-                Error_Communicate=0x31;
-            }
-
-            Actual_size=6;
-            break;
-        case 0x06:
-
-            if(CheckCRC16(Rx_Buffer,3+1+(int)Rx_Buffer[3])) //CRC check, correct crc
-            {
-                printf("CRC check okay\r\n");
-            }
-            else //CRC check, wrong crc, set communication error
-            {
-                printf("CRC check wrong\r\n");
-                Error_Communicate=0x31;
-            }
-            Actual_size=6+Rx_Buffer[3];
-
-        case 0x08:
-            if(CheckCRC16(Rx_Buffer,4)) //CRC check, correct crc
-            {
-                printf("CRC check okay\r\n");
-            }
-
-            else //CRC check, wrong crc, set communication error
-            {
-                printf("CRC check wrong\r\n");
-                Error_Communicate=0x31;
-            }
+            case 0x03:
 
 
-            Actual_size=6;
-            break;
+                if(CheckCRC16(Rx_Buffer,4)) //CRC check, correct crc
+                {
+                    printf("CRC check okay\r\n");
+                }
 
-    }
+                else //CRC check, wrong crc, set communication error
+                {
+                    printf("CRC check wrong\r\n");
+                    Error_Communicate=0x31;
+                }
+                Actual_size=6;
 
-	//when we transfer the data very fast, it is not okay to recive the enough package
-    if(size==Actual_size)  
-    {
-        printf("Length check okay\r\n");
-    }
-    else
-    {
+                break;
+            case 0x05:
+                if(CheckCRC16(Rx_Buffer,4)) //CRC check, correct crc
+                {
+                    printf("CRC check okay\r\n");
+                }
+                else //CRC check, wrong crc, set communication error
+                {
+                    printf("CRC check wrong\r\n");
+                    Error_Communicate=0x31;
+                }
 
-        printf("Length check wrong: %d\r\n",size);
-    }
-	
+                Actual_size=6;
+                break;
+            case 0x06:
+
+                if(CheckCRC16(Rx_Buffer,3+1+(int)Rx_Buffer[3])) //CRC check, correct crc
+                {
+                    printf("CRC check okay\r\n");
+                }
+                else //CRC check, wrong crc, set communication error
+                {
+                    printf("CRC check wrong\r\n");
+                    Error_Communicate=0x31;
+                }
+                Actual_size=6+Rx_Buffer[3];
+
+            case 0x08:
+                if(CheckCRC16(Rx_Buffer,4)) //CRC check, correct crc
+                {
+                    printf("CRC check okay\r\n");
+                }
+
+                else //CRC check, wrong crc, set communication error
+                {
+                    printf("CRC check wrong\r\n");
+                    Error_Communicate=0x31;
+                }
+
+
+                Actual_size=6;
+                break;
+
+        }*/
+
+    //when we transfer the data very fast, it is not okay to recive the enough package
+    /* if(size==Actual_size)
+     {
+         printf("Length check okay\r\n");
+     }
+     else
+     {
+
+         printf("Length check wrong: %d\r\n",size);
+     }*/
+
 
 
 
@@ -1208,26 +1131,35 @@ void Process_Socket_Data(SOCKET s)
 
     */
     //
+    //size=Read_SOCK_Data_Buffer(s, Rx_Buffer);
+    /* printf("Length Package size: %d\r\n",size);
+     for(i=0;i<6;i++)
+         {
+          printf("Rx_buffer:%x\r\n",Rx_Buffer[i]);
+         }
+    */
 
 
 
 
 
 
-    if (Rx_Buffer[0]==0x05) //Slave address 0x05
+    if (Rx_Buffer[0+Package_Start]==0x05) //Slave address 0x05
     {
+
         //  printf("\r\nSLocal Address ok!\r\n");
         //after the slave address, we use the length to make sure the package is complete
 
-        switch (Rx_Buffer[1])
+        switch (Rx_Buffer[1+Package_Start])
         {
             case 0x03:    //读取功能码寄存器的状态 --是否为读数据功能码
 
 
-                switch  (Rx_Buffer[2])
+                switch  (Rx_Buffer[2+Package_Start])
                 {
 
                     case 0x01:   //Read Gas 1479A flow meter value
+
                         Tx_Buffer[0]=0x05; // Slave address
                         Tx_Buffer[1]=0x03;// function  code
                         Tx_Buffer[2]=0x01;// register address
@@ -1240,7 +1172,7 @@ void Process_Socket_Data(SOCKET s)
 
                         //
                         temp = ADVoltage_2_Flow1479A(AD_temp);
-                        printf("INternet	1479A Actual value:%f\r\n",temp);
+                        //  printf("INternet  1479A Actual value:%f\r\n",temp);
                         //Transfer the float data to hex data
                         testdata.floatData=temp;
 
@@ -1351,7 +1283,7 @@ void Process_Socket_Data(SOCKET s)
 
                         Write_SOCK_Data_Buffer(s, Tx_Buffer, 7);
                         break;
-                    case 0x14:
+                    case 0x14: //read whether pressure is okay  for puff
 
                         Tx_Buffer[0]=0x05; // Slave address
                         Tx_Buffer[1]=0x03;// function  code
@@ -1368,6 +1300,121 @@ void Process_Socket_Data(SOCKET s)
                         Tx_Buffer[5]=crctestdata.byteData[0];
 
                         Write_SOCK_Data_Buffer(s, Tx_Buffer, 6);
+                        break;
+                    case 0x15: //Read VacuumValue set
+
+                        Tx_Buffer[0]=0x05; // Slave address
+                        Tx_Buffer[1]=0x03;// function  code
+                        Tx_Buffer[2]=0x15;// register address
+                        //read gas valve status
+                        printf("Read Vacuum value set\r\n");
+
+                        testdata.floatData=Package_Cavity_627D_Pressure_Set;
+
+                        Tx_Buffer[3]=testdata.byteData[3];
+                        Tx_Buffer[4]=testdata.byteData[2];
+                        Tx_Buffer[5]=testdata.byteData[1];
+                        Tx_Buffer[6]=testdata.byteData[0];
+
+                        //GetCRC16
+                        crctestdata.CrcData=GetCRC16(Tx_Buffer,7);
+
+
+                        Tx_Buffer[7]=crctestdata.byteData[1];
+                        Tx_Buffer[8]=crctestdata.byteData[0];
+
+                        Write_SOCK_Data_Buffer(s, Tx_Buffer, 9);
+                        break;
+                    case 0x16://read 1479A flow value (it is stable part)
+
+
+                        Tx_Buffer[0]=0x05; // Slave address
+                        Tx_Buffer[1]=0x03;// function  code
+                        Tx_Buffer[2]=0x16;// register address
+                        //read gas valve status
+                        printf("Read 1479A flow  value set\r\n");
+
+                        testdata.floatData=Package_Flow_1479A_Set;
+
+                        Tx_Buffer[3]=testdata.byteData[3];
+                        Tx_Buffer[4]=testdata.byteData[2];
+                        Tx_Buffer[5]=testdata.byteData[1];
+                        Tx_Buffer[6]=testdata.byteData[0];
+
+                        //GetCRC16
+                        crctestdata.CrcData=GetCRC16(Tx_Buffer,7);
+
+
+                        Tx_Buffer[7]=crctestdata.byteData[1];
+                        Tx_Buffer[8]=crctestdata.byteData[0];
+
+                        Write_SOCK_Data_Buffer(s, Tx_Buffer, 9);
+                        break;
+                    case 0x17: //read puff value set .we actually have two puff set
+
+
+                        Tx_Buffer[0]=0x05; // Slave address
+                        Tx_Buffer[1]=0x03;// function  code
+                        Tx_Buffer[2]=0x17;// register address
+
+                        printf("Read puff  value set\r\n");
+
+                        testdata.floatData=Package_Cavity_627D_Puff_Set;
+
+                        Tx_Buffer[3]=testdata.byteData[3];
+                        Tx_Buffer[4]=testdata.byteData[2];
+                        Tx_Buffer[5]=testdata.byteData[1];
+                        Tx_Buffer[6]=testdata.byteData[0];
+
+                        //GetCRC16
+                        crctestdata.CrcData=GetCRC16(Tx_Buffer,7);
+
+
+                        Tx_Buffer[7]=crctestdata.byteData[1];
+                        Tx_Buffer[8]=crctestdata.byteData[0];
+
+                        Write_SOCK_Data_Buffer(s, Tx_Buffer, 9);
+                        break;
+                    case 0x18://read pid parameters set
+
+                        Tx_Buffer[0]=0x05; // Slave address
+                        Tx_Buffer[1]=0x03;// function  code
+                        Tx_Buffer[2]=0x18;// register address
+                        //read gas valve status
+                        printf("Read pid parameters \r\n");
+
+
+
+                        testdata.floatData=Package_Duty_P;
+
+                        Tx_Buffer[3]=testdata.byteData[3];
+                        Tx_Buffer[4]=testdata.byteData[2];
+                        Tx_Buffer[5]=testdata.byteData[1];
+                        Tx_Buffer[6]=testdata.byteData[0];
+
+                        testdata.floatData=Package_Duty_I;
+
+                        Tx_Buffer[7]=testdata.byteData[3];
+                        Tx_Buffer[8]=testdata.byteData[2];
+                        Tx_Buffer[9]=testdata.byteData[1];
+                        Tx_Buffer[10]=testdata.byteData[0];
+
+                        testdata.floatData=Package_Duty_D;
+
+                        Tx_Buffer[11]=testdata.byteData[3];
+                        Tx_Buffer[12]=testdata.byteData[2];
+                        Tx_Buffer[13]=testdata.byteData[1];
+                        Tx_Buffer[14]=testdata.byteData[0];
+
+                        //GetCRC16
+                        crctestdata.CrcData=GetCRC16(Tx_Buffer,15);
+
+
+                        Tx_Buffer[15]=crctestdata.byteData[1];
+                        Tx_Buffer[16]=crctestdata.byteData[0];
+	
+						Write_SOCK_Data_Buffer(s, Tx_Buffer, 17);
+
                         break;
                 }
                 break;
@@ -1392,13 +1439,13 @@ void Process_Socket_Data(SOCKET s)
                 *
                 *********************************************/
 
-                switch  (Rx_Buffer[2])
+                switch  (Rx_Buffer[2+Package_Start])
                 {
 
 
                     case 0x05:
 
-                        if(Rx_Buffer[3]==0x31)
+                        if(Rx_Buffer[3+Package_Start]==0x31)
 
                         {
                             Normal_Debug_RunningMode=0xff;
@@ -1417,7 +1464,7 @@ void Process_Socket_Data(SOCKET s)
                         break;
                     case 0x06: //Valve To Open
 
-                        if(Rx_Buffer[3]==0x31)
+                        if(Rx_Buffer[3+Package_Start]==0x31)
 
                         {
                             Valve_Signal_Open=0xff;
@@ -1436,7 +1483,7 @@ void Process_Socket_Data(SOCKET s)
                         break;
 
                     case 0x07: //PEV control  mode or 1479A control mode
-                        if(Rx_Buffer[3]==0x31)
+                        if(Rx_Buffer[3+Package_Start]==0x31)
 
                         {
                             PEV_1479A_ControlMode=0xff;
@@ -1457,7 +1504,7 @@ void Process_Socket_Data(SOCKET s)
                     case 0x08:  //Command Mode or timing trigger mode
                         //use the puff mode or not
                         //we can use a new parameter in the pid function to enable puff or unpuff
-                        if(Rx_Buffer[3]==0x31) //表示关闭当前喷出模式 x
+                        if(Rx_Buffer[3+Package_Start]==0x31) //表示关闭当前喷出模式 x
                         {
                             Command_Timing_TriggerMode=0xff;
                             printf("Case 08 Timing Trigger Mode\r\n");
@@ -1478,7 +1525,7 @@ void Process_Socket_Data(SOCKET s)
                     case 0x09:  //Puff on or Puff off
                         //use the puff mode or not
                         //we can use a new parameter in the pid function to enable puff or unpuff
-                        if(Rx_Buffer[3]==0x31) //表示关闭当前喷出模式 x
+                        if(Rx_Buffer[3+Package_Start]==0x31) //表示关闭当前喷出模式 x
                         {
                             Normal_Puff_RunningMode=0xff;
                             printf("Case 09 puff mode on\r\n");
@@ -1505,7 +1552,7 @@ void Process_Socket_Data(SOCKET s)
 
             case 0x06:
 
-                switch(Rx_Buffer[2])
+                switch(Rx_Buffer[2+Package_Start])
                 {
                     case 0x0A: //Vacuum value: Pressure value set 627D pressure value
 
@@ -1713,7 +1760,7 @@ void Process_Socket_Data(SOCKET s)
 
             case 0x08:
 
-                switch(Rx_Buffer[2])
+                switch(Rx_Buffer[2+Package_Start])
                 {
                     case 0x11://Read communicate error
                         //ps: if we have this problem, how can we solve this problem
