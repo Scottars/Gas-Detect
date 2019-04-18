@@ -26,7 +26,7 @@ Project File Date:  04/01/2019
 
 <h2>Output:</h2>
 *** Using Compiler 'V5.05 update 1 (build 106)', folder: 'D:\Program Files\Keil5\ARM\ARMCC\Bin'
-Build target 'Target 1'
+Rebuild target 'Target 1'
 compiling main.c...
 .\APP\ADC\adc.h(5): warning:  #1295-D: Deprecated declaration adc10_init - give arg types
   void adc10_init();
@@ -76,13 +76,13 @@ user\main.c(189): warning:  #177-D: variable "temptofun" was declared but never 
       float temptofun;
 user\main.c(904): warning:  #177-D: variable "RX_Buffer_Receive" was declared but never referenced
       unsigned char RX_Buffer_Receive[2048];
-user\main.c(1588): warning:  #223-D: function "memcpy" declared implicitly
+user\main.c(1587): warning:  #223-D: function "memcpy" declared implicitly
                               memcpy(Tx_Buffer, Rx_Buffer, size);
-user\main.c(1625): warning:  #223-D: function "memcpy" declared implicitly
+user\main.c(1624): warning:  #223-D: function "memcpy" declared implicitly
                               memcpy(Tx_Buffer, Rx_Buffer, size);
-user\main.c(1661): warning:  #223-D: function "memcpy" declared implicitly
+user\main.c(1660): warning:  #223-D: function "memcpy" declared implicitly
                               memcpy(Tx_Buffer, Rx_Buffer, size);
-user\main.c(1718): warning:  #223-D: function "memcpy" declared implicitly
+user\main.c(1717): warning:  #223-D: function "memcpy" declared implicitly
                                       memcpy(Tx_Buffer, Rx_Buffer, size);
 user\main.c(1005): warning:  #177-D: variable "floattest" was declared but never referenced
       char floattest[10];
@@ -100,21 +100,120 @@ user\main.c(1015): warning:  #177-D: variable "Kd" was declared but never refere
       float Kp,Ki,Kd;
 user\main.c(1019): warning:  #177-D: variable "CRC_Mid" was declared but never referenced
       unsigned int CRC_Mid;
-user\main.c(1022): warning:  #550-D: variable "AD_Voltage_Status" was set but never used
+user\main.c(1022): warning:  #177-D: variable "AD_Voltage_Status" was declared but never referenced
       float *AD_Voltage_Status;
 user\main.c(1028): warning:  #177-D: variable "Actual_size" was declared but never referenced
       unsigned short Actual_size;
-user\main.c(1941): warning:  #550-D: variable "ValveValue_Status" was set but never used
+user\main.c(1940): warning:  #550-D: variable "ValveValue_Status" was set but never used
       char *ValveValue_Status;
-user\main.c(1983): warning:  #167-D: argument of type "char *" is incompatible with parameter of type "u8 *"
+user\main.c(1982): warning:  #167-D: argument of type "char *" is incompatible with parameter of type "u8 *"
       Gas_StateLayerUpdate(ValveValue_Status_LCD);
-user\main.c(1976): warning:  #550-D: variable "ValveValue_Status" was set but never used
+user\main.c(1975): warning:  #550-D: variable "ValveValue_Status" was set but never used
       char *ValveValue_Status;
 user\main.c: 41 warnings, 0 errors
+compiling stm32f10x_it.c...
+compiling public.c...
+compiling core_cm3.c...
+compiling system_stm32f10x.c...
+assembling startup_stm32f10x_hd.s...
+compiling stm32f10x_gpio.c...
+compiling stm32f10x_rcc.c...
+compiling stm32f10x_usart.c...
+compiling misc.c...
+compiling stm32f10x_exti.c...
+compiling stm32f10x_tim.c...
+compiling stm32f10x_adc.c...
+compiling stm32f10x_dac.c...
+compiling stm32f10x_spi.c...
+compiling stm32f10x_flash.c...
+compiling stm32f10x_iwdg.c...
+compiling led.c...
+compiling systick.c...
+APP\SysTick\systick.c(3): warning:  #550-D: variable "fac_ms" was set but never used
+  static u16 fac_ms=0;//ms延时倍乘数
+APP\SysTick\systick.c: 1 warning, 0 errors
+compiling pwm.c...
+compiling rs485.c...
+compiling printf.c...
+compiling iic.c...
+compiling AT24CXX.c...
+compiling ds18b20.c...
+compiling beep.c...
+compiling exti.c...
+compiling key.c...
+compiling smg.c...
+compiling time.c...
+compiling usart.c...
+compiling dac.c...
+compiling adc.c...
+APP\ADC\adc.h(5): warning:  #1295-D: Deprecated declaration adc10_init - give arg types
+  void adc10_init();
+APP\ADC\adc.h(6): warning:  #1295-D: Deprecated declaration adc11_init - give arg types
+        void adc11_init();
+APP\ADC\adc.h(7): warning:  #1295-D: Deprecated declaration adc12_init - give arg types
+                void adc12_init();
+APP\ADC\adc.c(185): warning:  #1166-D: returning pointer to local variable
+      return voltage ;
+APP\ADC\adc.c(165): warning:  #177-D: variable "i" was declared but never referenced
+      u8 i;
+APP\ADC\adc.c(167): warning:  #177-D: variable "dacval" was declared but never referenced
+      u16 dacval;
+APP\ADC\adc.c(169): warning:  #177-D: variable "AD_Channel_Select" was declared but never referenced
+      u16 AD_Channel_Select[3]= {ADC_Channel_10,ADC_Channel_11,ADC_Channel_12}; //定义通道选择数组
+APP\ADC\adc.c(206): warning:  #177-D: variable "AD_Channel_11_Value" was declared but never referenced
+      u32 AD_Channel_10_Value,AD_Channel_11_Value,AD_Channel_12_Value;
+APP\ADC\adc.c(206): warning:  #177-D: variable "AD_Channel_12_Value" was declared but never referenced
+      u32 AD_Channel_10_Value,AD_Channel_11_Value,AD_Channel_12_Value;
+APP\ADC\adc.c(235): warning:  #177-D: variable "AD_Channel_10_Value" was declared but never referenced
+      u32 AD_Channel_10_Value,AD_Channel_11_Value,AD_Channel_12_Value;
+APP\ADC\adc.c(235): warning:  #177-D: variable "AD_Channel_12_Value" was declared but never referenced
+      u32 AD_Channel_10_Value,AD_Channel_11_Value,AD_Channel_12_Value;
+APP\ADC\adc.c(262): warning:  #177-D: variable "AD_Channel_10_Value" was declared but never referenced
+      u32 AD_Channel_10_Value,AD_Channel_11_Value,AD_Channel_12_Value;
+APP\ADC\adc.c(262): warning:  #177-D: variable "AD_Channel_11_Value" was declared but never referenced
+      u32 AD_Channel_10_Value,AD_Channel_11_Value,AD_Channel_12_Value;
+APP\ADC\adc.c: 13 warnings, 0 errors
+compiling gui.c...
+compiling lcd.c...
+compiling test.c...
+APP\LCD\test.c(125): warning:  #167-D: argument of type "char *" is incompatible with parameter of type "u8 *"
+        Show_Str(130,56+i*20,BLACK,WHITE,str,12,0);
+APP\LCD\test.c(135): warning:  #167-D: argument of type "char *" is incompatible with parameter of type "u8 *"
+        Show_Str(60,56+i*20,BLACK,WHITE,str,12,0);
+APP\LCD\test.c: 2 warnings, 0 errors
+compiling spi.c...
+compiling IOState.c...
+APP\GPIO_State\IOState.c(72): warning:  #177-D: variable "s" was declared but never referenced
+      u8 s=0;
+APP\GPIO_State\IOState.c(282): warning:  #120-D: return value type does not match the function type
+      return GPIO_State_return ;
+APP\GPIO_State\IOState.c: 2 warnings, 0 errors
+compiling w5500.c...
+.\APP\ADC\adc.h(5): warning:  #1295-D: Deprecated declaration adc10_init - give arg types
+  void adc10_init();
+.\APP\ADC\adc.h(6): warning:  #1295-D: Deprecated declaration adc11_init - give arg types
+        void adc11_init();
+.\APP\ADC\adc.h(7): warning:  #1295-D: Deprecated declaration adc12_init - give arg types
+                void adc12_init();
+APP\W5500\w5500.c: 3 warnings, 0 errors
+compiling DataProcess.c...
+APP\DataProcess\DataProcess.c(198): warning:  #177-D: variable "sum" was declared but never referenced
+      unsigned int CRCi,sum;
+APP\DataProcess\DataProcess.c(201): warning:  #177-D: variable "crc_return" was declared but never referenced
+      unsigned char *crc_return;
+APP\DataProcess\DataProcess.c: 2 warnings, 0 errors
+compiling VacuumG.c...
+APP\VacuumGauge\VacuumG.c(39): warning:  #177-D: variable "error_last" was declared but never referenced
+                float static error_last=0;
+APP\VacuumGauge\VacuumG.c(41): warning:  #550-D: variable "Input_last" was set but never used
+                float static Input_last=0;
+APP\VacuumGauge\VacuumG.c: 2 warnings, 0 errors
+compiling 1479A.c...
+compiling iwdg.c...
 linking...
-Program Size: Code=25852 RO-data=9440 RW-data=304 ZI-data=5152  
+Program Size: Code=25688 RO-data=9436 RW-data=304 ZI-data=5152  
 FromELF: creating hex file...
-".\output\工程模板.axf" - 0 Error(s), 41 Warning(s).
+".\output\工程模板.axf" - 0 Error(s), 66 Warning(s).
 
 <h2>Collection of Component include folders:</h2>
   E:\MasterWork\Master1\pcb\keilcode\Codesum\_2DAC_ADC_printf_LCD_w5500\current-project\ProjectTemp\RTE

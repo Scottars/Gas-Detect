@@ -1234,7 +1234,7 @@ void Process_Socket_Data(SOCKET s,int Package_Start)
                         Tx_Buffer[1]=0x03;// function  code
                         Tx_Buffer[2]=0x03;// register address
                         //ad conbersion
-                        AD_Voltage_Status = AD_Conversion();
+                      //  AD_Voltage_Status = AD_Conversion();
 
 
                         //AD_Voltage_Status[0 1 2]   分别表示1479A 627D 025d
@@ -1243,7 +1243,6 @@ void Process_Socket_Data(SOCKET s,int Package_Start)
                         //
                         temp = ADVoltage_2_Pressure025D(AD_temp);
                         printf("INternet	025D Actual value:%f\r\n",temp);
-
 
                         //float to hex
                         testdata.floatData=temp;
