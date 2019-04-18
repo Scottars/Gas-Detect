@@ -46,7 +46,7 @@ void pwm_init(u16 pre, u16 psc)
 	*/
 	//注意公式： Fpwm = 72M / ((arr+1)*(psc+1))(??:Hz)
 
-	GPIO_PinRemapConfig(GPIO_FullRemap_TIM3,ENABLE);//改变指定管脚的映射	//pC7
+	GPIO_PinRemapConfig(GPIO_FullRemap_TIM3,ENABLE);//改变指定管脚的映射	//pC7s
 
 	//PWM初始化	  //根据TIM_OCInitStruct中指定的参数初始化外设TIMx
 	
