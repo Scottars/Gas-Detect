@@ -13,32 +13,40 @@ char *Gas_State_Read_LCD(void);
 
 	
 
-#define Valve_GPIOA  GPIO_Pin_0|  GPIO_Pin_1 |GPIO_Pin_6 |GPIO_Pin_7
+#define Valve_GPIOA  GPIO_Pin_0|GPIO_Pin_1 |GPIO_Pin_6 |GPIO_Pin_7
 
 #define Valve_GPIOB  GPIO_Pin_0|  GPIO_Pin_6 |GPIO_Pin_7
 
 
-#define Valve_GPIOC  GPIO_Pin_3|  GPIO_Pin_4 |GPIO_Pin_13 |GPIO_Pin_14|GPIO_Pin_15
+#define Valve_GPIOC  GPIO_Pin_13|  GPIO_Pin_14 |GPIO_Pin_15 |GPIO_Pin_3|GPIO_Pin_4|GPIO_Pin_11|GPIO_Pin_10|GPIO_Pin_9|GPIO_Pin_8
 
 
-//Gas Valve State∂Àø⁄∂®“Â  ¥”◊ÛµΩ”“ “¿¥Œ 
-#define Valve_1 PCout(13)		// Valve1  singal 1   PC13    ----------P7≈≈œﬂ
-#define Valve_2 PCout(15)//Valve2  singal 2   PC15    ----------P7≈≈œﬂ
-#define Valve_3 PCout(3)// Valve3  singal 3   PC3    ----------P7≈≈œﬂ
-#define Valve_4 PAout(1)//Valve4  singal 4   PA1    ----------P7≈≈œﬂ
-#define Valve_5 PAout(0)// Valve5  singal 11   PA0    ----------P7≈≈œﬂ
-#define Valve_6 PCout(14)//Valve6  singal 12   PC14    ----------P7≈≈œﬂ
+//order number Ôºö    1		2 	  3    4   5    6   7   8     9   10   11    12   13   14   15   16
+//state signal order:1  	12    2    3   11 	4 	10 	 5 	 9    8 	16  15   14    13    7    6
+//port signal orderÔºöPC13  PC14  PC15  PC3  PA0  PA1 PA6 PA7 PC4  PB0	PC8 PC9  PC10  PC11  PB6  PB7
+//Gas Valve State∂Àø⁄∂®“Â  ¥”◊ÛµΩ”“ “¿¥Œ
 
+#define Valve_1 PCout(13)
+#define Valve_2 PCout(14)
+#define Valve_3 PCout(15)
+#define Valve_4 PCout(3)
 
-#define Valve_7 PAout(7)// Valve7  singal 5   PA7   ----------P8≈≈œﬂ
-#define Valve_8 PBout(0)//Valve8  singal 8   PB0   ----------P8≈≈œﬂ
-#define Valve_9 PCout(4)// Valve9  singal 9   PC4   ----------P8≈≈œﬂ
-#define Valve_10 PAout(6)//Valve10  singal 10   PA6   ----------P8≈≈œﬂ
+#define Valve_5 PAout(0)
+#define Valve_6 PAout(1)
+#define Valve_7 PAout(6)
+#define Valve_8 PAout(7)
 
+#define Valve_9 PCout(4)
 
+#define Valve_10 PBout(0)
 
-#define Valve_11 PBout(7)// Valve11  singal 6   PB7   ----------P11≈≈œﬂ
-#define Valve_12 PBout(6)//Valve12  singal 7   PB6   ----------P11≈≈œﬂ
+#define Valve_11 PCout(8)
+#define Valve_12 PCout(9)
+#define Valve_13 PCout(10)
+#define Valve_14 PCout(11)
+
+#define Valve_15 PBout(6)
+#define Valve_16 PBout(7)
 
 
 	 

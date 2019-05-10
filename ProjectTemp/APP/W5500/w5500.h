@@ -267,7 +267,7 @@ unsigned char Socket_UDP(SOCKET s);//设置指定Socket(0~7)为UDP模式
 unsigned short Read_SOCK_Data_Buffer(SOCKET s, unsigned char *dat_ptr);//指定Socket(0~7)接收数据处理
 void Write_SOCK_Data_Buffer(SOCKET s, unsigned char *dat_ptr, unsigned short size); //指定Socket(0~7)发送数据处理
 void W5500_Interrupt_Process(void);//W5500中断处理程序框架
-void Process_Socket_Data(SOCKET s, int Package_Start);
+void Process_Socket_Data(SOCKET s,int Package_Start,int Package_Size);
 #endif
 
 

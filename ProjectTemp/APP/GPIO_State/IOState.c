@@ -49,25 +49,34 @@ void ValveStateChange(u8 Valve_Status_Set[2] )
         delay_ms(1000);*/
     ////œ¬√Ê’˝ Ω π”√£¨Œª¥¯≤Ÿ◊˜∂‘”¶µƒ∞¥≈•///////
     /*
-    #define Valve_1 PCout(13)        // Valve1  singal 1   PC13    ----------P7≈≈œﬂ   ∂‘”¶LED0
-    #define Valve_2 PCout(15)//Valve2  singal 2   PC15    ----------P7≈≈œﬂ      ∂‘”¶ LED2
-    #define Valve_3 PCout(3)// Valve3  singal 3   PC3    ----------P7≈≈œﬂ
-    #define Valve_4 PAout(1)//Valve4  singal 4   PA1    ----------P7≈≈œﬂ
-    #define Valve_5 PAout(0)// Valve5  singal 11   PA0    ----------P7≈≈œﬂ
-    #define Valve_6 PCout(14)//Valve6  singal 12   PC14    ----------P7≈≈œﬂ    ∂‘”¶LED1
+	//state signal order:1		12	  2    3   11	4	10	 5	 9	  8 	16	15	 14    13	 7	  6
+	//port signal orderÔºöPC13	PC14  PC15	PC3  PA0  PA1 PA6 PA7 PC4  PB0	PC8 PC9  PC10  PC11  PB6  PB7
+	//Gas Valve State∂Àø⁄∂®“Â  ¥”◊ÛµΩ”“ “¿¥Œ
+	
+#define Valve_1 PCout(13)
+#define Valve_2 PCout(15)
+#define Valve_3 PCout(3)
+							
+#define Valve_4 PAout(1)
+#define Valve_5 PAout(7)
+							
+#define Valve_6 PBout(7)
+#define Valve_7 PBout(6)
+#define Valve_8 PBout(0)
+							
+#define Valve_9 PCout(4)
+							
+#define Valve_10 PAout(6)
+#define Valve_11 PAout(0)
+							
+#define Valve_12 PCout(14)
+#define Valve_13 PCout(11)
+#define Valve_14 PCout(10)
+#define Valve_15 PCout(9)
+#define Valve_16 PCout(8)
 
-
-    #define Valve_7 PAout(7)// Valve7  singal 5   PA7   ----------P8≈≈œﬂ
-    #define Valve_8 PBout(0)//Valve8  singal 8   PB0   ----------P8≈≈œﬂ
-    #define Valve_9 PCout(4)// Valve9  singal 9   PC4   ----------P8≈≈œﬂ
-    #define Valve_10 PAout(6)//Valve10  singal 10   PA6   ----------P8≈≈œﬂ
-
-
-
-    #define Valve_11 PBout(7)// Valve11  singal 6   PB7   ----------P11≈≈œﬂ
-    #define Valve_12 PBout(6)//Valve12  singal 7   PB6   ----------P11≈≈œﬂ
     */
-    u8 ValveSet_Value[12];
+    u8 ValveSet_Value[16];
     u8 i;
     u8 s=0;
 
@@ -78,7 +87,7 @@ void ValveStateChange(u8 Valve_Status_Set[2] )
         else
             ValveSet_Value[i]=0;
     }
-    for(i=0; i<4; i++)
+    for(i=0; i<8; i++)
     {
         if(((Valve_Status_Set[0]>>i)& 0x01)==0x01)
             ValveSet_Value[i+8]=1;
@@ -194,6 +203,42 @@ void ValveStateChange(u8 Valve_Status_Set[2] )
         Valve_12=0;
 
     }
+	if (ValveSet_Value[12] == 1)
+    {
+        Valve_13=1; //…Ë÷√∏ﬂµÁ∆ΩŒ™¡¡
+    }
+    else
+    {
+        Valve_13=0;
+
+    }
+    if (ValveSet_Value[13] == 1)
+    {
+        Valve_14=1; //…Ë÷√∏ﬂµÁ∆ΩŒ™¡¡
+    }
+    else
+    {
+        Valve_14=0;
+
+    }
+	if (ValveSet_Value[14] == 1)
+    {
+        Valve_14=1; //…Ë÷√∏ﬂµÁ∆ΩŒ™¡¡
+    }
+    else
+    {
+        Valve_14=0;
+
+    }
+    if (ValveSet_Value[15] == 1)
+    {
+        Valve_16=1; //…Ë÷√∏ﬂµÁ∆ΩŒ™¡¡
+    }
+    else
+    {
+        Valve_16=0;
+
+    }
 
 
 
@@ -202,23 +247,13 @@ void ValveStateChange(u8 Valve_Status_Set[2] )
 char *Gas_State_Read()
 {
     /*
-    #define Valve_1 PCout(13)       // Valve1  singal 1   PC13    ----------P7≈≈œﬂ
-    #define Valve_2 PCout(15)//Valve2  singal 2   PC15    ----------P7≈≈œﬂ
-    #define Valve_3 PCout(3)// Valve3  singal 3   PC3    ----------P7≈≈œﬂ
-    #define Valve_4 PAout(1)//Valve4  singal 4   PA1    ----------P7≈≈œﬂ
-    #define Valve_5 PAout(0)// Valve5  singal 11   PA0    ----------P7≈≈œﬂ
-    #define Valve_6 PCout(14)//Valve6  singal 12   PC14    ----------P7≈≈œﬂ
+	
+	
+	//order number Ôºö	  1 	2	  3    	4     5	    6	7	 8	  9   10    11	 12   13    14	  15	 16
+	//state signal order:1		12	  2   	 3   11		4	10	 5	  9	  8 	16	 15	  14    13	   7	  6
+	//port signal orderÔºöPC13	PC14  PC15	PC3  PA0  PA1  PA6  PA7  PC4  PB0	PC8  PC9  PC10  PC11  PB6    PB7
+	//Gas Valve State∂Àø⁄∂®“Â  ¥”◊ÛµΩ”“ “¿¥Œ
 
-
-    #define Valve_7 PAout(7)// Valve7  singal 5   PA7   ----------P8≈≈œﬂ
-    #define Valve_8 PBout(0)//Valve8  singal 8   PB0   ----------P8≈≈œﬂ
-    #define Valve_9 PCout(4)// Valve9  singal 9   PC4   ----------P8≈≈œﬂ
-    #define Valve_10 PAout(6)//Valve10  singal 10   PA6   ----------P8≈≈œﬂ
-
-
-
-    #define Valve_11 PBout(7)// Valve11  singal 6   PB7   ----------P11≈≈œﬂ
-    #define Valve_12 PBout(6)//Valve12  singal 7   PB6   ----------P11≈≈œﬂ
     */
 
     unsigned char static GPIO_State_return[2]= {0x00,0x00};
@@ -228,20 +263,18 @@ char *Gas_State_Read()
     if(GPIO_ReadOutputDataBit(GPIOC,GPIO_Pin_13)==1)
     {
         //printf("GPIO test in pin0");
-
         GPIO_State_return[1] = (GPIO_State_return[1]) | 0x01;
     }
-
-    if(GPIO_ReadOutputDataBit(GPIOC,GPIO_Pin_15)==1)
+    if(GPIO_ReadOutputDataBit(GPIOC,GPIO_Pin_14)==1)
     {
         //  printf("GPIO test in pin1");
         GPIO_State_return[1] = (GPIO_State_return[1])| 0x02;
     }
-    if(GPIO_ReadOutputDataBit(GPIOC,GPIO_Pin_3)==1)
+    if(GPIO_ReadOutputDataBit(GPIOC,GPIO_Pin_15)==1)
     {
         GPIO_State_return[1] = (GPIO_State_return[1])| 0x04;
     }
-    if(GPIO_ReadOutputDataBit(GPIOA,GPIO_Pin_1)==1)
+    if(GPIO_ReadOutputDataBit(GPIOC,GPIO_Pin_3)==1)
     {
         GPIO_State_return[1] = (GPIO_State_return[1])| 0x08;
     }
@@ -249,15 +282,15 @@ char *Gas_State_Read()
     {
         GPIO_State_return[1] = (GPIO_State_return[1])| 0x10;
     }
-    if(GPIO_ReadOutputDataBit(GPIOC,GPIO_Pin_14)==1)
+    if(GPIO_ReadOutputDataBit(GPIOA,GPIO_Pin_1)==1)
     {
         GPIO_State_return[1] = (GPIO_State_return[1])| 0x20;
     }
-    if(GPIO_ReadOutputDataBit(GPIOA,GPIO_Pin_7)==1)
+    if(GPIO_ReadOutputDataBit(GPIOA,GPIO_Pin_6)==1)
     {
         GPIO_State_return[1] = (GPIO_State_return[1]) | 0x40;
     }
-    if(GPIO_ReadOutputDataBit(GPIOB,GPIO_Pin_0)==1)
+    if(GPIO_ReadOutputDataBit(GPIOA,GPIO_Pin_7)==1)
     {
         GPIO_State_return[1] = (GPIO_State_return[1])| 0x80;
     }
@@ -265,17 +298,33 @@ char *Gas_State_Read()
     {
         GPIO_State_return[0] = (GPIO_State_return[0])| 0x01;
     }
-    if(GPIO_ReadOutputDataBit(GPIOA,GPIO_Pin_6)==1)
+    if(GPIO_ReadOutputDataBit(GPIOB,GPIO_Pin_0)==1)
     {
         GPIO_State_return[0] = (GPIO_State_return[0])| 0x02;
     }
-    if(GPIO_ReadOutputDataBit(GPIOB,GPIO_Pin_7)==1)
+    if(GPIO_ReadOutputDataBit(GPIOC,GPIO_Pin_8)==1)
     {
         GPIO_State_return[0] = (GPIO_State_return[0])| 0x04;
     }
-    if(GPIO_ReadOutputDataBit(GPIOB,GPIO_Pin_6)==1)
+    if(GPIO_ReadOutputDataBit(GPIOC,GPIO_Pin_9)==1)
     {
         GPIO_State_return[0] = (GPIO_State_return[0])| 0x08;
+    }
+    if(GPIO_ReadOutputDataBit(GPIOC,GPIO_Pin_10)==1)
+    {
+        GPIO_State_return[0] = (GPIO_State_return[1])| 0x10;
+    }
+    if(GPIO_ReadOutputDataBit(GPIOC,GPIO_Pin_11)==1)
+    {
+        GPIO_State_return[0] = (GPIO_State_return[1])| 0x20;
+    }
+    if(GPIO_ReadOutputDataBit(GPIOB,GPIO_Pin_6)==1)
+    {
+        GPIO_State_return[0] = (GPIO_State_return[1]) | 0x40;
+    }
+    if(GPIO_ReadOutputDataBit(GPIOB,GPIO_Pin_7)==1)
+    {
+        GPIO_State_return[0] = (GPIO_State_return[1])| 0x80;
     }
 
 
@@ -285,46 +334,40 @@ char *Gas_State_Read()
 char *Gas_State_Read_LCD()
 {
     /*#define Valve_1 PCout(13)     // Valve1  singal 1   PC13    ----------P7≈≈œﬂ
-    #define Valve_2 PCout(15)//Valve2  singal 2   PC15    ----------P7≈≈œﬂ
-    #define Valve_3 PCout(3)// Valve3  singal 3   PC3    ----------P7≈≈œﬂ
-    #define Valve_4 PAout(1)//Valve4  singal 4   PA1    ----------P7≈≈œﬂ
-    #define Valve_5 PAout(0)// Valve5  singal 11   PA0    ----------P7≈≈œﬂ
-    #define Valve_6 PCout(14)//Valve6  singal 12   PC14    ----------P7≈≈œﬂ
+	
+	
+	//order number Ôºö	  1 	2	  3    	4     5	    6	7	 8	  9   10    11	 12   13    14	  15	 16
+	//state signal order:1		12	  2   	 3   11		4	10	 5	  9	  8 	16	 15	  14    13	   7	  6
+	//port signal orderÔºöPC13	PC14  PC15	PC3  PA0  PA1  PA6  PA7  PC4  PB0	PC8  PC9  PC10  PC11  PB6    PB7
+	//Gas Valve State∂Àø⁄∂®“Â  ¥”◊ÛµΩ”“ “¿¥Œ
 
-
-    #define Valve_7 PAout(7)// Valve7  singal 5   PA7   ----------P8≈≈œﬂ
-    #define Valve_8 PBout(0)//Valve8  singal 8   PB0   ----------P8≈≈œﬂ
-    #define Valve_9 PCout(4)// Valve9  singal 9   PC4   ----------P8≈≈œﬂ
-    #define Valve_10 PAout(6)//Valve10  singal 10   PA6   ----------P8≈≈œﬂ
-
-
-
-    #define Valve_11 PBout(7)// Valve11  singal 6   PB7   ----------P11≈≈œﬂ
-    #define Valve_12 PBout(6)//Valve12  singal 7   PB6   ----------P11≈≈œﬂ
     */
 
     char static GPIO_State[12];
 
-//  ∑Ω Ω“ª£∫
     GPIO_State[0]=GPIO_ReadOutputDataBit(GPIOC,GPIO_Pin_13);
-    GPIO_State[1]=GPIO_ReadOutputDataBit(GPIOC,GPIO_Pin_15);
+    GPIO_State[1]=GPIO_ReadOutputDataBit(GPIOC,GPIO_Pin_14);
 
-    GPIO_State[2]=GPIO_ReadOutputDataBit(GPIOC,GPIO_Pin_3);
-    GPIO_State[3]=GPIO_ReadOutputDataBit(GPIOA,GPIO_Pin_1);
+    GPIO_State[2]=GPIO_ReadOutputDataBit(GPIOC,GPIO_Pin_15);
+    GPIO_State[3]=GPIO_ReadOutputDataBit(GPIOC,GPIO_Pin_3);
 
     GPIO_State[4]=GPIO_ReadOutputDataBit(GPIOA,GPIO_Pin_0);
-    GPIO_State[5]=GPIO_ReadOutputDataBit(GPIOC,GPIO_Pin_14);
+    GPIO_State[5]=GPIO_ReadOutputDataBit(GPIOA,GPIO_Pin_1);
 
-
-
-    GPIO_State[6]=GPIO_ReadOutputDataBit(GPIOA,GPIO_Pin_7);
-    GPIO_State[7]=GPIO_ReadOutputDataBit(GPIOB,GPIO_Pin_0);
+    GPIO_State[6]=GPIO_ReadOutputDataBit(GPIOA,GPIO_Pin_6);
+    GPIO_State[7]=GPIO_ReadOutputDataBit(GPIOA,GPIO_Pin_7);
 
     GPIO_State[8]=GPIO_ReadOutputDataBit(GPIOC,GPIO_Pin_4);
-    GPIO_State[9]=GPIO_ReadOutputDataBit(GPIOA,GPIO_Pin_6);
+    GPIO_State[9]=GPIO_ReadOutputDataBit(GPIOB,GPIO_Pin_0);
 
-    GPIO_State[10]=GPIO_ReadOutputDataBit(GPIOB,GPIO_Pin_7);
-    GPIO_State[11]=GPIO_ReadOutputDataBit(GPIOB,GPIO_Pin_6);
+    GPIO_State[10]=GPIO_ReadOutputDataBit(GPIOC,GPIO_Pin_8);
+    GPIO_State[11]=GPIO_ReadOutputDataBit(GPIOC,GPIO_Pin_9);
+	
+	GPIO_State[8]=GPIO_ReadOutputDataBit(GPIOC,GPIO_Pin_10);
+	GPIO_State[9]=GPIO_ReadOutputDataBit(GPIOC,GPIO_Pin_11);
+	
+	GPIO_State[10]=GPIO_ReadOutputDataBit(GPIOB,GPIO_Pin_6);
+	GPIO_State[11]=GPIO_ReadOutputDataBit(GPIOB,GPIO_Pin_7);
 
 
     return GPIO_State ;

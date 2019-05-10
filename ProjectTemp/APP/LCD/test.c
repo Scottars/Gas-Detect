@@ -151,7 +151,7 @@ void GridLayer()
 {	
 	int i;
 	LCD_Clear(WHITE);
-	for (i=1;i<14;i++)
+	for (i=1;i<16;i++)
 	{
 		if(i<=2)
 		{
@@ -171,7 +171,7 @@ void GridLayer()
 		printf("hello");
 	}
 	LCD_DrawLine(120,26, 120, 132);  //画屏幕上的竖线  竖线位置 120 从左到右
-	LCD_DrawLine(120,158, 120, 278); //画屏幕上的竖线
+	LCD_DrawLine(120,158, 120, 298); //画屏幕上的竖线
 	
 	
 	//Main menu set
@@ -195,14 +195,17 @@ void GridLayer()
 	Show_Str(10,222,BLACK,YELLOW,"No.4",12,0);
 	Show_Str(10,242,BLACK,YELLOW,"No.5",12,0);
 	Show_Str(10,262,BLACK,YELLOW,"No.6",12,0);
+	Show_Str(10,282,BLACK,YELLOW,"No.7",12,0);
+	Show_Str(10,302,BLACK,YELLOW,"No.8",12,0);
 	
-	Show_Str(130,162,BLACK,YELLOW,"No.7",12,0);
-	Show_Str(130,182,BLACK,YELLOW,"No.8",12,0);
-	Show_Str(130,202,BLACK,YELLOW,"No.9",12,0);
-	Show_Str(130,222,BLACK,YELLOW,"No.10",12,0);
-	Show_Str(130,242,BLACK,YELLOW,"No.11",12,0);
-	Show_Str(130,262,BLACK,YELLOW,"No.12",12,0);
-	
+	Show_Str(130,162,BLACK,YELLOW,"No.9",12,0);
+	Show_Str(130,182,BLACK,YELLOW,"No.10",12,0);
+	Show_Str(130,202,BLACK,YELLOW,"No.11",12,0);
+	Show_Str(130,222,BLACK,YELLOW,"No.12",12,0);
+	Show_Str(130,242,BLACK,YELLOW,"No.13",12,0);
+	Show_Str(130,262,BLACK,YELLOW,"No.14",12,0);
+	Show_Str(130,282,BLACK,YELLOW,"No.15",12,0);
+	Show_Str(130,302,BLACK,YELLOW,"No.16",12,0);
 }
 
 /*******************************************************************************
@@ -220,16 +223,13 @@ void Gas_StateLayer(void )
 	
 	u8 i=0;
 	//LCD_Fill(0,20,lcddev.width,lcddev.height-20,WHITE);
-	for(i=0;i<6;i++)
+	for(i=0;i<8;i++)
 	{
 		//if()
 			gui_circle(180,168+i*20,ColorTab[0],6,1);
 		gui_circle(50,168+i*20,ColorTab[0],6,1);
 		
 	}
-	
-	
-	
 	
 	delay_ms(1500);
 }
@@ -243,12 +243,12 @@ void Gas_StateLayer(void )
 
 *******************************************************************************/
 
-void Gas_StateLayerUpdate(u8 Value_State[12] )
+void Gas_StateLayerUpdate(u8 Value_State[16] )
 {
 	//传入一个数组，用来指示更新各个灯的状态
 	u8 i=0;
 	//LCD_Fill(0,20,lcddev.width,lcddev.height-20,WHITE);
-	for(i=0;i<6;i++)
+	for(i=0;i<8;i++)
 	{
 		if(Value_State[i]==1)
 		{
@@ -263,17 +263,17 @@ void Gas_StateLayerUpdate(u8 Value_State[12] )
 		}
 			
 	}
-		for(i=6;i<12;i++)
+		for(i=8;i<16;i++)
 	{
 		if(Value_State[i]==1)
 		{
-			gui_circle(180,168+(i-6)*20,ColorTab[1],6,1);
-			Show_Str(195,162+(i-6)*20,BLACK,YELLOW,"ON ",12,0);
+			gui_circle(180,168+(i-8)*20,ColorTab[1],6,1);
+			Show_Str(195,162+(i-8)*20,BLACK,YELLOW,"ON ",12,0);
 		}
 		else
 		{
-			gui_circle(180,168+(i-6)*20,ColorTab[0],6,1);
-			Show_Str(195,162+(i-6)*20,BLACK,YELLOW,"OFF",12,0);
+			gui_circle(180,168+(i-8)*20,ColorTab[0],6,1);
+			Show_Str(195,162+(i-8)*20,BLACK,YELLOW,"OFF",12,0);
 		}
 
 		

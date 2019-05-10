@@ -24,12 +24,19 @@ void LED_Init()	  //端口初始化
 	SystemInit();	//系统时钟初始化
 
 	RCC_APB2PeriphClockCmd(RCC_APB2Periph_GPIOC,ENABLE); /* 开启GPIO时钟 */
+	RCC_APB2PeriphClockCmd(RCC_APB2Periph_GPIOA,ENABLE); /* 开启GPIO时钟 */
 
 	/*  配置GPIO的模式和IO口 */
-	GPIO_InitStructure.GPIO_Pin=GPIO_Pin_13 | GPIO_Pin_14 |GPIO_Pin_15;	 //选择你要设置的IO口
+	GPIO_InitStructure.GPIO_Pin=GPIO_Pin_13 | GPIO_Pin_14 |GPIO_Pin_15| GPIO_Pin_12 |GPIO_Pin_6;	 //选择你要设置的IO口
 	GPIO_InitStructure.GPIO_Mode=GPIO_Mode_Out_PP;	  //设置推挽输出模式
 	GPIO_InitStructure.GPIO_Speed=GPIO_Speed_50MHz;	  //设置传输速率
 	GPIO_Init(GPIOC,&GPIO_InitStructure); /* 初始化GPIO */	
+		
+	
+	GPIO_InitStructure.GPIO_Pin=GPIO_Pin_11;	 //选择你要设置的IO口
+	GPIO_InitStructure.GPIO_Mode=GPIO_Mode_Out_PP;	  //设置推挽输出模式
+	GPIO_InitStructure.GPIO_Speed=GPIO_Speed_50MHz;	  //设置传输速率
+	GPIO_Init(GPIOA,&GPIO_InitStructure); /* 初始化GPIO */
 }
 
 /*******************************************************************************
@@ -41,12 +48,12 @@ void LED_Init()	  //端口初始化
 void led_display()	//LED闪烁
 {
 		LED2=1;
-//	GPIO_SetBits(GPIOC,GPIO_Pin_14);	 //IO口输出高电平
+	GPIO_SetBits(GPIOC,GPIO_Pin_14);	 //IO口输出高电平
 	delay(6000000);//延时约为1s
-//	GPIO_ResetBits(GPIOC,GPIO_Pin_14); //IO口输出低电平
+	GPIO_ResetBits(GPIOC,GPIO_Pin_14); //IO口输出低电平
 		LED2=0;
 	delay(6000000);
-}
+}                                                     
 
 /*******************************************************************************
 * 函 数 名         : led_huayang
