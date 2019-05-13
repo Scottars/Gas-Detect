@@ -288,46 +288,48 @@ int main()
 
     iwdg_init();
 
-   // printf("watch dog working ");
- //   ////////////////////////Exti interrupt /////////////////////////////
-     Timing_Signal_init();
+    // printf("watch dog working ");
+//   ////////////////////////Exti interrupt /////////////////////////////
+    Timing_Signal_init();
     //EXTI_DeInit();
     //we can not mask all the exti ,beacause we use this for internet
     // CLEAR_BIT(EXTI->IMR,EXTI_Line1);
     //      EXTI->IMR = EXTI_IMR_MR1;
     //EXTI->RTSR = EXTI_RTSR_TR0;
 
-	
+
 
 
     while(1)
     {
         //printf("while mid");
-		//		LED2=1;
-		//	GPIO_SetBits(GPIOC,GPIO_Pin_14);	 //IO口输出高电平
-		//	delay_ms(100);
-		//		GPIO_ResetBits(GPIOC,GPIO_Pin_14); //IO口输出低电平
-		/*
-		//LED12=0; //program running
-		GPIO_SetBits(GPIOA,GPIO_Pin_11);	 //IO口输出高电平
-		//LED11=0; //program running
-		GPIO_SetBits(GPIOC,GPIO_Pin_6);	 //IO口输出高电平
-		LED10=0; //program running
-		GPIO_SetBits(GPIOC,GPIO_Pin_12);	 //IO口输出高电平
-	
+        //      LED2=1;
+        //  GPIO_SetBits(GPIOC,GPIO_Pin_14);     //IO口输出高电平
+        //  delay_ms(100);
+        //      GPIO_ResetBits(GPIOC,GPIO_Pin_14); //IO口输出低电平
+        /*
+        //LED12=0; //program running
+        GPIO_SetBits(GPIOA,GPIO_Pin_11);     //IO口输出高电平
+        //LED11=0; //program running
+        GPIO_SetBits(GPIOC,GPIO_Pin_6);  //IO口输出高电平
+        LED10=0; //program running
+        GPIO_SetBits(GPIOC,GPIO_Pin_12);     //IO口输出高电平
 
+
+        delay_ms(100);
+        GPIO_ResetBits(GPIOA,GPIO_Pin_11);   //IO口输出高电平
+        //LED11=0; //program running
+        GPIO_ResetBits(GPIOC,GPIO_Pin_6);  //IO口输出高电平
+        //LED10=0; //program running
+        GPIO_ResetBits(GPIOC,GPIO_Pin_12);   //IO口输出高电平
+
+            */
+       // GPIO_SetBits(GPIOA,GPIO_Pin_11);     //IO口输出高电平
+		LED12=1;
 		delay_ms(100);
-		GPIO_ResetBits(GPIOA,GPIO_Pin_11);	 //IO口输出高电平
-		//LED11=0; //program running
-		GPIO_ResetBits(GPIOC,GPIO_Pin_6);  //IO口输出高电平
-		//LED10=0; //program running
-		GPIO_ResetBits(GPIOC,GPIO_Pin_12);	 //IO口输出高电平
-			
-			*/	
-		GPIO_SetBits(GPIOA,GPIO_Pin_11);	 //IO口输出高电平
-		delay_ms(100);
-		GPIO_ResetBits(GPIOA,GPIO_Pin_11);	 //IO口输出高电平
-		delay_ms(100);
+		LED12=0;
+		//GPIO_ResetBits(GPIOA,GPIO_Pin_11);   //IO口输出高电平
+        delay_ms(100);
 
 
 
@@ -342,7 +344,7 @@ int main()
         /****************************************网络处理通讯处理********************************************/
         if(W5500_Interrupt)//处理W5500中断
         {
-            //LED0=0;                                                   //LED0      指示的是网络部分的信号的传输
+                                                        //LED0      指示的是网络部分的信号的传输
             W5500_Interrupt_Process();//W5500中断处理程序框架
         }
         if((S0_Data & S_RECEIVE) == S_RECEIVE)//  this is flag to tell if we receive the data
@@ -422,7 +424,7 @@ int main()
                 if (PEV_1479A_ControlMode==0x00) //PEV control Mode 1
                 {
                     //PEV,Default to PEV control
-                   printf("PEV_Control Mode 1 \r\n");
+                    printf("PEV_Control Mode 1 \r\n");
 
                     //Default Set
                     // Set 1479A to fully open , we can use it fully open command   or use the DAC control to make it the biggest
@@ -431,7 +433,7 @@ int main()
                     //Directly use the value we set
 
 
-                  //  printf("Call PID funtion\r\n");
+                    //  printf("Call PID funtion\r\n");
 
                     //set pid parameter to the function
                     //we have set our default value to  Package_P  I D
@@ -919,12 +921,12 @@ int main()
         }
         LCD_Display_Flag--;
         Status_Register_Update();//we use this sentence to pid or dac adjust
-       Status_LCD_Update();
+        Status_LCD_Update();
 
 
 
 
-	   LED12=0; //program running
+        LED12=0; //program running
 
 
     }
@@ -982,7 +984,7 @@ void Process_Package_Receive()
                 {
                     printf("case 03 CRC check wrong\r\n");
                     Error_Communicate=0x01;
-					LED11=1; //crc check running  signal
+                    LED11=0; //crc check running  signal
                 }
                 start_point += Package_Size;
                 size -= 6;
@@ -996,8 +998,8 @@ void Process_Package_Receive()
                 for(j=0; j<Package_Size; j++)
                 {
                     RX_Buffer_Receive[j]=Rx_Buffer[start_point+j];
-					printf("RX_Buffer_Receive:%x\r\n",RX_Buffer_Receive[j]);
-				
+                    printf("RX_Buffer_Receive:%x\r\n",RX_Buffer_Receive[j]);
+
 
 
 
@@ -1016,7 +1018,7 @@ void Process_Package_Receive()
                 {
                     printf("case 05 CRC check wrong \r\n");
                     Error_Communicate=0x01;
-					LED11=1; //crc check running  signal
+                    LED11=0; //crc check running  signal
                 }
 
 
@@ -1052,7 +1054,7 @@ void Process_Package_Receive()
                 {
                     printf("case 06 CRC check wrong\r\n");
                     Error_Communicate=0x01;
-					LED11=1; //crc check running  signal
+                    LED11=0; //crc check running  signal
                 }
 
 
@@ -1085,7 +1087,7 @@ void Process_Package_Receive()
                 {
                     printf("case 08 CRC check wrong\r\n");
                     Error_Communicate=0x01;
-					LED11=1; //crc check running  signal
+                    LED11=0; //crc check running  signal
                 }
                 start_point += Package_Size;
                 size -= 6;
@@ -1094,12 +1096,14 @@ void Process_Package_Receive()
 
                 break;
 
+				default:
+							i--;
+							break;
 
 
         }
 
-
-
+		
 
     }
 
@@ -1615,8 +1619,8 @@ void Process_Socket_Data(SOCKET s,int Package_Start,int Package_Size)
                         for(i=0; i<Package_Size; i++)
                         {
                             Tx_Buffer[i]=Rx_Buffer[Package_Start+i];
-							printf("Txbuffer content:%x\r\n",Tx_Buffer[i]);
-							printf("I number:%d\r\n",i);
+                            printf("Txbuffer content:%x\r\n",Tx_Buffer[i]);
+                            printf("I number:%d\r\n",i);
                         }
                         printf("Set Rxbuffer okay\r\n");
                         //memcpy(Tx_Buffer, Rx_Buffer, size);
@@ -1765,7 +1769,7 @@ void Process_Socket_Data(SOCKET s,int Package_Start,int Package_Size)
                         {
                             //return the data over information
                             Error_OverSet=0x01;
-							LED10=1; //overset float value error signal
+                                	  LED10=0; //overset float value error signal
 
 
                         }
@@ -1807,7 +1811,7 @@ void Process_Socket_Data(SOCKET s,int Package_Start,int Package_Size)
                         {
                             //return the data over information
                             Error_OverSet=0x01;
-							LED10=1; //overset float value error signal
+                               	  LED10=0; //overset float value error signal
 
 
                         }
@@ -1852,14 +1856,14 @@ void Process_Socket_Data(SOCKET s,int Package_Start,int Package_Size)
                         {
                             //return the data over information
                             Error_OverSet=0x01;
-							LED10=1; //overset float value error signal
+                            LED10=0; //overset float value error signal
 
 
                         }
                         else //the set is okay
                         {
                             Error_OverSet=0x00;
-							
+
                             //Vacuum Value should be changed into Voltage value accoroding 627D manully
 
                             Package_Cavity_627D_Puff_Set=testdata.floatData;
@@ -1888,6 +1892,9 @@ void Process_Socket_Data(SOCKET s,int Package_Start,int Package_Size)
                         if((testdata.floatData>PID_P_SetMax)|(testdata.floatData<PID_P_SetMin))
                         {
                             //return the data over information
+                            
+                       // LED11=1; //clear crc check running  signal
+                      	  LED10=0; //overset float value error signal
 
 
                         }
@@ -1896,46 +1903,73 @@ void Process_Socket_Data(SOCKET s,int Package_Start,int Package_Size)
 
                             Package_Duty_P=testdata.floatData;
 
+                            printf("Case 0x0d Set P parameter ok\r\n");
 
-                            testdata.byteData[3]=Rx_Buffer[7+1+Package_Start];
-                            testdata.byteData[2]=Rx_Buffer[8+1+Package_Start];
-                            testdata.byteData[1]=Rx_Buffer[9+1+Package_Start];
-                            testdata.byteData[0]=Rx_Buffer[10+1+Package_Start];
-                            //we should set a critical value to limit the data
-                            if((testdata.floatData>PID_I_SetMax)|(testdata.floatData<PID_I_SetMin))
-                            {
-                                //return the data over information
+                        }
+                        for(i=0; i<Package_Size; i++)
+                        {
+                            Tx_Buffer[i]=Rx_Buffer[Package_Start+i];
+                        }
+                        printf("Set Rxbuffer okay\r\n");
+                        //memcpy(Tx_Buffer, Rx_Buffer, size);
+                        Write_SOCK_Data_Buffer(s, Tx_Buffer,Package_Size);
 
+                        break;
+                    case 0x14://pid code setting , set pid together, you cannot set it alone
 
-                            }
-                            else //the set is okay
-                            {
-                                Package_Duty_I=testdata.floatData;
+                        testdata.byteData[3]=Rx_Buffer[3+1+Package_Start];
+                        testdata.byteData[2]=Rx_Buffer[4+1+Package_Start];
+                        testdata.byteData[1]=Rx_Buffer[5+1+Package_Start];
+                        testdata.byteData[0]=Rx_Buffer[6+1+Package_Start];
+                        //we should set a critical value to limit the data
+                        //if it doesn't meet our requirements,we need to send the data error to the pc
 
-                                testdata.byteData[3]=Rx_Buffer[11+1+Package_Start];
-                                testdata.byteData[2]=Rx_Buffer[12+1+Package_Start];
-                                testdata.byteData[1]=Rx_Buffer[13+1+Package_Start];
-                                testdata.byteData[0]=Rx_Buffer[14+1+Package_Start];
-                                //we should set a critical value to limit the data
-                                if((testdata.floatData>PID_D_SetMax)|(testdata.floatData<PID_D_SetMin))
-                                {
-                                    //return the data over information
-
-
-                                }
-                                else //the set is okay
-                                {
-                                    Package_Duty_D=testdata.floatData;
-                                    printf("Case 0x0d Set PID parameter ok\r\n");
+                        if((testdata.floatData>PID_I_SetMax)|(testdata.floatData<PID_I_SetMin))
+                        {
+                            //return the data over information
+						LED10=0; //overset float value error signal
 
 
+                        }
+                        else //the set is okay
+                        {
+
+                            Package_Duty_I=testdata.floatData;
+
+                            printf("Case 0x14 Set I parameter ok\r\n");
+
+                        }
+                        for(i=0; i<Package_Size; i++)
+                        {
+                            Tx_Buffer[i]=Rx_Buffer[Package_Start+i];
+                        }
+                        printf("Set Rxbuffer okay\r\n");
+                        //memcpy(Tx_Buffer, Rx_Buffer, size);
+                        Write_SOCK_Data_Buffer(s, Tx_Buffer,Package_Size);
+
+                        break;
+                    case 0x15://pid code setting , set pid together, you cannot set it alone
+
+                        testdata.byteData[3]=Rx_Buffer[3+1+Package_Start];
+                        testdata.byteData[2]=Rx_Buffer[4+1+Package_Start];
+                        testdata.byteData[1]=Rx_Buffer[5+1+Package_Start];
+                        testdata.byteData[0]=Rx_Buffer[6+1+Package_Start];
+                        //we should set a critical value to limit the data
+                        //if it doesn't meet our requirements,we need to send the data error to the pc
+
+                        if((testdata.floatData>PID_D_SetMax)|(testdata.floatData<PID_D_SetMin))
+                        {
+                            //return the data over information
+						LED10=0; //overset float value error signal
 
 
-                                }
-                            }
+                        }
+                        else //the set is okay
+                        {
 
+                            Package_Duty_D=testdata.floatData;
 
-
+                            printf("Case 0x15 Set D parameter ok\r\n");
 
                         }
                         for(i=0; i<Package_Size; i++)
@@ -1983,10 +2017,10 @@ void Process_Socket_Data(SOCKET s,int Package_Start,int Package_Size)
 
                         Error_Communicate=0x00;
                         Error_OverSet=0x00;
-					
-						LED11=0; //clear crc check running  signal
-						LED10=1; //overset float value error signal
-						
+
+                        LED11=1; //clear crc check running  signal
+                        LED10=1; //overset float value error signal
+
                         for(i=0; i<Package_Size; i++)
                         {
                             Tx_Buffer[i]=Rx_Buffer[Package_Start+i];

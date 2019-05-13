@@ -146,11 +146,11 @@ float PID_D_SetMin=-10;
 ////////////////////error feedback/////////////////////
 //30 none error
 //31 an error
-u8 Error_Communicate=0x30;
-u8 Error_OverSet=0x30;
+u8 Error_Communicate=0x00;
+u8 Error_OverSet=0x00;
 
 //puff ready siganl
-u8 Pressure_Okay=0x30;
+u8 Pressure_Okay=0x00;
 float Pressure_error;
 
 
@@ -288,22 +288,46 @@ int main()
 
     iwdg_init();
 
-    printf("watch dog working ");
-    ////////////////////////Exti interrupt /////////////////////////////
-    Timing_Signal_init();
+   // printf("watch dog working ");
+ //   ////////////////////////Exti interrupt /////////////////////////////
+     Timing_Signal_init();
     //EXTI_DeInit();
     //we can not mask all the exti ,beacause we use this for internet
     // CLEAR_BIT(EXTI->IMR,EXTI_Line1);
     //      EXTI->IMR = EXTI_IMR_MR1;
     //EXTI->RTSR = EXTI_RTSR_TR0;
 
+	
 
 
     while(1)
     {
         //printf("while mid");
-        // delay_ms(100);
+		//		LED2=1;
+		//	GPIO_SetBits(GPIOC,GPIO_Pin_14);	 //IO口输出高电平
+		//	delay_ms(100);
+		//		GPIO_ResetBits(GPIOC,GPIO_Pin_14); //IO口输出低电平
+		/*
+		//LED12=0; //program running
+		GPIO_SetBits(GPIOA,GPIO_Pin_11);	 //IO口输出高电平
+		//LED11=0; //program running
+		GPIO_SetBits(GPIOC,GPIO_Pin_6);	 //IO口输出高电平
+		LED10=0; //program running
+		GPIO_SetBits(GPIOC,GPIO_Pin_12);	 //IO口输出高电平
+	
 
+		delay_ms(100);
+		GPIO_ResetBits(GPIOA,GPIO_Pin_11);	 //IO口输出高电平
+		//LED11=0; //program running
+		GPIO_ResetBits(GPIOC,GPIO_Pin_6);  //IO口输出高电平
+		//LED10=0; //program running
+		GPIO_ResetBits(GPIOC,GPIO_Pin_12);	 //IO口输出高电平
+			
+			*/	
+		GPIO_SetBits(GPIOA,GPIO_Pin_11);	 //IO口输出高电平
+		delay_ms(100);
+		GPIO_ResetBits(GPIOA,GPIO_Pin_11);	 //IO口输出高电平
+		delay_ms(100);
 
 
 
@@ -398,7 +422,7 @@ int main()
                 if (PEV_1479A_ControlMode==0x00) //PEV control Mode 1
                 {
                     //PEV,Default to PEV control
-                    printf("PEV_Control Mode 1 \r\n");
+                   printf("PEV_Control Mode 1 \r\n");
 
                     //Default Set
                     // Set 1479A to fully open , we can use it fully open command   or use the DAC control to make it the biggest
@@ -407,7 +431,7 @@ int main()
                     //Directly use the value we set
 
 
-                    printf("Call PID funtion\r\n");
+                  //  printf("Call PID funtion\r\n");
 
                     //set pid parameter to the function
                     //we have set our default value to  Package_P  I D
@@ -894,9 +918,13 @@ int main()
             Status_LCD_Update();
         }
         LCD_Display_Flag--;
-      //  Status_Register_Update();//we use this sentence to pid or dac adjust
-       // Status_LCD_Update();
+        Status_Register_Update();//we use this sentence to pid or dac adjust
+       Status_LCD_Update();
 
+
+
+
+	   LED12=0; //program running
 
 
     }
@@ -929,22 +957,22 @@ void Process_Package_Receive()
             case 0x03:
                 //printf("In the Rx_bufffer part\r\n");
                 Package_Size=6;
-				
-			for(j=0; j<Package_Size; j++)
-						  {
-						  RX_Buffer_Receive[j]=Rx_Buffer[start_point+j];
-			
-			
-			
-						  }
+
+                for(j=0; j<Package_Size; j++)
+                {
+                    RX_Buffer_Receive[j]=Rx_Buffer[start_point+j];
+
+
+
+                }
                 if(CheckCRC16(RX_Buffer_Receive,4+start_point))//CRC check, correct crc
                 {
-                    printf("CRC check okay\r\n");
+                    printf("case 03 CRC check okay\r\n");
 
 
                     Process_Socket_Data(0,start_point,Package_Size);
 
-              
+
 
 
 
@@ -952,8 +980,9 @@ void Process_Package_Receive()
                 }
                 else //CRC check, wrong crc, set communication error
                 {
-                    printf("CRC check wrong\r\n");
-                    Error_Communicate=0x31;
+                    printf("case 03 CRC check wrong\r\n");
+                    Error_Communicate=0x01;
+					LED11=1; //crc check running  signal
                 }
                 start_point += Package_Size;
                 size -= 6;
@@ -964,14 +993,16 @@ void Process_Package_Receive()
             case 0x05:
                 //printf("In the Rx_bufffer part\r\n");
                 Package_Size=7;
-					for(j=0; j<Package_Size; j++)
-						  {
-						  RX_Buffer_Receive[j]=Rx_Buffer[start_point+j];
-			
-			
-			
-						  }
-                if(CheckCRC16(Rx_Buffer,4+(int)Rx_Buffer[3+start_point])) //CRC check, correct crc
+                for(j=0; j<Package_Size; j++)
+                {
+                    RX_Buffer_Receive[j]=Rx_Buffer[start_point+j];
+					printf("RX_Buffer_Receive:%x\r\n",RX_Buffer_Receive[j]);
+				
+
+
+
+                }
+                if(CheckCRC16(RX_Buffer_Receive,4+(int)Rx_Buffer[3+start_point])) //CRC check, correct crc
                 {
                     printf("case05 CRC check okay\r\n");
 
@@ -984,7 +1015,8 @@ void Process_Package_Receive()
                 else //CRC check, wrong crc, set communication error
                 {
                     printf("case 05 CRC check wrong \r\n");
-                    Error_Communicate=0x31;
+                    Error_Communicate=0x01;
+					LED11=1; //crc check running  signal
                 }
 
 
@@ -999,17 +1031,17 @@ void Process_Package_Receive()
             case 0x06:
 
                 Package_Size=4+Rx_Buffer[start_point+3]+2;
-					for(j=0; j<Package_Size; j++)
-						  {
-						  RX_Buffer_Receive[j]=Rx_Buffer[start_point+j];
-			
-			
-			
-						  }
-
-                if(CheckCRC16(Rx_Buffer,4+(int)Rx_Buffer[3+start_point])) //CRC check, correct crc
+                for(j=0; j<Package_Size; j++)
                 {
-                    printf("CRC check okay\r\n");
+                    RX_Buffer_Receive[j]=Rx_Buffer[start_point+j];
+
+
+
+                }
+
+                if(CheckCRC16(RX_Buffer_Receive,4+(int)Rx_Buffer[3+start_point])) //CRC check, correct crc
+                {
+                    printf("case 06 CRC check okay\r\n");
 
 
                     Process_Socket_Data(0,start_point,Package_Size);
@@ -1018,8 +1050,9 @@ void Process_Package_Receive()
                 }
                 else //CRC check, wrong crc, set communication error
                 {
-                    printf("CRC check wrong\r\n");
-                    Error_Communicate=0x31;
+                    printf("case 06 CRC check wrong\r\n");
+                    Error_Communicate=0x01;
+					LED11=1; //crc check running  signal
                 }
 
 
@@ -1030,17 +1063,17 @@ void Process_Package_Receive()
                 break;
             case 0x08:
                 Package_Size=6;
-					for(j=0; j<Package_Size; j++)
-						  {
-						  RX_Buffer_Receive[j]=Rx_Buffer[start_point+j];
-			
-			
-			
-						  }
-                //printf("In the Rx_bufffer part\r\n");
-                if(CheckCRC16(Rx_Buffer,4+start_point)) //CRC check, correct crc
+                for(j=0; j<Package_Size; j++)
                 {
-                    printf("CRC check okay\r\n");
+                    RX_Buffer_Receive[j]=Rx_Buffer[start_point+j];
+
+
+
+                }
+                //printf("In the Rx_bufffer part\r\n");
+                if(CheckCRC16(RX_Buffer_Receive,4+start_point)) //CRC check, correct crc
+                {
+                    printf("case 08 CRC check okay\r\n");
 
 
                     Process_Socket_Data(0,start_point,Package_Size);
@@ -1050,8 +1083,9 @@ void Process_Package_Receive()
                 }
                 else //CRC check, wrong crc, set communication error
                 {
-                    printf("CRC check wrong\r\n");
-                    Error_Communicate=0x31;
+                    printf("case 08 CRC check wrong\r\n");
+                    Error_Communicate=0x01;
+					LED11=1; //crc check running  signal
                 }
                 start_point += Package_Size;
                 size -= 6;
@@ -1274,11 +1308,11 @@ void Process_Socket_Data(SOCKET s,int Package_Start,int Package_Size)
                         Tx_Buffer[7]=testdata.byteData[0];
 
                         //GetCRC16
-                        crctestdata.CrcData=GetCRC16(Tx_Buffer,7);
+                        crctestdata.CrcData=GetCRC16(Tx_Buffer,8);
 
 
-                        Tx_Buffer[8]=crctestdata.byteData[1];
-                        Tx_Buffer[9]=crctestdata.byteData[0];
+                        Tx_Buffer[8]=crctestdata.byteData[0];
+                        Tx_Buffer[9]=crctestdata.byteData[1];
 
                         //  Tx_Buffer[0]=0xff;
 
@@ -1314,7 +1348,7 @@ void Process_Socket_Data(SOCKET s,int Package_Start,int Package_Size)
                         Tx_Buffer[7]=testdata.byteData[0];
 
                         //GetCRC16
-                        crctestdata.CrcData=GetCRC16(Tx_Buffer,7);
+                        crctestdata.CrcData=GetCRC16(Tx_Buffer,8);
 
 
                         Tx_Buffer[8]=crctestdata.byteData[1];
@@ -1352,7 +1386,7 @@ void Process_Socket_Data(SOCKET s,int Package_Start,int Package_Size)
                         Tx_Buffer[7]=testdata.byteData[0];
 
                         //GetCRC16
-                        crctestdata.CrcData=GetCRC16(Tx_Buffer,7);
+                        crctestdata.CrcData=GetCRC16(Tx_Buffer,8);
 
 
                         Tx_Buffer[8]=crctestdata.byteData[1];
@@ -1378,8 +1412,8 @@ void Process_Socket_Data(SOCKET s,int Package_Start,int Package_Size)
                         //GetCRC16
                         crctestdata.CrcData=GetCRC16(Tx_Buffer,6);
 
-                        Tx_Buffer[6]=crctestdata.byteData[1];
-                        Tx_Buffer[7]=crctestdata.byteData[0];
+                        Tx_Buffer[6]=crctestdata.byteData[0];
+                        Tx_Buffer[7]=crctestdata.byteData[1];
 
                         Write_SOCK_Data_Buffer(s, Tx_Buffer, 8);
                         break;
@@ -1395,10 +1429,10 @@ void Process_Socket_Data(SOCKET s,int Package_Start,int Package_Size)
                         Tx_Buffer[4]=Pressure_Okay;
 
                         //GetCRC16
-                        crctestdata.CrcData=GetCRC16(Tx_Buffer,4);
+                        crctestdata.CrcData=GetCRC16(Tx_Buffer,5);
 
-                        Tx_Buffer[5]=crctestdata.byteData[1];
-                        Tx_Buffer[6]=crctestdata.byteData[0];
+                        Tx_Buffer[5]=crctestdata.byteData[0];
+                        Tx_Buffer[6]=crctestdata.byteData[1];
 
                         Write_SOCK_Data_Buffer(s, Tx_Buffer, 7);
                         break;
@@ -1421,11 +1455,11 @@ void Process_Socket_Data(SOCKET s,int Package_Start,int Package_Size)
                         Tx_Buffer[7]=testdata.byteData[0];
 
                         //GetCRC16
-                        crctestdata.CrcData=GetCRC16(Tx_Buffer,7);
+                        crctestdata.CrcData=GetCRC16(Tx_Buffer,8);
 
 
-                        Tx_Buffer[8]=crctestdata.byteData[1];
-                        Tx_Buffer[9]=crctestdata.byteData[0];
+                        Tx_Buffer[8]=crctestdata.byteData[0];
+                        Tx_Buffer[9]=crctestdata.byteData[1];
 
                         //  Tx_Buffer[0]=0xff;
 
@@ -1452,11 +1486,11 @@ void Process_Socket_Data(SOCKET s,int Package_Start,int Package_Size)
                         Tx_Buffer[7]=testdata.byteData[0];
 
                         //GetCRC16
-                        crctestdata.CrcData=GetCRC16(Tx_Buffer,7);
+                        crctestdata.CrcData=GetCRC16(Tx_Buffer,8);
 
 
-                        Tx_Buffer[8]=crctestdata.byteData[1];
-                        Tx_Buffer[9]=crctestdata.byteData[0];
+                        Tx_Buffer[8]=crctestdata.byteData[0];
+                        Tx_Buffer[9]=crctestdata.byteData[1];
 
                         //  Tx_Buffer[0]=0xff;
 
@@ -1480,13 +1514,13 @@ void Process_Socket_Data(SOCKET s,int Package_Start,int Package_Size)
                         Tx_Buffer[5]=testdata.byteData[2];
                         Tx_Buffer[6]=testdata.byteData[1];
                         Tx_Buffer[7]=testdata.byteData[0];
-   
-                          //GetC RC16
-                          crctestdata.CrcData=GetCRC16(Tx_Buffer,7);
-  
 
-                        Tx_Buffer[8]=crctestdata.byteData[1];
-                        Tx_Buffer[9]=crctestdata.byteData[0];
+                        //GetC RC16
+                        crctestdata.CrcData=GetCRC16(Tx_Buffer,8);
+
+
+                        Tx_Buffer[8]=crctestdata.byteData[0];
+                        Tx_Buffer[9]=crctestdata.byteData[1];
 
                         //  Tx_Buffer[0]=0xff;
 
@@ -1526,7 +1560,7 @@ void Process_Socket_Data(SOCKET s,int Package_Start,int Package_Size)
                         Tx_Buffer[15]=testdata.byteData[0];
 
                         //GetCRC16
-                        crctestdata.CrcData=GetCRC16(Tx_Buffer,15);
+                        crctestdata.CrcData=GetCRC16(Tx_Buffer,16);
 
 
                         Tx_Buffer[16]=crctestdata.byteData[1];
@@ -1564,7 +1598,7 @@ void Process_Socket_Data(SOCKET s,int Package_Start,int Package_Size)
 
                     case 0x05:
 
-                        if(Rx_Buffer[4+Package_Start]==0x31)
+                        if(Rx_Buffer[4+Package_Start]==0x01)
 
                         {
                             Normal_Debug_RunningMode=0xff;
@@ -1581,6 +1615,8 @@ void Process_Socket_Data(SOCKET s,int Package_Start,int Package_Size)
                         for(i=0; i<Package_Size; i++)
                         {
                             Tx_Buffer[i]=Rx_Buffer[Package_Start+i];
+							printf("Txbuffer content:%x\r\n",Tx_Buffer[i]);
+							printf("I number:%d\r\n",i);
                         }
                         printf("Set Rxbuffer okay\r\n");
                         //memcpy(Tx_Buffer, Rx_Buffer, size);
@@ -1589,7 +1625,7 @@ void Process_Socket_Data(SOCKET s,int Package_Start,int Package_Size)
                         break;
                     case 0x06: //Valve To Open
 
-                        if(Rx_Buffer[4+Package_Start]==0x31)
+                        if(Rx_Buffer[4+Package_Start]==0x01)
 
                         {
                             Valve_Signal_Open=0xff;
@@ -1615,7 +1651,7 @@ void Process_Socket_Data(SOCKET s,int Package_Start,int Package_Size)
                         break;
 
                     case 0x07: //PEV control  mode or 1479A control mode
-                        if(Rx_Buffer[4+Package_Start]==0x31)
+                        if(Rx_Buffer[4+Package_Start]==0x01)
 
                         {
                             PEV_1479A_ControlMode=0xff;
@@ -1643,7 +1679,7 @@ void Process_Socket_Data(SOCKET s,int Package_Start,int Package_Size)
                     case 0x08:  //Command Mode or timing trigger mode
                         //use the puff mode or not
                         //we can use a new parameter in the pid function to enable puff or unpuff
-                        if(Rx_Buffer[4+Package_Start]==0x31) //表示关闭当前喷出模式 x
+                        if(Rx_Buffer[4+Package_Start]==0x01) //表示关闭当前喷出模式 x
                         {
                             Command_Timing_TriggerMode=0xff;
                             printf("Case 08 Timing Trigger Mode\r\n");
@@ -1671,7 +1707,7 @@ void Process_Socket_Data(SOCKET s,int Package_Start,int Package_Size)
                     case 0x09:  //Puff on or Puff off
                         //use the puff mode or not
                         //we can use a new parameter in the pid function to enable puff or unpuff
-                        if(Rx_Buffer[4+Package_Start]==0x31) //表示关闭当前喷出模式 x
+                        if(Rx_Buffer[4+Package_Start]==0x01) //表示关闭当前喷出模式 x
                         {
                             Normal_Puff_RunningMode=0xff;
                             printf("Case 09 puff mode on\r\n");
@@ -1728,13 +1764,14 @@ void Process_Socket_Data(SOCKET s,int Package_Start,int Package_Size)
                         if((testdata.floatData>Cavity_627D_Pressure_SetMax)|(testdata.floatData<Cavity_627D_Pressure_SetMin))
                         {
                             //return the data over information
-                            Error_OverSet=0x31;
+                            Error_OverSet=0x01;
+							LED10=1; //overset float value error signal
 
 
                         }
                         else //the set is okay
                         {
-                            Error_OverSet=0x30;
+                            Error_OverSet=0x00;
 
                             Package_Cavity_627D_Pressure_Set=testdata.floatData;
                             printf("Case 0x0A: set 627D pressure\r\n");
@@ -1769,14 +1806,15 @@ void Process_Socket_Data(SOCKET s,int Package_Start,int Package_Size)
                         if((testdata.floatData>Flow_1479A_SetMax)|(testdata.floatData<Flow_1479A_SetMin))
                         {
                             //return the data over information
-                            Error_OverSet=0x31;
+                            Error_OverSet=0x01;
+							LED10=1; //overset float value error signal
 
 
                         }
                         else //the set is okay
                         {
 
-                            Error_OverSet=0x30;
+                            Error_OverSet=0x00;
 
 
 
@@ -1813,14 +1851,15 @@ void Process_Socket_Data(SOCKET s,int Package_Start,int Package_Size)
                         if((testdata.floatData>Flow_1479A_Puff_SetMax)|(testdata.floatData<Flow_1479A_Puff_SetMin))
                         {
                             //return the data over information
-                            Error_OverSet=0x31;
+                            Error_OverSet=0x01;
+							LED10=1; //overset float value error signal
 
 
                         }
                         else //the set is okay
                         {
-                            Error_OverSet=0x31;
-
+                            Error_OverSet=0x00;
+							
                             //Vacuum Value should be changed into Voltage value accoroding 627D manully
 
                             Package_Cavity_627D_Puff_Set=testdata.floatData;
@@ -1857,46 +1896,71 @@ void Process_Socket_Data(SOCKET s,int Package_Start,int Package_Size)
 
                             Package_Duty_P=testdata.floatData;
 
+                                    printf("Case 0x0d Set P parameter ok\r\n");
 
-                            testdata.byteData[3]=Rx_Buffer[7+1+Package_Start];
-                            testdata.byteData[2]=Rx_Buffer[8+1+Package_Start];
-                            testdata.byteData[1]=Rx_Buffer[9+1+Package_Start];
-                            testdata.byteData[0]=Rx_Buffer[10+1+Package_Start];
-                            //we should set a critical value to limit the data
-                            if((testdata.floatData>PID_I_SetMax)|(testdata.floatData<PID_I_SetMin))
-                            {
-                                //return the data over information
+                        }
+                        for(i=0; i<Package_Size; i++)
+                        {
+                            Tx_Buffer[i]=Rx_Buffer[Package_Start+i];
+                        }
+                        printf("Set Rxbuffer okay\r\n");
+                        //memcpy(Tx_Buffer, Rx_Buffer, size);
+                        Write_SOCK_Data_Buffer(s, Tx_Buffer,Package_Size);
 
+                        break;
+					  case 0x13://pid code setting , set pid together, you cannot set it alone
 
-                            }
-                            else //the set is okay
-                            {
-                                Package_Duty_I=testdata.floatData;
+                        testdata.byteData[3]=Rx_Buffer[3+1+Package_Start];
+                        testdata.byteData[2]=Rx_Buffer[4+1+Package_Start];
+                        testdata.byteData[1]=Rx_Buffer[5+1+Package_Start];
+                        testdata.byteData[0]=Rx_Buffer[6+1+Package_Start];
+                        //we should set a critical value to limit the data
+                        //if it doesn't meet our requirements,we need to send the data error to the pc
 
-                                testdata.byteData[3]=Rx_Buffer[11+1+Package_Start];
-                                testdata.byteData[2]=Rx_Buffer[12+1+Package_Start];
-                                testdata.byteData[1]=Rx_Buffer[13+1+Package_Start];
-                                testdata.byteData[0]=Rx_Buffer[14+1+Package_Start];
-                                //we should set a critical value to limit the data
-                                if((testdata.floatData>PID_D_SetMax)|(testdata.floatData<PID_D_SetMin))
-                                {
-                                    //return the data over information
-
-
-                                }
-                                else //the set is okay
-                                {
-                                    Package_Duty_D=testdata.floatData;
-                                    printf("Case 0x0d Set PID parameter ok\r\n");
+                        if((testdata.floatData>PID_P_SetMax)|(testdata.floatData<PID_P_SetMin))
+                        {
+                            //return the data over information
 
 
+                        }
+                        else //the set is okay
+                        {
+
+                            Package_Duty_P=testdata.floatData;
+
+                                    printf("Case 0x13 Set I parameter ok\r\n");
+
+                        }
+                        for(i=0; i<Package_Size; i++)
+                        {
+                            Tx_Buffer[i]=Rx_Buffer[Package_Start+i];
+                        }
+                        printf("Set Rxbuffer okay\r\n");
+                        //memcpy(Tx_Buffer, Rx_Buffer, size);
+                        Write_SOCK_Data_Buffer(s, Tx_Buffer,Package_Size);
+
+                        break;
+						  case 0x14://pid code setting , set pid together, you cannot set it alone
+
+                        testdata.byteData[3]=Rx_Buffer[3+1+Package_Start];
+                        testdata.byteData[2]=Rx_Buffer[4+1+Package_Start];
+                        testdata.byteData[1]=Rx_Buffer[5+1+Package_Start];
+                        testdata.byteData[0]=Rx_Buffer[6+1+Package_Start];
+                        //we should set a critical value to limit the data
+                        //if it doesn't meet our requirements,we need to send the data error to the pc
+
+                        if((testdata.floatData>PID_P_SetMax)|(testdata.floatData<PID_P_SetMin))
+                        {
+                            //return the data over information
 
 
-                                }
-                            }
+                        }
+                        else //the set is okay
+                        {
 
+                            Package_Duty_P=testdata.floatData;
 
-
+                                    printf("Case 0x14 Set D parameter ok\r\n");
 
                         }
                         for(i=0; i<Package_Size; i++)
@@ -1942,8 +2006,12 @@ void Process_Socket_Data(SOCKET s,int Package_Start,int Package_Size)
                         break;
                     case 0x13:  //clear error register
 
-                        Error_Communicate=0x30;
-                        Error_OverSet=0x30;
+                        Error_Communicate=0x00;
+                        Error_OverSet=0x00;
+					
+						LED11=0; //clear crc check running  signal
+						LED10=1; //overset float value error signal
+						
                         for(i=0; i<Package_Size; i++)
                         {
                             Tx_Buffer[i]=Rx_Buffer[Package_Start+i];
@@ -1975,21 +2043,21 @@ void Process_Socket_Data(SOCKET s,int Package_Start,int Package_Size)
                         Tx_Buffer[2]=0x11;// register address
                         Tx_Buffer[3]=0x01;//length of data
 
-                        if(Error_Communicate==0x31)
+                        if(Error_Communicate==0x01)
                         {
-                            Tx_Buffer[4]=0x31;//there is an error
+                            Tx_Buffer[4]=0x01;//there is an error
                         }
                         else
                         {
-                            Tx_Buffer[4]=0x30;//none error
+                            Tx_Buffer[4]=0x00;//none error
                         }
 
 
-                        crctestdata.CrcData=GetCRC16(Tx_Buffer,4);
+                        crctestdata.CrcData=GetCRC16(Tx_Buffer,5);
 
 
-                        Tx_Buffer[5]=crctestdata.byteData[1];
-                        Tx_Buffer[6]=crctestdata.byteData[0];
+                        Tx_Buffer[5]=crctestdata.byteData[0];
+                        Tx_Buffer[6]=crctestdata.byteData[1];
 
                         //  Tx_Buffer[0]=0xff;
 
@@ -2010,19 +2078,19 @@ void Process_Socket_Data(SOCKET s,int Package_Start,int Package_Size)
 
                         if(Error_OverSet==1)
                         {
-                            Tx_Buffer[4]=0x31;//there is an error
+                            Tx_Buffer[4]=0x01;//there is an error
                         }
                         else
                         {
-                            Tx_Buffer[4]=0x30;//none error
+                            Tx_Buffer[4]=0x00;//none error
                         }
 
 
-                        crctestdata.CrcData=GetCRC16(Tx_Buffer,4);
+                        crctestdata.CrcData=GetCRC16(Tx_Buffer,5);
 
 
-                        Tx_Buffer[5]=crctestdata.byteData[1];
-                        Tx_Buffer[6]=crctestdata.byteData[0];
+                        Tx_Buffer[5]=crctestdata.byteData[0];
+                        Tx_Buffer[6]=crctestdata.byteData[1];
 
                         //  Tx_Buffer[0]=0xff;
 
