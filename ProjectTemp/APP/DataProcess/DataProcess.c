@@ -44,7 +44,7 @@ float ADVoltage_2_Pressure627D(float ADValue_Vacuum627D)
 
 
 	Pressure627D=6.820512821*ADValue_Vacuum627D;
-		
+	Pressure627D=ADValue_Vacuum627D;	
 
     return  Pressure627D;
 
@@ -111,6 +111,7 @@ float Pressure627D_2_ADVoltage(float Pressure_Value)
 	float AD_Volatge;
 	
 		AD_Volatge=Pressure_Value*10*3.9/(13.3*20);
+		AD_Volatge=Pressure_Value;
 
     return AD_Volatge;
 

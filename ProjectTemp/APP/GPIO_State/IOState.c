@@ -8,7 +8,7 @@ void ValveState_Init()    //端口初始化
 {
     GPIO_InitTypeDef GPIO_InitStructure;    //声明一个结构体变量，用来初始化GPIO
 
-    SystemInit();   //系统时钟初始化
+  // SystemInit();   //系统时钟初始化  we donnot need to init again
 
     RCC_APB2PeriphClockCmd(RCC_APB2Periph_GPIOA | RCC_APB2Periph_GPIOB |RCC_APB2Periph_GPIOC,ENABLE); /* 开启GPIO时钟 */
 
@@ -29,8 +29,15 @@ void ValveState_Init()    //端口初始化
     GPIO_InitStructure.GPIO_Speed=GPIO_Speed_50MHz;   //设置传输速率
     GPIO_Init(GPIOC,&GPIO_InitStructure); /* 初始化GPIO */
 }
+/*******************************************************************************
+* Function name  :  ValveStateChange
+* Description  : if we want to update the status, we need to call this funtion to make this change銆俆O actual change the valve
+* Input :None 
+* Output  :  None
+* Return Value :  None
+* Attention:  the input is 16 tuple,so that we can judge it one by one 
 
-
+*******************************************************************************/
 void ValveStateChange(u8 Valve_Status_Set[2] )
 {
     //来自网络的信息传入了进来，然后通过网络所设定的状态，我们进行下面的更新
@@ -56,19 +63,19 @@ void ValveStateChange(u8 Valve_Status_Set[2] )
 #define Valve_1 PCout(13)
 #define Valve_2 PCout(15)
 #define Valve_3 PCout(3)
-							
+									
 #define Valve_4 PAout(1)
 #define Valve_5 PAout(7)
-							
+									
 #define Valve_6 PBout(7)
 #define Valve_7 PBout(6)
 #define Valve_8 PBout(0)
-							
+									
 #define Valve_9 PCout(4)
-							
+									
 #define Valve_10 PAout(6)
 #define Valve_11 PAout(0)
-							
+									
 #define Valve_12 PCout(14)
 #define Valve_13 PCout(11)
 #define Valve_14 PCout(10)
@@ -244,6 +251,16 @@ void ValveStateChange(u8 Valve_Status_Set[2] )
 
 
 }
+/*******************************************************************************
+* Function name  :  Gas_State_Read
+* Description  : this function is to get the current state of valve and we can read it  and send back to the pc through internet
+* Input :None 
+* Output  :  None
+* Return Value :  None
+* Attention:  return a pointer type value
+*******************************************************************************/
+
+
 char *Gas_State_Read()
 {
     /*
@@ -331,6 +348,17 @@ char *Gas_State_Read()
     return GPIO_State_return ;
 
 }
+
+
+
+/*******************************************************************************
+* Function name  :  Gas_State_Read_LCD
+* Description  : this function is to get the current state of valve and we can read it and it can be used by the lcd display
+* Input :None 
+* Output  :  None
+* Return Value :  None
+* Attention:  return a pointer type value
+*******************************************************************************/
 char *Gas_State_Read_LCD()
 {
     /*#define Valve_1 PCout(13)     // Valve1  singal 1   PC13    ----------P7排线
@@ -343,7 +371,7 @@ char *Gas_State_Read_LCD()
 
     */
 
-    char static GPIO_State[12];
+    char static GPIO_State[16];
 
     GPIO_State[0]=GPIO_ReadOutputDataBit(GPIOC,GPIO_Pin_13);
     GPIO_State[1]=GPIO_ReadOutputDataBit(GPIOC,GPIO_Pin_14);
@@ -363,11 +391,11 @@ char *Gas_State_Read_LCD()
     GPIO_State[10]=GPIO_ReadOutputDataBit(GPIOC,GPIO_Pin_8);
     GPIO_State[11]=GPIO_ReadOutputDataBit(GPIOC,GPIO_Pin_9);
 	
-	GPIO_State[8]=GPIO_ReadOutputDataBit(GPIOC,GPIO_Pin_10);
-	GPIO_State[9]=GPIO_ReadOutputDataBit(GPIOC,GPIO_Pin_11);
+	GPIO_State[12]=GPIO_ReadOutputDataBit(GPIOC,GPIO_Pin_10);
+	GPIO_State[13]=GPIO_ReadOutputDataBit(GPIOC,GPIO_Pin_11);
 	
-	GPIO_State[10]=GPIO_ReadOutputDataBit(GPIOB,GPIO_Pin_6);
-	GPIO_State[11]=GPIO_ReadOutputDataBit(GPIOB,GPIO_Pin_7);
+	GPIO_State[14]=GPIO_ReadOutputDataBit(GPIOB,GPIO_Pin_6);
+	GPIO_State[15]=GPIO_ReadOutputDataBit(GPIOB,GPIO_Pin_7);
 
 
     return GPIO_State ;

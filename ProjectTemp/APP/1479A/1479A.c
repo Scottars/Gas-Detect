@@ -35,7 +35,7 @@ void Flow_1479A_Adjustment(float Flow_Value)
 	
 	//call 1479A_Flow_Value to voltage
 	Flow_ADVoltage=Flow1479A_2_ADVoltage(Flow_Value);
-
+	//	the output voltage of flow is 0~5V 
 
 
 	//Call Dac conversion function 

@@ -207,8 +207,8 @@ float AD_Conversion_1479A()
     ADC_DeInit(ADC1);
 
     adc10_init();
-    AD_Channel_10_Value = Get_ADC_Value(ADC_Channel_10,1);
-    voltage = (float)AD_Channel_10_Value*(0.0008056640625);
+    AD_Channel_12_Value = Get_ADC_Value(ADC_Channel_12,1);
+    voltage = (float)AD_Channel_12_Value*(0.0008056640625);
 
   //  printf("AD conversion mid  1479A is %f\r\n",voltage);
 
@@ -264,9 +264,9 @@ float AD_Conversion_025D()
     ADC_DeInit(ADC1);
     adc12_init();
 
-    AD_Channel_12_Value = Get_ADC_Value(ADC_Channel_12,1);
+    AD_Channel_10_Value = Get_ADC_Value(ADC_Channel_10,1);
 
-    voltage = (float)AD_Channel_12_Value*(0.0008056640625);
+    voltage = (float)AD_Channel_10_Value*(0.0008056640625);
     
     //printf("AD conversion mid  025D is %f\r\n",voltage);
 

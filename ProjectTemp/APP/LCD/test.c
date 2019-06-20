@@ -150,7 +150,7 @@ void ADC_LCD_Out(float voltage[3],float Set_Voltage[3])
 void GridLayer()
 {	
 	int i;
-	LCD_Clear(WHITE);
+	//LCD_Clear(WHITE);   we have clear to white in the intial function
 	for (i=1;i<16;i++)
 	{
 		if(i<=2)
@@ -168,7 +168,7 @@ void GridLayer()
 		{
 			LCD_DrawLine(0,i*20+18, 250, i*20+18);
 		}
-		printf("hello");
+		//printf("hello");
 	}
 	LCD_DrawLine(120,26, 120, 132);  //画屏幕上的竖线  竖线位置 120 从左到右
 	LCD_DrawLine(120,158, 120, 298); //画屏幕上的竖线
@@ -231,7 +231,7 @@ void Gas_StateLayer(void )
 		
 	}
 	
-	delay_ms(1500);
+	//delay_ms(1500);  //In order to make it faster
 }
 /*******************************************************************************
 * Function name  :  Gas_StateLayerUpdate

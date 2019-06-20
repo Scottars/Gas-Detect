@@ -21,7 +21,7 @@ void LED_Init()	  //端口初始化
 {
 	GPIO_InitTypeDef GPIO_InitStructure;	//声明一个结构体变量，用来初始化GPIO
 
-	SystemInit();	//系统时钟初始化
+	//SystemInit();	//系统时钟初始化 THis has been done in the main function
 
 	RCC_APB2PeriphClockCmd(RCC_APB2Periph_GPIOC,ENABLE); /* 开启GPIO时钟 */
 	RCC_APB2PeriphClockCmd(RCC_APB2Periph_GPIOA,ENABLE); /* 开启GPIO时钟 */
