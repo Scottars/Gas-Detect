@@ -78,6 +78,7 @@ char  Package_Valve_Puff_Status_Set[2]= {0x0f,0xff};
 
 char Package_Valve_Status_Set[2]= {0x00,0xff};
 float Package_Duty_P,Package_Duty_I,Package_Duty_D;
+float Package_AD_SamplingTimes=5;
 
 
 
@@ -1006,10 +1007,14 @@ void Process_Package_Receive()
 
 
                 }
-                if(CheckCRC16(RX_Buffer_Receive,4+(int)Rx_Buffer[3+start_point]))//CRC check, correct crc
+                //if(CheckCRC16(RX_Buffer_Receive,4+(int)Rx_Buffer[3+start_point]))//CRC check, correct crc the
+                						//the second data is the actual length we get 
+              if(CheckCRC16(RX_Buffer_Receive,Package_Size))//CRC check, correct crc the
                 {
                     printf("case 03 CRC check okay\r\n");
 
+					printf("actual data length we reveive:%d\r\n",4+(int)Rx_Buffer[3+start_point]);
+						    printf("Package_Size%d\r\n",Package_Size);
 
                     Process_Socket_Data(0,start_point,Package_Size);
 
@@ -1019,8 +1024,11 @@ void Process_Package_Receive()
                 else //CRC check, wrong crc, set communication error
                 {
                     printf("case 03 CRC check wrong\r\n");
+					printf("actual data length we reveive:%d\r\n",4+(int)Rx_Buffer[3+start_point]);
+						    printf("Package_Size%d\r\n",Package_Size);
                     Error_Communicate=0x01;
                     LED11=0; //crc check running  signal
+                    
                 }
                 start_point += Package_Size;
                 size -= 6;
@@ -1040,9 +1048,12 @@ void Process_Package_Receive()
 
 
                 }
-                if(CheckCRC16(RX_Buffer_Receive,4+(int)Rx_Buffer[3+start_point])) //CRC check, correct crc
+               // if(CheckCRC16(RX_Buffer_Receive,4+(int)Rx_Buffer[3+start_point])) //CRC check, correct crc
+                if(CheckCRC16(RX_Buffer_Receive,Package_Size))//CRC check, correct crc the
                 {
                     printf("case05 CRC check okay\r\n");
+					printf("actual data length we reveive:%d\r\n",4+(int)Rx_Buffer[3+start_point]);
+						    printf("Package_Size%d\r\n",Package_Size);
 
 
                     Process_Socket_Data(0,start_point,Package_Size);
@@ -1080,6 +1091,7 @@ void Process_Package_Receive()
                 if(CheckCRC16(RX_Buffer_Receive,4+(int)Rx_Buffer[3+start_point])) //CRC check, correct crc
                 {
                     printf("case 06 CRC check okay\r\n");
+					printf("actual data length we reveive:%d\r\n",4+(int)Rx_Buffer[3+start_point]);
 
 
                     Process_Socket_Data(0,start_point,Package_Size);
@@ -1089,6 +1101,7 @@ void Process_Package_Receive()
                 else //CRC check, wrong crc, set communication error
                 {
                     printf("case 06 CRC check wrong\r\n");
+									printf("actual data length we reveive:%d\r\n",4+(int)Rx_Buffer[3+start_point]);
                     Error_Communicate=0x01;
                     LED11=0; //crc check running  signal
                 }
@@ -1110,6 +1123,7 @@ void Process_Package_Receive()
                 }
                 //printf("In the Rx_bufffer part\r\n");
                 if(CheckCRC16(RX_Buffer_Receive,4+start_point)) //CRC check, correct crc
+                if(CheckCRC16(RX_Buffer_Receive,Package_Size)) //CRC check, correct crc
                 {
                     printf("case 08 CRC check okay\r\n");
 
@@ -1333,7 +1347,7 @@ void Process_Socket_Data(SOCKET s,int Package_Start,int Package_Size)
                         //  AD_Voltage_Status = AD_Conversion();
                         //AD_Voltage_Status[0 1 2]   ·Ö±ğ±íÊ¾1479A 627D 025d
                         // Flow_1479A_Status=1.5;
-                        AD_temp=AD_Conversion_1479A();
+                        AD_temp=AD_Conversion_1479A(Package_AD_SamplingTimes);
 
                         //
                         temp = ADVoltage_2_Flow1479A(AD_temp);
@@ -1373,7 +1387,7 @@ void Process_Socket_Data(SOCKET s,int Package_Start,int Package_Size)
                         // Cavity_627D_Pressure_Status=AD_Voltage_Status[1];
 
                         //AD_Voltage_Status[0 1 2]   ·Ö±ğ±íÊ¾1479A 627D 025d
-                        AD_temp=AD_Conversion_627D();
+                        AD_temp=AD_Conversion_627D(Package_AD_SamplingTimes);
 
                         //
                         temp = ADVoltage_2_Pressure627D(AD_temp);
@@ -1410,7 +1424,7 @@ void Process_Socket_Data(SOCKET s,int Package_Start,int Package_Size)
 
 
                         //AD_Voltage_Status[0 1 2]   ·Ö±ğ±íÊ¾1479A 627D 025d
-                        AD_temp=AD_Conversion_025D();
+                        AD_temp=AD_Conversion_025D(Package_AD_SamplingTimes);
 
                         //
                         temp = ADVoltage_2_Pressure025D(AD_temp);
@@ -2099,9 +2113,55 @@ void Process_Socket_Data(SOCKET s,int Package_Start,int Package_Size)
 
 
                         break;
+					case 0x19: //AD sampling times setup
+					
+                        //if the value is received, we feedback the same package that we get
+
+                        //convert to float type
+                        testdata.byteData[3]=Rx_Buffer[3+1+Package_Start];
+                        testdata.byteData[2]=Rx_Buffer[4+1+Package_Start];
+                        testdata.byteData[1]=Rx_Buffer[5+1+Package_Start];
+                        testdata.byteData[0]=Rx_Buffer[6+1+Package_Start];
+
+
+                        //we should set a critical value to limit the dataï¼Œ
+                        //if it doesn't meet our requirements,we need to send the data error to the pc
+                        if((testdata.floatData>100)|(testdata.floatData<1))
+                        {
+                            //return the data over information
+                            Error_OverSet=0x01;
+                            LED10=0; //overset float value error signal
+
+
+                        }
+                        else //the set is okay
+                        {
+
+                            Error_OverSet=0x00;
+
+
+
+                            //1479A Flow Set value
+
+                            Package_AD_SamplingTimes=testdata.floatData;
+                            printf("Case 0x19 Set AD sampling times\r\n");
+
+
+                        }
+                        for(i=0; i<Package_Size; i++)
+                        {
+                            Tx_Buffer[i]=Rx_Buffer[Package_Start+i];
+                        }
+                        printf("Set Rxbuffer okay\r\n");
+                        //memcpy(Tx_Buffer, Rx_Buffer, size);
+                        Write_SOCK_Data_Buffer(s, Tx_Buffer,Package_Size);
+
+
+                        break;
 
                 }
-                break;
+
+				break;
 
 
 
@@ -2293,10 +2353,10 @@ void Status_Register_Update()
 
     ValveValue_Status=Gas_State_Read(); //º¯ÊıÊµÏÖ¶ÁÈ¡IO¿ÚµÄ¸ßµÍµçÆ½Öµ
 
-    AD_Voltage_Status[0]=AD_Conversion_1479A();
+    AD_Voltage_Status[0]=AD_Conversion_1479A(Package_AD_SamplingTimes);
 
-    AD_Voltage_Status[1]=AD_Conversion_627D();
-    AD_Voltage_Status[2]=AD_Conversion_025D();
+    AD_Voltage_Status[1]=AD_Conversion_627D(Package_AD_SamplingTimes);
+    AD_Voltage_Status[2]=AD_Conversion_025D(Package_AD_SamplingTimes);
 
 
 
@@ -2333,10 +2393,10 @@ void Status_LCD_Update()
     Gas_StateLayerUpdate(ValveValue_Status_LCD);
     //AD_Voltage_Status=AD_Conversion();
 
-    AD_Voltage_Status[0]=AD_Conversion_1479A();
+    AD_Voltage_Status[0]=AD_Conversion_1479A(Package_AD_SamplingTimes);
 
-    AD_Voltage_Status[1]=AD_Conversion_627D();
-    AD_Voltage_Status[2]=AD_Conversion_025D();
+    AD_Voltage_Status[1]=AD_Conversion_627D(Package_AD_SamplingTimes);
+    AD_Voltage_Status[2]=AD_Conversion_025D(Package_AD_SamplingTimes);
 
 
 

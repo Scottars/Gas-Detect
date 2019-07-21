@@ -9,10 +9,10 @@ u16 Get_ADC_Value(u8 channe,u8 times);
 float *AD_Conversion(void);
 
 
-float AD_Conversion_1479A(void);
+float AD_Conversion_1479A(int times);
 
-float AD_Conversion_627D(void);
+float AD_Conversion_627D(int times);
 
-float AD_Conversion_025D(void);
+float AD_Conversion_025D(int times);
 
 #endif

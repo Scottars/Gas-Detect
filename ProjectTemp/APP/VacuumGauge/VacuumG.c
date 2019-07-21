@@ -119,6 +119,7 @@ void VacuumValue_PID(float VacuumValue_Set, float VacuumValue_Status,float Kp,fl
         {
             Duty=360;
         }
+	
     }
     TIM_SetCompare2(TIM3,Duty);
 

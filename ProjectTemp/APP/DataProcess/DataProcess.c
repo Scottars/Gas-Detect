@@ -1,4 +1,4 @@
-#include  "DataProcess.h"
+ #include  "DataProcess.h"
 #include "printf.h"
 /*******************************************************************************
 * Function name  : ADVoltage_2_Flow1479A
@@ -41,10 +41,10 @@ float ADVoltage_2_Pressure627D(float ADValue_Vacuum627D)
 {
 	
 	float Pressure627D;
+	Pressure627D=ADValue_Vacuum627D*13.3/2;
 
-
-	Pressure627D=6.820512821*ADValue_Vacuum627D;
-	Pressure627D=ADValue_Vacuum627D;	
+//	Pressure627D=6.820512821*ADValue_Vacuum627D;
+	//Pressure627D=ADValue_Vacuum627D;	
 
     return  Pressure627D;
 
@@ -68,7 +68,7 @@ float ADVoltage_2_Pressure025D(float ADValue_Vacuum025D)
 	float Pressure025D;
 	//Calculate has some errors
 		//Pressure=20*13.3*ADValue_Vacuum025D/(3.9*10);
-	Pressure025D=6.820512821*ADValue_Vacuum025D;
+	Pressure025D=ADValue_Vacuum025D*13.3/2;
 	
 	
 	
@@ -110,9 +110,8 @@ float Pressure627D_2_ADVoltage(float Pressure_Value)
 {
 	float AD_Volatge;
 	
-		AD_Volatge=Pressure_Value*10*3.9/(13.3*20);
-		AD_Volatge=Pressure_Value;
-
+		AD_Volatge=Pressure_Value*2/13.3;
+		
     return AD_Volatge;
 
 }
@@ -130,7 +129,7 @@ float Pressure627D_2_ADVoltage(float Pressure_Value)
 float Pressure025D_2_ADVoltage(float Pressure_Value)
 {
 	float AD_Volatge;	
-		AD_Volatge=Pressure_Value*10*3.9/(13.3*20);
+		AD_Volatge=Pressure_Value*2/13.3;
     return AD_Volatge;
 }
 
