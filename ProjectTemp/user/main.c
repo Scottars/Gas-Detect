@@ -125,7 +125,7 @@ float Cavity_025D_Pressure_Status;
 *
 *
 */
-float Cavity_627D_Pressure_SetMax=20;
+float Cavity_627D_Pressure_SetMax=80;
 float Cavity_627D_Pressure_SetMin=-20;
 float Flow_1479A_SetMax=20;
 float Flow_1479A_SetMin=-20;
@@ -478,6 +478,8 @@ int main()
                     //we have set our default value to  Package_P  I D
                     //we should also check the number's reasonable value
                     //execute the PID function to set the new pwm duty ratio
+                    printf("Package_Cavity_627D_Pressure_Set%f\r\n",Package_Cavity_627D_Pressure_Set);
+					printf("Cavity_627D_Pressure_Set%f\r\n",Cavity_627D_Pressure_Set);
                     VacuumValue_PID(Cavity_627D_Pressure_Set, Cavity_627D_Pressure_Status, Package_Duty_P,Package_Duty_I,Package_Duty_D);
                     //Cavity_627D_Pressure_Set
                     ///////////////if we can switch to the puff mode /////////////////
@@ -1009,7 +1011,7 @@ void Process_Package_Receive()
                 }
                 //if(CheckCRC16(RX_Buffer_Receive,4+(int)Rx_Buffer[3+start_point]))//CRC check, correct crc the
                 						//the second data is the actual length we get 
-              if(CheckCRC16(RX_Buffer_Receive,Package_Size))//CRC check, correct crc the
+              if(CheckCRC16(RX_Buffer_Receive,Package_Size-2))//CRC check, correct crc the
                 {
                     printf("case 03 CRC check okay\r\n");
 
@@ -1049,7 +1051,7 @@ void Process_Package_Receive()
 
                 }
                // if(CheckCRC16(RX_Buffer_Receive,4+(int)Rx_Buffer[3+start_point])) //CRC check, correct crc
-                if(CheckCRC16(RX_Buffer_Receive,Package_Size))//CRC check, correct crc the
+                if(CheckCRC16(RX_Buffer_Receive,Package_Size-2))//CRC check, correct crc the
                 {
                     printf("case05 CRC check okay\r\n");
 					printf("actual data length we reveive:%d\r\n",4+(int)Rx_Buffer[3+start_point]);
@@ -1122,8 +1124,8 @@ void Process_Package_Receive()
 
                 }
                 //printf("In the Rx_bufffer part\r\n");
-                if(CheckCRC16(RX_Buffer_Receive,4+start_point)) //CRC check, correct crc
-                if(CheckCRC16(RX_Buffer_Receive,Package_Size)) //CRC check, correct crc
+               // if(CheckCRC16(RX_Buffer_Receive,4+start_point)) //CRC check, correct crc
+                if(CheckCRC16(RX_Buffer_Receive,Package_Size-2)) //CRC check, correct crc
                 {
                     printf("case 08 CRC check okay\r\n");
 

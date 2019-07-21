@@ -60,11 +60,12 @@ void VacuumValue_PID(float VacuumValue_Set, float VacuumValue_Status,float Kp,fl
     if (VacuumValue_Set==55)
     {
         printf("we are in pev fully close\r\n");
-        Duty=360;
+        Duty=0;
     }
     else if (VacuumValue_Set==66)
     {
         //duty bigger ,  actually pwm duty is smaller  and actuall driver duty is bigger
+        printf("we are in pev fully open\r\n");
         Duty=2880;
     }
     else
