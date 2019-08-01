@@ -31,87 +31,101 @@ compiling main.c...
 .\APP\ADC\adc.h(5): warning:  #1295-D: Deprecated declaration adc10_init - give arg types
   void adc10_init();
 .\APP\ADC\adc.h(6): warning:  #1295-D: Deprecated declaration adc11_init - give arg types
-        void adc11_init();
+  void adc11_init();
 .\APP\ADC\adc.h(7): warning:  #1295-D: Deprecated declaration adc12_init - give arg types
-                void adc12_init();
-user\main.c(312): warning:  #223-D: function "System_Initialization" declared implicitly
+  void adc12_init();
+.\APP\ADC\adc.h(23): warning:  #1295-D: Deprecated declaration dma_test - give arg types
+  void dma_test();
+user\main.c(314): warning:  #223-D: function "System_Initialization" declared implicitly
       System_Initialization();    //STM32系统初始化函数(初始化STM32时钟及外设)
-user\main.c(313): warning:  #223-D: function "Load_Net_Parameters" declared implicitly
+user\main.c(315): warning:  #223-D: function "Load_Net_Parameters" declared implicitly
       Load_Net_Parameters();      //装载网络参数
-user\main.c(315): warning:  #223-D: function "W5500_Initialization" declared implicitly
+user\main.c(317): warning:  #223-D: function "W5500_Initialization" declared implicitly
       W5500_Initialization();     //W5500 intial set
-user\main.c(380): warning:  #223-D: function "W5500_Socket_Set" declared implicitly
-                W5500_Socket_Set();//W5500 port initial , we set the w5500 to tcp server mode
-user\main.c(413): warning:  #167-D: argument of type "char *" is incompatible with parameter of type "u8 *"
+user\main.c(382): warning:  #223-D: function "W5500_Socket_Set" declared implicitly
+          W5500_Socket_Set();//W5500 port initial , we set the w5500 to tcp server mode
+user\main.c(415): warning:  #167-D: argument of type "char *" is incompatible with parameter of type "u8 *"
                   ValveStateChange(Valve_Operation_Status_Set);
-user\main.c(439): warning:  #167-D: argument of type "char *" is incompatible with parameter of type "u8 *"
+user\main.c(441): warning:  #167-D: argument of type "char *" is incompatible with parameter of type "u8 *"
                   ValveStateChange(Valve_Operation_Status_Set);
-user\main.c(456): warning:  #167-D: argument of type "char *" is incompatible with parameter of type "u8 *"
+user\main.c(458): warning:  #167-D: argument of type "char *" is incompatible with parameter of type "u8 *"
                   ValveStateChange(Valve_Operation_Status_Set);
-user\main.c(553): warning:  #167-D: argument of type "char *" is incompatible with parameter of type "u8 *"
+user\main.c(555): warning:  #167-D: argument of type "char *" is incompatible with parameter of type "u8 *"
                               ValveStateChange(Valve_Operation_Status_Set);
-user\main.c(614): warning:  #167-D: argument of type "char *" is incompatible with parameter of type "u8 *"
+user\main.c(616): warning:  #167-D: argument of type "char *" is incompatible with parameter of type "u8 *"
                               ValveStateChange(Valve_Operation_Status_Set);
-user\main.c(640): warning:  #167-D: argument of type "char *" is incompatible with parameter of type "u8 *"
+user\main.c(642): warning:  #167-D: argument of type "char *" is incompatible with parameter of type "u8 *"
                               ValveStateChange(Valve_Operation_Status_Set);
-user\main.c(736): warning:  #167-D: argument of type "char *" is incompatible with parameter of type "u8 *"
+user\main.c(738): warning:  #167-D: argument of type "char *" is incompatible with parameter of type "u8 *"
                               ValveStateChange(Valve_Operation_Status_Set);
-user\main.c(758): warning:  #167-D: argument of type "char *" is incompatible with parameter of type "u8 *"
+user\main.c(760): warning:  #167-D: argument of type "char *" is incompatible with parameter of type "u8 *"
                               ValveStateChange(Valve_Operation_Status_Set);
-user\main.c(843): warning:  #167-D: argument of type "char *" is incompatible with parameter of type "u8 *"
+user\main.c(845): warning:  #167-D: argument of type "char *" is incompatible with parameter of type "u8 *"
                               ValveStateChange(Valve_Operation_Status_Set);
-user\main.c(901): warning:  #167-D: argument of type "char *" is incompatible with parameter of type "u8 *"
+user\main.c(903): warning:  #167-D: argument of type "char *" is incompatible with parameter of type "u8 *"
                   ValveStateChange(Valve_Operation_Status_Set);
-user\main.c(920): warning:  #167-D: argument of type "char *" is incompatible with parameter of type "u8 *"
+user\main.c(922): warning:  #167-D: argument of type "char *" is incompatible with parameter of type "u8 *"
                   ValveStateChange(Valve_Operation_Status_Set);
-user\main.c(942): warning:  #167-D: argument of type "char *" is incompatible with parameter of type "u8 *"
+user\main.c(944): warning:  #167-D: argument of type "char *" is incompatible with parameter of type "u8 *"
                   ValveStateChange(Valve_Operation_Status_Set);
-user\main.c(208): warning:  #177-D: variable "i" was declared but never referenced
+user\main.c(210): warning:  #177-D: variable "i" was declared but never referenced
       u8 i,j,k;
-user\main.c(208): warning:  #177-D: variable "j" was declared but never referenced
+user\main.c(210): warning:  #177-D: variable "j" was declared but never referenced
       u8 i,j,k;
-user\main.c(208): warning:  #177-D: variable "k" was declared but never referenced
+user\main.c(210): warning:  #177-D: variable "k" was declared but never referenced
       u8 i,j,k;
-user\main.c(209): warning:  #177-D: variable "size" was declared but never referenced
+user\main.c(211): warning:  #177-D: variable "size" was declared but never referenced
       int size;
-user\main.c(211): warning:  #177-D: variable "temptofun" was declared but never referenced
+user\main.c(213): warning:  #177-D: variable "temptofun" was declared but never referenced
       float temptofun;
-user\main.c(1525): warning:  #111-D: statement is unreachable
+user\main.c(1355): warning:  #223-D: function "AD_Conversion_1479A_DMA" declared implicitly
+                                                AD_temp=AD_Conversion_1479A_DMA();
+user\main.c(1395): warning:  #223-D: function "AD_Conversion_627D_DMA" declared implicitly
+                          AD_temp=AD_Conversion_627D_DMA();
+user\main.c(1528): warning:  #111-D: statement is unreachable
                           break;
-user\main.c(1185): warning:  #177-D: variable "floattest" was declared but never referenced
+user\main.c(1187): warning:  #177-D: variable "floattest" was declared but never referenced
       char floattest[10];
-user\main.c(1186): warning:  #177-D: variable "test1" was declared but never referenced
+user\main.c(1188): warning:  #177-D: variable "test1" was declared but never referenced
       char test1[4];
-user\main.c(1187): warning:  #177-D: variable "size" was declared but never referenced
+user\main.c(1189): warning:  #177-D: variable "size" was declared but never referenced
       unsigned short size;//接收到的buffer 的大小
-user\main.c(1191): warning:  #177-D: variable "ValveValue_Set" was declared but never referenced
+user\main.c(1193): warning:  #177-D: variable "ValveValue_Set" was declared but never referenced
       u8 ValveValue_Set[12];  //来自网络传入过来的信号
-user\main.c(1196): warning:  #177-D: variable "Kp" was declared but never referenced
+user\main.c(1198): warning:  #177-D: variable "Kp" was declared but never referenced
       float Kp,Ki,Kd;
-user\main.c(1196): warning:  #177-D: variable "Ki" was declared but never referenced
+user\main.c(1198): warning:  #177-D: variable "Ki" was declared but never referenced
       float Kp,Ki,Kd;
-user\main.c(1196): warning:  #177-D: variable "Kd" was declared but never referenced
+user\main.c(1198): warning:  #177-D: variable "Kd" was declared but never referenced
       float Kp,Ki,Kd;
-user\main.c(1200): warning:  #177-D: variable "CRC_Mid" was declared but never referenced
+user\main.c(1202): warning:  #177-D: variable "CRC_Mid" was declared but never referenced
       unsigned int CRC_Mid;
-user\main.c(1203): warning:  #177-D: variable "AD_Voltage_Status" was declared but never referenced
+user\main.c(1205): warning:  #177-D: variable "AD_Voltage_Status" was declared but never referenced
       float *AD_Voltage_Status;
-user\main.c(1209): warning:  #177-D: variable "Actual_size" was declared but never referenced
+user\main.c(1211): warning:  #177-D: variable "Actual_size" was declared but never referenced
       unsigned short Actual_size;
-user\main.c(2353): warning:  #550-D: variable "ValveValue_Status" was set but never used
+user\main.c(2356): warning:  #177-D: variable "ValveValue_Status" was declared but never referenced
       char *ValveValue_Status;
-user\main.c(2395): warning:  #167-D: argument of type "char *" is incompatible with parameter of type "u8 *"
+user\main.c(2357): warning:  #177-D: variable "ADC_Value" was declared but never referenced
+        float ADC_Value[3];//鐢ㄦ潵淇濆瓨缁忚繃杞崲寰楀埌鐨勭數鍘嬪�?               ^
+user\main.c(2413): warning:  #550-D: variable "ValveValue_Status" was set but never used
+      char *ValveValue_Status;
+user\main.c(2414): warning:  #177-D: variable "ADC_Value" was declared but never referenced
+        float ADC_Value[3];//鐢ㄦ潵淇濆瓨缁忚繃杞崲寰楀埌鐨勭數鍘嬪�?               ^
+user\main.c(2415): warning:  #177-D: variable "sum" was declared but never referenced
+        int sum;
+user\main.c(2461): warning:  #167-D: argument of type "char *" is incompatible with parameter of type "u8 *"
       Gas_StateLayerUpdate(ValveValue_Status_LCD);
-user\main.c(2388): warning:  #550-D: variable "ValveValue_Status" was set but never used
+user\main.c(2454): warning:  #550-D: variable "ValveValue_Status" was set but never used
       char *ValveValue_Status;
-user\main.c: 38 warnings, 0 errors
+user\main.c: 45 warnings, 0 errors
 compiling stm32f10x_it.c...
 compiling public.c...
 compiling core_cm3.c...
 compiling system_stm32f10x.c...
 assembling startup_stm32f10x_hd.s...
-compiling stm32f10x_gpio.c...
 compiling stm32f10x_rcc.c...
+compiling stm32f10x_gpio.c...
 compiling stm32f10x_usart.c...
 compiling misc.c...
 compiling stm32f10x_exti.c...
@@ -121,6 +135,7 @@ compiling stm32f10x_dac.c...
 compiling stm32f10x_spi.c...
 compiling stm32f10x_flash.c...
 compiling stm32f10x_iwdg.c...
+compiling stm32f10x_dma.c...
 compiling led.c...
 compiling systick.c...
 APP\SysTick\systick.c(3): warning:  #550-D: variable "fac_ms" was set but never used
@@ -143,42 +158,56 @@ compiling adc.c...
 APP\ADC\adc.h(5): warning:  #1295-D: Deprecated declaration adc10_init - give arg types
   void adc10_init();
 APP\ADC\adc.h(6): warning:  #1295-D: Deprecated declaration adc11_init - give arg types
-        void adc11_init();
+  void adc11_init();
 APP\ADC\adc.h(7): warning:  #1295-D: Deprecated declaration adc12_init - give arg types
-                void adc12_init();
-APP\ADC\adc.c(185): warning:  #1166-D: returning pointer to local variable
+  void adc12_init();
+APP\ADC\adc.h(23): warning:  #1295-D: Deprecated declaration dma_test - give arg types
+  void dma_test();
+APP\ADC\adc.c(103): warning:  #223-D: function "printf" declared implicitly
+        printf("The current ADValue_1479A value =%f\r\n",ADValue_1479A);
+APP\ADC\adc.c(104): warning:  #940-D: missing return statement at end of non-void function "AD_Conversion_1479A_DMA"
+  }
+APP\ADC\adc.c(122): warning:  #223-D: function "printf" declared implicitly
+        printf("The currentADValue_627D value =%f\r\n",ADValue_627D);
+APP\ADC\adc.c(124): warning:  #940-D: missing return statement at end of non-void function "AD_Conversion_627D_DMA"
+  }
+APP\ADC\adc.c(142): warning:  #223-D: function "printf" declared implicitly
+        printf("The current ADValue_025D value =%f\r\n",ADValue_025D);
+APP\ADC\adc.c(143): warning:  #940-D: missing return statement at end of non-void function "AD_Conversion_025D_DMA"
+  }
+APP\ADC\adc.c(330): warning:  #1166-D: returning pointer to local variable
       return voltage ;
-APP\ADC\adc.c(165): warning:  #177-D: variable "i" was declared but never referenced
+APP\ADC\adc.c(310): warning:  #177-D: variable "i" was declared but never referenced
       u8 i;
-APP\ADC\adc.c(167): warning:  #177-D: variable "dacval" was declared but never referenced
+APP\ADC\adc.c(312): warning:  #177-D: variable "dacval" was declared but never referenced
       u16 dacval;
-APP\ADC\adc.c(169): warning:  #177-D: variable "AD_Channel_Select" was declared but never referenced
+APP\ADC\adc.c(314): warning:  #177-D: variable "AD_Channel_Select" was declared but never referenced
       u16 AD_Channel_Select[3]= {ADC_Channel_10,ADC_Channel_11,ADC_Channel_12}; //定义通道选择数组
-APP\ADC\adc.c(200): warning:  #1294-D: Old-style function AD_Conversion_1479A
+APP\ADC\adc.c(345): warning:  #1294-D: Old-style function AD_Conversion_1479A
   float AD_Conversion_1479A(times)
-APP\ADC\adc.c(200): warning:  #1079-D: standard requires that parameter "times" be given a type by a subsequent declaration ("int" assumed)
+APP\ADC\adc.c(345): warning:  #1079-D: standard requires that parameter "times" be given a type by a subsequent declaration ("int" assumed)
   float AD_Conversion_1479A(times)
-APP\ADC\adc.c(207): warning:  #177-D: variable "AD_Channel_10_Value" was declared but never referenced
+APP\ADC\adc.c(352): warning:  #177-D: variable "AD_Channel_10_Value" was declared but never referenced
       u32 AD_Channel_10_Value,AD_Channel_11_Value,AD_Channel_12_Value;
-APP\ADC\adc.c(207): warning:  #177-D: variable "AD_Channel_11_Value" was declared but never referenced
+APP\ADC\adc.c(352): warning:  #177-D: variable "AD_Channel_11_Value" was declared but never referenced
       u32 AD_Channel_10_Value,AD_Channel_11_Value,AD_Channel_12_Value;
-APP\ADC\adc.c(231): warning:  #1294-D: Old-style function AD_Conversion_627D
+APP\ADC\adc.c(376): warning:  #1294-D: Old-style function AD_Conversion_627D
   float AD_Conversion_627D(times)
-APP\ADC\adc.c(231): warning:  #1079-D: standard requires that parameter "times" be given a type by a subsequent declaration ("int" assumed)
+APP\ADC\adc.c(376): warning:  #1079-D: standard requires that parameter "times" be given a type by a subsequent declaration ("int" assumed)
   float AD_Conversion_627D(times)
-APP\ADC\adc.c(236): warning:  #177-D: variable "AD_Channel_10_Value" was declared but never referenced
+APP\ADC\adc.c(381): warning:  #177-D: variable "AD_Channel_10_Value" was declared but never referenced
       u32 AD_Channel_10_Value,AD_Channel_11_Value,AD_Channel_12_Value;
-APP\ADC\adc.c(236): warning:  #177-D: variable "AD_Channel_12_Value" was declared but never referenced
+APP\ADC\adc.c(381): warning:  #177-D: variable "AD_Channel_12_Value" was declared but never referenced
       u32 AD_Channel_10_Value,AD_Channel_11_Value,AD_Channel_12_Value;
-APP\ADC\adc.c(258): warning:  #1294-D: Old-style function AD_Conversion_025D
+APP\ADC\adc.c(403): warning:  #1294-D: Old-style function AD_Conversion_025D
   float AD_Conversion_025D(times)
-APP\ADC\adc.c(258): warning:  #1079-D: standard requires that parameter "times" be given a type by a subsequent declaration ("int" assumed)
+APP\ADC\adc.c(403): warning:  #1079-D: standard requires that parameter "times" be given a type by a subsequent declaration ("int" assumed)
   float AD_Conversion_025D(times)
-APP\ADC\adc.c(263): warning:  #177-D: variable "AD_Channel_11_Value" was declared but never referenced
+APP\ADC\adc.c(408): warning:  #177-D: variable "AD_Channel_11_Value" was declared but never referenced
       u32 AD_Channel_10_Value,AD_Channel_11_Value,AD_Channel_12_Value;
-APP\ADC\adc.c(263): warning:  #177-D: variable "AD_Channel_12_Value" was declared but never referenced
+APP\ADC\adc.c(408): warning:  #177-D: variable "AD_Channel_12_Value" was declared but never referenced
       u32 AD_Channel_10_Value,AD_Channel_11_Value,AD_Channel_12_Value;
-APP\ADC\adc.c: 19 warnings, 0 errors
+APP\ADC\adc.c: 26 warnings, 0 errors
 compiling gui.c...
 compiling lcd.c...
 compiling test.c...
@@ -198,10 +227,12 @@ compiling w5500.c...
 .\APP\ADC\adc.h(5): warning:  #1295-D: Deprecated declaration adc10_init - give arg types
   void adc10_init();
 .\APP\ADC\adc.h(6): warning:  #1295-D: Deprecated declaration adc11_init - give arg types
-        void adc11_init();
+  void adc11_init();
 .\APP\ADC\adc.h(7): warning:  #1295-D: Deprecated declaration adc12_init - give arg types
-                void adc12_init();
-APP\W5500\w5500.c: 3 warnings, 0 errors
+  void adc12_init();
+.\APP\ADC\adc.h(23): warning:  #1295-D: Deprecated declaration dma_test - give arg types
+  void dma_test();
+APP\W5500\w5500.c: 4 warnings, 0 errors
 compiling DataProcess.c...
 APP\DataProcess\DataProcess.c(198): warning:  #177-D: variable "sum" was declared but never referenced
       unsigned int CRCi,sum;
@@ -217,9 +248,9 @@ APP\VacuumGauge\VacuumG.c: 2 warnings, 0 errors
 compiling 1479A.c...
 compiling iwdg.c...
 linking...
-Program Size: Code=28716 RO-data=9436 RW-data=308 ZI-data=5156  
+Program Size: Code=29864 RO-data=9436 RW-data=308 ZI-data=5212  
 FromELF: creating hex file...
-".\output\工程模板.axf" - 0 Error(s), 69 Warning(s).
+".\output\工程模板.axf" - 0 Error(s), 84 Warning(s).
 
 <h2>Collection of Component include folders:</h2>
   E:\MasterWork\Master1\1.pcb\keilcode\Codesum\_2DAC_ADC_printf_LCD_w5500\current-project\ProjectTemp\RTE

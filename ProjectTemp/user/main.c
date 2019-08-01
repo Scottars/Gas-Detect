@@ -42,6 +42,8 @@
 ****************************************************************************/
 unsigned char ADdataA[7];
 extern unsigned int W5500_Send_Delay_Counter;
+extern uint16_t ADC_ConvertedValue[10][3];//adc ä¸‰è·¯é‡‡é›†
+
 //unsigned char ADdataB[7];
 //unsigned char A1;
 //unsigned char A2;
@@ -142,7 +144,7 @@ float Flow_1479A_Puff_SetMin=-20;
 float PID_P_SetMax=10;
 float PID_I_SetMax=10;
 float PID_D_SetMax=10;
-   
+
 
 float PID_P_SetMin=-10;
 float PID_I_SetMin=-10;
@@ -162,7 +164,7 @@ float Pressure_error;
 
 /*
   // this part is the  DATA from the Internet
-  //This is the target value 
+  //This is the target value
  //Normal Mode
 float Package_Cavity_627D_Pressure_Set=0.3;
 
@@ -177,9 +179,9 @@ float Package_Cavity_627D_Puff_Set=6.0;
 */
 
 
-////////////////////Value to control///////////////////    
+////////////////////Value to control///////////////////
 float Cavity_627D_Pressure_Set;
-float Cavity_627D_Pressure_Default=1;  
+float Cavity_627D_Pressure_Default=1;
 
 
 //////////////////use to 1479A mode or pev mode working alone///////
@@ -235,9 +237,9 @@ int main()
 
 
 
-	//////////////***********TESTING***************////////////
-	//In this part we want to test our program so we directly set some value 
-	//Cavity_627D_Pressure_Status=3.6    This is the status of cavity's pressure
+    //////////////***********TESTING***************////////////
+    //In this part we want to test our program so we directly set some value
+    //Cavity_627D_Pressure_Status=3.6    This is the status of cavity's pressure
 
 
 
@@ -254,7 +256,7 @@ int main()
 
     SystemInit();//³õÊ¼»¯RCC ÉèÖÃÏµÍ³Ö÷ÆµÎª72MHZ
     delay_init(72);      //ÑÓÊ±³õÊ¼»¯
-   
+
 
 
 
@@ -276,8 +278,8 @@ int main()
     printf_init(); //printf³õÊ¼»¯
 
     ///////////////DAC Initial /////////////////DAC ²¿·ÖµÄ³õÊ¼»¯£¬ÎÒÃÇ²ÉÓÃµÄÊÇDAC1  Ò²¾ÍÊÇPA4 ¿ÚµÄÊä³ö
-    Dac1_Init();                //DAC³õÊ¼»¯
-    DAC_SetChannel1Data(DAC_Align_12b_R, 0);//³õÊ¼ÖµÎª0
+    dma_test();                //DAC³õÊ¼»¯
+   // DAC_SetChannel1Data(DAC_Align_12b_R, 0);//³õÊ¼ÖµÎª0
 
 
     ///////////////Valve Status Initial/////////////
@@ -358,11 +360,11 @@ int main()
 
             */
         // GPIO_SetBits(GPIOA,GPIO_Pin_11);     //IO¿ÚÊä³ö¸ßµçÆ½
-        
+
         LED12=1;
         delay_ms(100);
         LED12=0;
-		
+
         //GPIO_ResetBits(GPIOA,GPIO_Pin_11);   //IO¿ÚÊä³ö¸ßµçÆ½
         delay_ms(100);
 
@@ -375,9 +377,9 @@ int main()
 //
 
 
-       
-		
-		W5500_Socket_Set();//W5500 port initial , we set the w5500 to tcp server mode
+
+
+        W5500_Socket_Set();//W5500 port initial , we set the w5500 to tcp server mode
         /****************************************ÍøÂç´¦ÀíÍ¨Ñ¶´¦Àí********************************************/
         if(W5500_Interrupt)//´¦ÀíW5500ÖÐ¶Ï
         {
@@ -441,7 +443,7 @@ int main()
                 Flow_1479A_Adjustment(_1479A_FullyClose);//to make it fully close
 
 
-				printf("Pev_fully close:%f\r\n",PEV_FullyClose);
+             //   printf("Pev_fully close:%f\r\n",PEV_FullyClose);
                 VacuumValue_PID(PEV_FullyClose, Cavity_627D_Pressure_Status, Package_Duty_P,Package_Duty_I,Package_Duty_D);
 
 
@@ -479,7 +481,7 @@ int main()
                     //we should also check the number's reasonable value
                     //execute the PID function to set the new pwm duty ratio
                     printf("Package_Cavity_627D_Pressure_Set%f\r\n",Package_Cavity_627D_Pressure_Set);
-					printf("Cavity_627D_Pressure_Set%f\r\n",Cavity_627D_Pressure_Set);
+                    printf("Cavity_627D_Pressure_Set%f\r\n",Cavity_627D_Pressure_Set);
                     VacuumValue_PID(Cavity_627D_Pressure_Set, Cavity_627D_Pressure_Status, Package_Duty_P,Package_Duty_I,Package_Duty_D);
                     //Cavity_627D_Pressure_Set
                     ///////////////if we can switch to the puff mode /////////////////
@@ -902,7 +904,7 @@ int main()
 
                 Valve_Signal_Open=0x00;
 
-                   Flow_1479A_Adjustment(_1479A_FullyClose);//to make it fully open
+                Flow_1479A_Adjustment(_1479A_FullyClose);//to make it fully open
 
 
                 VacuumValue_PID(PEV_FullyClose, Cavity_627D_Pressure_Status, Package_Duty_P,Package_Duty_I,Package_Duty_D);
@@ -961,7 +963,7 @@ int main()
             Status_LCD_Update();
         }
         //  LCD_Display_Flag--;
-         Status_Register_Update();//we use this sentence to pid or dac adjust
+        Status_Register_Update_DMA();//we use this sentence to pid or dac adjust
         //Status_LCD_Update();
 
 
@@ -1004,19 +1006,19 @@ void Process_Package_Receive()
                 for(j=0; j<Package_Size; j++)
                 {
                     RX_Buffer_Receive[j]=Rx_Buffer[start_point+j];
-					printf("RX_Buffer_Receive:%x\r\n",RX_Buffer_Receive[j]);
+                    printf("RX_Buffer_Receive:%x\r\n",RX_Buffer_Receive[j]);
 
 
 
                 }
                 //if(CheckCRC16(RX_Buffer_Receive,4+(int)Rx_Buffer[3+start_point]))//CRC check, correct crc the
-                						//the second data is the actual length we get 
-              if(CheckCRC16(RX_Buffer_Receive,Package_Size-2))//CRC check, correct crc the
+                //the second data is the actual length we get
+                if(CheckCRC16(RX_Buffer_Receive,Package_Size-2))//CRC check, correct crc the
                 {
                     printf("case 03 CRC check okay\r\n");
 
-					printf("actual data length we reveive:%d\r\n",4+(int)Rx_Buffer[3+start_point]);
-						    printf("Package_Size%d\r\n",Package_Size);
+                    printf("actual data length we reveive:%d\r\n",4+(int)Rx_Buffer[3+start_point]);
+                    printf("Package_Size%d\r\n",Package_Size);
 
                     Process_Socket_Data(0,start_point,Package_Size);
 
@@ -1026,11 +1028,11 @@ void Process_Package_Receive()
                 else //CRC check, wrong crc, set communication error
                 {
                     printf("case 03 CRC check wrong\r\n");
-					printf("actual data length we reveive:%d\r\n",4+(int)Rx_Buffer[3+start_point]);
-						    printf("Package_Size%d\r\n",Package_Size);
+                    printf("actual data length we reveive:%d\r\n",4+(int)Rx_Buffer[3+start_point]);
+                    printf("Package_Size%d\r\n",Package_Size);
                     Error_Communicate=0x01;
                     LED11=0; //crc check running  signal
-                    
+
                 }
                 start_point += Package_Size;
                 size -= 6;
@@ -1050,12 +1052,12 @@ void Process_Package_Receive()
 
 
                 }
-               // if(CheckCRC16(RX_Buffer_Receive,4+(int)Rx_Buffer[3+start_point])) //CRC check, correct crc
+                // if(CheckCRC16(RX_Buffer_Receive,4+(int)Rx_Buffer[3+start_point])) //CRC check, correct crc
                 if(CheckCRC16(RX_Buffer_Receive,Package_Size-2))//CRC check, correct crc the
                 {
                     printf("case05 CRC check okay\r\n");
-					printf("actual data length we reveive:%d\r\n",4+(int)Rx_Buffer[3+start_point]);
-						    printf("Package_Size%d\r\n",Package_Size);
+                    printf("actual data length we reveive:%d\r\n",4+(int)Rx_Buffer[3+start_point]);
+                    printf("Package_Size%d\r\n",Package_Size);
 
 
                     Process_Socket_Data(0,start_point,Package_Size);
@@ -1093,7 +1095,7 @@ void Process_Package_Receive()
                 if(CheckCRC16(RX_Buffer_Receive,4+(int)Rx_Buffer[3+start_point])) //CRC check, correct crc
                 {
                     printf("case 06 CRC check okay\r\n");
-					printf("actual data length we reveive:%d\r\n",4+(int)Rx_Buffer[3+start_point]);
+                    printf("actual data length we reveive:%d\r\n",4+(int)Rx_Buffer[3+start_point]);
 
 
                     Process_Socket_Data(0,start_point,Package_Size);
@@ -1103,7 +1105,7 @@ void Process_Package_Receive()
                 else //CRC check, wrong crc, set communication error
                 {
                     printf("case 06 CRC check wrong\r\n");
-									printf("actual data length we reveive:%d\r\n",4+(int)Rx_Buffer[3+start_point]);
+                    printf("actual data length we reveive:%d\r\n",4+(int)Rx_Buffer[3+start_point]);
                     Error_Communicate=0x01;
                     LED11=0; //crc check running  signal
                 }
@@ -1124,7 +1126,7 @@ void Process_Package_Receive()
 
                 }
                 //printf("In the Rx_bufffer part\r\n");
-               // if(CheckCRC16(RX_Buffer_Receive,4+start_point)) //CRC check, correct crc
+                // if(CheckCRC16(RX_Buffer_Receive,4+start_point)) //CRC check, correct crc
                 if(CheckCRC16(RX_Buffer_Receive,Package_Size-2)) //CRC check, correct crc
                 {
                     printf("case 08 CRC check okay\r\n");
@@ -1349,7 +1351,8 @@ void Process_Socket_Data(SOCKET s,int Package_Start,int Package_Size)
                         //  AD_Voltage_Status = AD_Conversion();
                         //AD_Voltage_Status[0 1 2]   ·Ö±ð±íÊ¾1479A 627D 025d
                         // Flow_1479A_Status=1.5;
-                        AD_temp=AD_Conversion_1479A(Package_AD_SamplingTimes);
+                       // AD_temp=AD_Conversion_1479A(Package_AD_SamplingTimes);
+						AD_temp=AD_Conversion_1479A_DMA();
 
                         //
                         temp = ADVoltage_2_Flow1479A(AD_temp);
@@ -1389,7 +1392,7 @@ void Process_Socket_Data(SOCKET s,int Package_Start,int Package_Size)
                         // Cavity_627D_Pressure_Status=AD_Voltage_Status[1];
 
                         //AD_Voltage_Status[0 1 2]   ·Ö±ð±íÊ¾1479A 627D 025d
-                        AD_temp=AD_Conversion_627D(Package_AD_SamplingTimes);
+                        AD_temp=AD_Conversion_627D_DMA();
 
                         //
                         temp = ADVoltage_2_Pressure627D(AD_temp);
@@ -1426,7 +1429,7 @@ void Process_Socket_Data(SOCKET s,int Package_Start,int Package_Size)
 
 
                         //AD_Voltage_Status[0 1 2]   ·Ö±ð±íÊ¾1479A 627D 025d
-                        AD_temp=AD_Conversion_025D(Package_AD_SamplingTimes);
+                        AD_temp=AD_Conversion_025D_DMA();
 
                         //
                         temp = ADVoltage_2_Pressure025D(AD_temp);
@@ -2115,8 +2118,8 @@ void Process_Socket_Data(SOCKET s,int Package_Start,int Package_Size)
 
 
                         break;
-					case 0x19: //AD sampling times setup
-					
+                    case 0x19: //AD sampling times setup
+
                         //if the value is received, we feedback the same package that we get
 
                         //convert to float type
@@ -2163,7 +2166,7 @@ void Process_Socket_Data(SOCKET s,int Package_Start,int Package_Size)
 
                 }
 
-				break;
+                break;
 
 
 
@@ -2339,6 +2342,63 @@ void Cavity_Pressure_SendBack()
 
 
 /*******************************************************************************
+* Function name  :  Status_Register_Update_DMA
+* Description  : Status_Register_Update_DMA,in order to do pwm adjustment and the 1479a flow adjustment
+* Input : None
+* Output  :  None
+* Return Value :  None
+* Attention: we process the data we get from the pc
+*******************************************************************************/
+
+void Status_Register_Update_DMA()
+{
+    float AD_Voltage_Status[3];
+    char *ValveValue_Status;
+	float ADC_Value[3];//ç”¨æ¥ä¿å­˜ç»è¿‡è½¬æ¢å¾—åˆ°çš„ç”µåŽ‹å€¼
+	int sum;
+	u8 i,j;
+
+    /*
+        ValveValue_Status=Gas_State_Read(); //º¯ÊýÊµÏÖ¶ÁÈ¡IO¿ÚµÄ¸ßµÍµçÆ½Öµ
+
+        AD_Voltage_Status[0]=AD_Conversion_1479A(Package_AD_SamplingTimes);
+
+        AD_Voltage_Status[1]=AD_Conversion_627D(Package_AD_SamplingTimes);
+        AD_Voltage_Status[2]=AD_Conversion_025D(Package_AD_SamplingTimes);
+	
+	
+	Flow_1479A_Status=ADVoltage_2_Flow1479A(AD_Voltage_Status[0]);
+	Cavity_627D_Pressure_Status=ADVoltage_2_Pressure627D(AD_Voltage_Status[1]);
+	Cavity_025D_Pressure_Status=ADVoltage_2_Pressure025D(AD_Voltage_Status[2]);
+
+    */
+
+    for(i=0; i<3; i++)
+    {
+        sum=0;
+
+        for(j=0; j<10; j++)
+        {
+            sum +=ADC_ConvertedValue[j][i];
+        }
+        AD_Voltage_Status[i]=(float)sum/(10*4096)*3.3;//æ±‚å¹³å‡å€¼å¹¶è½¬æ¢æˆç”µåŽ‹å€¼
+
+
+    }
+	
+				 
+			printf("The current AD value =%f\r\n",AD_Voltage_Status[0]);
+			printf("The current AD value =%f\r\n",AD_Voltage_Status[1]);
+			printf("The current AD value =%f\r\n",AD_Voltage_Status[2]);
+
+        Flow_1479A_Status=ADVoltage_2_Flow1479A(AD_Voltage_Status[0]);
+        Cavity_627D_Pressure_Status=ADVoltage_2_Pressure627D(AD_Voltage_Status[1]);
+        Cavity_025D_Pressure_Status=ADVoltage_2_Pressure025D(AD_Voltage_Status[2]);
+
+
+}
+
+/*******************************************************************************
 * Function name  :  Status_Register_Update
 * Description  : Status_Register_Update,in order to do pwm adjustment and the 1479a flow adjustment
 * Input : None
@@ -2351,27 +2411,33 @@ void Status_Register_Update()
 {
     float AD_Voltage_Status[3];
     char *ValveValue_Status;
+	float ADC_Value[3];//ç”¨æ¥ä¿å­˜ç»è¿‡è½¬æ¢å¾—åˆ°çš„ç”µåŽ‹å€¼
+	int sum;
 
+        ValveValue_Status=Gas_State_Read(); //º¯ÊýÊµÏÖ¶ÁÈ¡IO¿ÚµÄ¸ßµÍµçÆ½Öµ
 
-    ValveValue_Status=Gas_State_Read(); //º¯ÊýÊµÏÖ¶ÁÈ¡IO¿ÚµÄ¸ßµÍµçÆ½Öµ
+        AD_Voltage_Status[0]=AD_Conversion_1479A(Package_AD_SamplingTimes);
 
-    AD_Voltage_Status[0]=AD_Conversion_1479A(Package_AD_SamplingTimes);
-
-    AD_Voltage_Status[1]=AD_Conversion_627D(Package_AD_SamplingTimes);
-    AD_Voltage_Status[2]=AD_Conversion_025D(Package_AD_SamplingTimes);
-
-
-
-
-    Flow_1479A_Status=ADVoltage_2_Flow1479A(AD_Voltage_Status[0]);
-    Cavity_627D_Pressure_Status=ADVoltage_2_Pressure627D(AD_Voltage_Status[1]);
-    Cavity_025D_Pressure_Status=ADVoltage_2_Pressure025D(AD_Voltage_Status[2]);
-
-
-
+        AD_Voltage_Status[1]=AD_Conversion_627D(Package_AD_SamplingTimes);
+        AD_Voltage_Status[2]=AD_Conversion_025D(Package_AD_SamplingTimes);
+	
+	
+	Flow_1479A_Status=ADVoltage_2_Flow1479A(AD_Voltage_Status[0]);
+	Cavity_627D_Pressure_Status=ADVoltage_2_Pressure627D(AD_Voltage_Status[1]);
+	Cavity_025D_Pressure_Status=ADVoltage_2_Pressure025D(AD_Voltage_Status[2]);
 
 
 }
+
+
+
+
+
+
+
+
+
+
 /*******************************************************************************
 * Function name  :  Status_LCD_Update
 * Description  : to update the lcd display
@@ -2409,22 +2475,9 @@ void Status_LCD_Update()
      printf("AD_Voltage_Status[2]:%f\r\n",AD_Voltage_Status[2]);
      //
     */
-
-
-
-
-
-
     Set_Voltage[0]=Flow_1479A_Set;
     Set_Voltage[1]=Cavity_627D_Pressure_Set;
     Set_Voltage[2]=12;
-
-
-
-
-
-
-
 
 
     Flow_1479A_Status=ADVoltage_2_Flow1479A(AD_Voltage_Status[0]);

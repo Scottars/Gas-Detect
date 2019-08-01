@@ -42,6 +42,8 @@
 ****************************************************************************/
 unsigned char ADdataA[7];
 extern unsigned int W5500_Send_Delay_Counter;
+extern uint16_t ADC_ConvertedValue[10][3];//adc ä¸‰è·¯é‡‡é›†
+
 //unsigned char ADdataB[7];
 //unsigned char A1;
 //unsigned char A2;
@@ -78,6 +80,7 @@ char  Package_Valve_Puff_Status_Set[2]= {0x0f,0xff};
 
 char Package_Valve_Status_Set[2]= {0x00,0xff};
 float Package_Duty_P,Package_Duty_I,Package_Duty_D;
+float Package_AD_SamplingTimes=5;
 
 
 
@@ -124,7 +127,7 @@ float Cavity_025D_Pressure_Status;
 *
 *
 */
-float Cavity_627D_Pressure_SetMax=20;
+float Cavity_627D_Pressure_SetMax=80;
 float Cavity_627D_Pressure_SetMin=-20;
 float Flow_1479A_SetMax=20;
 float Flow_1479A_SetMin=-20;
@@ -158,18 +161,35 @@ float Pressure_error;
 
 
 
-////////////////////Value to control///////////////////
 
+/*
+  // this part is the  DATA from the Internet
+  //This is the target value
+ //Normal Mode
+float Package_Cavity_627D_Pressure_Set=0.3;
+
+float Package_Flow_1479A_Set=0.3;
+
+
+//Puff Mode
+float Package_Flow_1479A_Puff_Set=6.0;
+
+float Package_Cavity_627D_Puff_Set=6.0;
+
+*/
+
+
+////////////////////Value to control///////////////////
 float Cavity_627D_Pressure_Set;
-float Cavity_627D_Pressure_Default=4;
+float Cavity_627D_Pressure_Default=1;
 
 
 //////////////////use to 1479A mode or pev mode working alone///////
-float PEV_FullyOpen_1479AMode=8;// ---we should translation this to the actual ad voltage
-float _1479A_FullyOpen_PEVMode=0;
+float PEV_FullyOpen_1479AMode=66;// ---we should translation this to the actual ad voltage
+float _1479A_FullyOpen_PEVMode=5;
 //for debug mode
-float PEV_FullyClose_1479AMode=3.6;
-float _1479A_FullyClose_PEVMode=0;
+float PEV_FullyClose=55;
+float _1479A_FullyClose=0;
 
 
 float Flow_1479A_Set;
@@ -182,14 +202,14 @@ char Valve_Puff_Status_Set[2];
 
 
 ///////////////////PID Duty Adjustment part//////
-float Duty_P=5,Duty_I=0.2,Duty_D=0; // we can set it later
+float Duty_P=5,Duty_I=0,Duty_D=0; // we can set it later
 
 
 int main()
 {
     u8 i,j,k;
     int size;
-  
+
     float temptofun;
     /**************variable define part************************/
 
@@ -216,13 +236,27 @@ int main()
     Flow_1479A_Set=Package_Flow_1479A_Set;  //Setting by the package we received from the Internet
 
 
+
+    //////////////***********TESTING***************////////////
+    //In this part we want to test our program so we directly set some value
+    //Cavity_627D_Pressure_Status=3.6    This is the status of cavity's pressure
+
+
+
+
+    /////////////PWM Initial//////////////////////
+    pwm_init(3599,0);  //we should just initialize it but not enable it
+
+
+
+
     /****************Initial system part*****************/
 
     ///////////////////////Òº¾§ÆÁ³õÊ¼»¯¹ý³Ì///////////////////////
 
     SystemInit();//³õÊ¼»¯RCC ÉèÖÃÏµÍ³Ö÷ÆµÎª72MHZ
     delay_init(72);      //ÑÓÊ±³õÊ¼»¯
-    LCD_Init();    //Òº¾§ÆÁ³õÊ¼»¯
+
 
 
 
@@ -248,11 +282,6 @@ int main()
     DAC_SetChannel1Data(DAC_Align_12b_R, 0);//³õÊ¼ÖµÎª0
 
 
-    /////////////PWM Initial//////////////////////
-    pwm_init(3599,0);  //we should just initialize it but not enable it
-
-
-
     ///////////////Valve Status Initial/////////////
 
     ValveState_Init(); //¹©Æø·§ÃÅGPIO¿ÚµÄ²¿·Ö³õÊ¼»¯
@@ -260,6 +289,7 @@ int main()
 
 
     ////////////////LCD Intial ///////////////////
+    LCD_Init();    //Òº¾§ÆÁ³õÊ¼»¯
     GridLayer();  //ÏÔÊ¾ÆÁµÄÍøÂç¿ò¼Ü²ã
     Gas_StateLayer();//ÏÔÊ¾ÆÁ ¹©Æø·§×´Ì¬³õÊ¼»¯²¿·Ö
 
@@ -285,7 +315,6 @@ int main()
     Load_Net_Parameters();      //×°ÔØÍøÂç²ÎÊý
     W5500_Hardware_Reset();     //Ó²¼þ¸´Î»W5500
     W5500_Initialization();     //W5500 intial set
-
 
 
 
@@ -331,9 +360,11 @@ int main()
 
             */
         // GPIO_SetBits(GPIOA,GPIO_Pin_11);     //IO¿ÚÊä³ö¸ßµçÆ½
+
         LED12=1;
         delay_ms(100);
         LED12=0;
+
         //GPIO_ResetBits(GPIOA,GPIO_Pin_11);   //IO¿ÚÊä³ö¸ßµçÆ½
         delay_ms(100);
 
@@ -344,6 +375,8 @@ int main()
         IWDG_ReloadCounter();
         printf("Watch dog in while\r\n");
 //
+
+
 
 
         W5500_Socket_Set();//W5500 port initial , we set the w5500 to tcp server mode
@@ -386,10 +419,10 @@ int main()
                 //this sentence is simmilar to the last one, we can abandon the last sentence
 
 
-                Flow_1479A_Adjustment(_1479A_FullyClose_PEVMode);//to make it fully open
+                Flow_1479A_Adjustment(_1479A_FullyClose);//to make it fully open
 
 
-                VacuumValue_PID(PEV_FullyClose_1479AMode, Cavity_627D_Pressure_Status, Package_Duty_P,Package_Duty_I,Package_Duty_D);
+                VacuumValue_PID(PEV_FullyClose, Cavity_627D_Pressure_Status, Package_Duty_P,Package_Duty_I,Package_Duty_D);
 
                 flag_Debug=0;
 
@@ -407,9 +440,11 @@ int main()
                 Valve_Operation_Status_Set[1]=0x00;
                 ValveStateChange(Valve_Operation_Status_Set);
 
-                Flow_1479A_Adjustment(_1479A_FullyClose_PEVMode);//to make it fully close
+                Flow_1479A_Adjustment(_1479A_FullyClose);//to make it fully close
 
-                VacuumValue_PID(PEV_FullyClose_1479AMode, Cavity_627D_Pressure_Status, Package_Duty_P,Package_Duty_I,Package_Duty_D);
+
+                printf("Pev_fully close:%f\r\n",PEV_FullyClose);
+                VacuumValue_PID(PEV_FullyClose, Cavity_627D_Pressure_Status, Package_Duty_P,Package_Duty_I,Package_Duty_D);
 
 
                 printf("Valve close\r\n");
@@ -445,6 +480,8 @@ int main()
                     //we have set our default value to  Package_P  I D
                     //we should also check the number's reasonable value
                     //execute the PID function to set the new pwm duty ratio
+                    printf("Package_Cavity_627D_Pressure_Set%f\r\n",Package_Cavity_627D_Pressure_Set);
+                    printf("Cavity_627D_Pressure_Set%f\r\n",Cavity_627D_Pressure_Set);
                     VacuumValue_PID(Cavity_627D_Pressure_Set, Cavity_627D_Pressure_Status, Package_Duty_P,Package_Duty_I,Package_Duty_D);
                     //Cavity_627D_Pressure_Set
                     ///////////////if we can switch to the puff mode /////////////////
@@ -459,11 +496,11 @@ int main()
                     if ((Pressure_error<=0.5) & (Pressure_error>=-0.5))
                     {
                         //we can send back the ready signal, there are several different comparison for 627d and 1479A
-                        Pressure_Okay=0x31;
+                        Pressure_Okay=0x01;
                     }
                     else
                     {
-                        Pressure_Okay=0x30;
+                        Pressure_Okay=0x00;
                     }
                     if (Command_Timing_TriggerMode==0x00) //Command trigger
                     {
@@ -666,11 +703,11 @@ int main()
                     if ((Pressure_error<=0.5) & (Pressure_error<=-0.5))
                     {
                         //we can send back the ready signal, there are several different comparison for 627d and 1479A
-                        Pressure_Okay=0x31;
+                        Pressure_Okay=0x01;
                     }
                     else
                     {
-                        Pressure_Okay=0x30;
+                        Pressure_Okay=0x00;
                     }
 
 
@@ -867,10 +904,10 @@ int main()
 
                 Valve_Signal_Open=0x00;
 
-                //   Flow_1479A_Adjustment(_1479A_FullyClose_PEVMode);//to make it fully open
+                Flow_1479A_Adjustment(_1479A_FullyClose);//to make it fully open
 
 
-                //  VacuumValue_PID(PEV_FullyClose_1479AMode, Cavity_627D_Pressure_Status, Package_Duty_P,Package_Duty_I,Package_Duty_D);
+                VacuumValue_PID(PEV_FullyClose, Cavity_627D_Pressure_Status, Package_Duty_P,Package_Duty_I,Package_Duty_D);
 
                 flag_Normal=0;
             }
@@ -925,8 +962,8 @@ int main()
 
             Status_LCD_Update();
         }
-      //  LCD_Display_Flag--;
-      //  Status_Register_Update();//we use this sentence to pid or dac adjust
+        //  LCD_Display_Flag--;
+        Status_Register_Update();//we use this sentence to pid or dac adjust
         //Status_LCD_Update();
 
 
@@ -969,19 +1006,21 @@ void Process_Package_Receive()
                 for(j=0; j<Package_Size; j++)
                 {
                     RX_Buffer_Receive[j]=Rx_Buffer[start_point+j];
+                    printf("RX_Buffer_Receive:%x\r\n",RX_Buffer_Receive[j]);
 
 
 
                 }
-                if(CheckCRC16(RX_Buffer_Receive,4+start_point))//CRC check, correct crc
+                //if(CheckCRC16(RX_Buffer_Receive,4+(int)Rx_Buffer[3+start_point]))//CRC check, correct crc the
+                //the second data is the actual length we get
+                if(CheckCRC16(RX_Buffer_Receive,Package_Size-2))//CRC check, correct crc the
                 {
                     printf("case 03 CRC check okay\r\n");
 
+                    printf("actual data length we reveive:%d\r\n",4+(int)Rx_Buffer[3+start_point]);
+                    printf("Package_Size%d\r\n",Package_Size);
 
                     Process_Socket_Data(0,start_point,Package_Size);
-
-
-
 
 
 
@@ -989,8 +1028,11 @@ void Process_Package_Receive()
                 else //CRC check, wrong crc, set communication error
                 {
                     printf("case 03 CRC check wrong\r\n");
+                    printf("actual data length we reveive:%d\r\n",4+(int)Rx_Buffer[3+start_point]);
+                    printf("Package_Size%d\r\n",Package_Size);
                     Error_Communicate=0x01;
                     LED11=0; //crc check running  signal
+
                 }
                 start_point += Package_Size;
                 size -= 6;
@@ -1010,9 +1052,12 @@ void Process_Package_Receive()
 
 
                 }
-                if(CheckCRC16(RX_Buffer_Receive,4+(int)Rx_Buffer[3+start_point])) //CRC check, correct crc
+                // if(CheckCRC16(RX_Buffer_Receive,4+(int)Rx_Buffer[3+start_point])) //CRC check, correct crc
+                if(CheckCRC16(RX_Buffer_Receive,Package_Size-2))//CRC check, correct crc the
                 {
                     printf("case05 CRC check okay\r\n");
+                    printf("actual data length we reveive:%d\r\n",4+(int)Rx_Buffer[3+start_point]);
+                    printf("Package_Size%d\r\n",Package_Size);
 
 
                     Process_Socket_Data(0,start_point,Package_Size);
@@ -1050,6 +1095,7 @@ void Process_Package_Receive()
                 if(CheckCRC16(RX_Buffer_Receive,4+(int)Rx_Buffer[3+start_point])) //CRC check, correct crc
                 {
                     printf("case 06 CRC check okay\r\n");
+                    printf("actual data length we reveive:%d\r\n",4+(int)Rx_Buffer[3+start_point]);
 
 
                     Process_Socket_Data(0,start_point,Package_Size);
@@ -1059,6 +1105,7 @@ void Process_Package_Receive()
                 else //CRC check, wrong crc, set communication error
                 {
                     printf("case 06 CRC check wrong\r\n");
+                    printf("actual data length we reveive:%d\r\n",4+(int)Rx_Buffer[3+start_point]);
                     Error_Communicate=0x01;
                     LED11=0; //crc check running  signal
                 }
@@ -1079,7 +1126,8 @@ void Process_Package_Receive()
 
                 }
                 //printf("In the Rx_bufffer part\r\n");
-                if(CheckCRC16(RX_Buffer_Receive,4+start_point)) //CRC check, correct crc
+                // if(CheckCRC16(RX_Buffer_Receive,4+start_point)) //CRC check, correct crc
+                if(CheckCRC16(RX_Buffer_Receive,Package_Size-2)) //CRC check, correct crc
                 {
                     printf("case 08 CRC check okay\r\n");
 
@@ -1303,7 +1351,7 @@ void Process_Socket_Data(SOCKET s,int Package_Start,int Package_Size)
                         //  AD_Voltage_Status = AD_Conversion();
                         //AD_Voltage_Status[0 1 2]   ·Ö±ð±íÊ¾1479A 627D 025d
                         // Flow_1479A_Status=1.5;
-                        AD_temp=AD_Conversion_1479A();
+                        AD_temp=AD_Conversion_1479A(Package_AD_SamplingTimes);
 
                         //
                         temp = ADVoltage_2_Flow1479A(AD_temp);
@@ -1343,7 +1391,7 @@ void Process_Socket_Data(SOCKET s,int Package_Start,int Package_Size)
                         // Cavity_627D_Pressure_Status=AD_Voltage_Status[1];
 
                         //AD_Voltage_Status[0 1 2]   ·Ö±ð±íÊ¾1479A 627D 025d
-                        AD_temp=AD_Conversion_627D();
+                        AD_temp=AD_Conversion_627D(Package_AD_SamplingTimes);
 
                         //
                         temp = ADVoltage_2_Pressure627D(AD_temp);
@@ -1380,7 +1428,7 @@ void Process_Socket_Data(SOCKET s,int Package_Start,int Package_Size)
 
 
                         //AD_Voltage_Status[0 1 2]   ·Ö±ð±íÊ¾1479A 627D 025d
-                        AD_temp=AD_Conversion_025D();
+                        AD_temp=AD_Conversion_025D(Package_AD_SamplingTimes);
 
                         //
                         temp = ADVoltage_2_Pressure025D(AD_temp);
@@ -1408,7 +1456,7 @@ void Process_Socket_Data(SOCKET s,int Package_Start,int Package_Size)
 
                         break;
 
-                    case 0x04://Read Gas Feed Status
+                    case 0x04://Read Gas Feed value Status
                         Tx_Buffer[0]=0x05; // Slave address
                         Tx_Buffer[1]=0x03;// function  code
                         Tx_Buffer[2]=0x04;// register address
@@ -1742,37 +1790,37 @@ void Process_Socket_Data(SOCKET s,int Package_Start,int Package_Size)
 
 
 
-					case 0x19:  //use screen or not use screen
-
-					
-					if(Rx_Buffer[4+Package_Start]==0x01)
-					
-					{
-						LCD_Display_offon=0xff;
-					
-						printf("Case 19 to use screen\n");
-					}
-					else
-					{
-						LCD_Display_offon=0x00;
-						printf("Case 19 to not use sreen\n");
-					
-					
-					}
-					for(i=0; i<Package_Size; i++)
-					{
-						Tx_Buffer[i]=Rx_Buffer[Package_Start+i];
-						printf("Txbuffer content:%x\r\n",Tx_Buffer[i]);
-						printf("I number:%d\r\n",i);
-					}
-					printf("Set Rxbuffer okay\r\n");
-					//memcpy(Tx_Buffer, Rx_Buffer, size);
-					Write_SOCK_Data_Buffer(s, Tx_Buffer,Package_Size);
-					
-					break;
+                    case 0x19:  //use screen or not use screen
 
 
-					default:
+                        if(Rx_Buffer[4+Package_Start]==0x01)
+
+                        {
+                            LCD_Display_offon=0xff;
+
+                            printf("Case 19 to use screen\n");
+                        }
+                        else
+                        {
+                            LCD_Display_offon=0x00;
+                            printf("Case 19 to not use sreen\n");
+
+
+                        }
+                        for(i=0; i<Package_Size; i++)
+                        {
+                            Tx_Buffer[i]=Rx_Buffer[Package_Start+i];
+                            printf("Txbuffer content:%x\r\n",Tx_Buffer[i]);
+                            printf("I number:%d\r\n",i);
+                        }
+                        printf("Set Rxbuffer okay\r\n");
+                        //memcpy(Tx_Buffer, Rx_Buffer, size);
+                        Write_SOCK_Data_Buffer(s, Tx_Buffer,Package_Size);
+
+                        break;
+
+
+                    default:
                         break;
 
                 }
@@ -2020,7 +2068,7 @@ void Process_Socket_Data(SOCKET s,int Package_Start,int Package_Size)
 
                         break;
 
-                    case 0x0E: //
+                    case 0x0E: // Set the value status
                         Package_Valve_Status_Set[0]=Rx_Buffer[3+1+Package_Start];
                         Package_Valve_Status_Set[1]=Rx_Buffer[4+1+Package_Start];
                         printf("Received Value high: %x\r\n",Package_Valve_Status_Set[0]);
@@ -2069,8 +2117,54 @@ void Process_Socket_Data(SOCKET s,int Package_Start,int Package_Size)
 
 
                         break;
+                    case 0x19: //AD sampling times setup
+
+                        //if the value is received, we feedback the same package that we get
+
+                        //convert to float type
+                        testdata.byteData[3]=Rx_Buffer[3+1+Package_Start];
+                        testdata.byteData[2]=Rx_Buffer[4+1+Package_Start];
+                        testdata.byteData[1]=Rx_Buffer[5+1+Package_Start];
+                        testdata.byteData[0]=Rx_Buffer[6+1+Package_Start];
+
+
+                        //we should set a critical value to limit the dataï¼Œ
+                        //if it doesn't meet our requirements,we need to send the data error to the pc
+                        if((testdata.floatData>100)|(testdata.floatData<1))
+                        {
+                            //return the data over information
+                            Error_OverSet=0x01;
+                            LED10=0; //overset float value error signal
+
+
+                        }
+                        else //the set is okay
+                        {
+
+                            Error_OverSet=0x00;
+
+
+
+                            //1479A Flow Set value
+
+                            Package_AD_SamplingTimes=testdata.floatData;
+                            printf("Case 0x19 Set AD sampling times\r\n");
+
+
+                        }
+                        for(i=0; i<Package_Size; i++)
+                        {
+                            Tx_Buffer[i]=Rx_Buffer[Package_Start+i];
+                        }
+                        printf("Set Rxbuffer okay\r\n");
+                        //memcpy(Tx_Buffer, Rx_Buffer, size);
+                        Write_SOCK_Data_Buffer(s, Tx_Buffer,Package_Size);
+
+
+                        break;
 
                 }
+
                 break;
 
 
@@ -2260,13 +2354,13 @@ void Status_Register_Update()
     float AD_Voltage_Status[3];
     char *ValveValue_Status;
 
-
+/*
     ValveValue_Status=Gas_State_Read(); //º¯ÊýÊµÏÖ¶ÁÈ¡IO¿ÚµÄ¸ßµÍµçÆ½Öµ
 
-    AD_Voltage_Status[0]=AD_Conversion_1479A();
+    AD_Voltage_Status[0]=AD_Conversion_1479A(Package_AD_SamplingTimes);
 
-    AD_Voltage_Status[1]=AD_Conversion_627D();
-    AD_Voltage_Status[2]=AD_Conversion_025D();
+    AD_Voltage_Status[1]=AD_Conversion_627D(Package_AD_SamplingTimes);
+    AD_Voltage_Status[2]=AD_Conversion_025D(Package_AD_SamplingTimes);
 
 
 
@@ -2274,6 +2368,21 @@ void Status_Register_Update()
     Flow_1479A_Status=ADVoltage_2_Flow1479A(AD_Voltage_Status[0]);
     Cavity_627D_Pressure_Status=ADVoltage_2_Pressure627D(AD_Voltage_Status[1]);
     Cavity_025D_Pressure_Status=ADVoltage_2_Pressure025D(AD_Voltage_Status[2]);
+
+*/
+
+for(i=0;i<3;i++)
+{
+	sum=0;
+	
+	for(j=0;j<10;j++)
+	{
+		sum +=ADC_ConvertedValue[j][i];
+	//	printf("Insideï¼šã€‚%f\r\n",ADC_ConvertedValue[j][i]);
+	}
+	ADC_Value[i]=(float)sum/(10*4096)*3.3;//æ±‚å¹³å‡å€¼å¹¶è½¬æ¢æˆç”µåŽ‹å€¼
+
+}
 
 
 
@@ -2303,10 +2412,10 @@ void Status_LCD_Update()
     Gas_StateLayerUpdate(ValveValue_Status_LCD);
     //AD_Voltage_Status=AD_Conversion();
 
-    AD_Voltage_Status[0]=AD_Conversion_1479A();
+    AD_Voltage_Status[0]=AD_Conversion_1479A(Package_AD_SamplingTimes);
 
-    AD_Voltage_Status[1]=AD_Conversion_627D();
-    AD_Voltage_Status[2]=AD_Conversion_025D();
+    AD_Voltage_Status[1]=AD_Conversion_627D(Package_AD_SamplingTimes);
+    AD_Voltage_Status[2]=AD_Conversion_025D(Package_AD_SamplingTimes);
 
 
 
