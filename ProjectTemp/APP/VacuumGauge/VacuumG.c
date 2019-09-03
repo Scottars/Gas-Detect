@@ -56,10 +56,10 @@ void VacuumValue_PID(float VacuumValue_Set, float VacuumValue_Status,float Kp,fl
 	  pwm_enable();
 
 	
-    printf("VacuumValueset:%f\r\n",VacuumValue_Set);
+    //intf("VacuumValueset:%f\r\n",VacuumValue_Set);
     if (VacuumValue_Set==55)
     {
-        printf("we are in pev fully close\r\n");
+       //rintf("we are in pev fully close\r\n");
         Duty=0;
     }
     else if (VacuumValue_Set==66)
@@ -88,9 +88,9 @@ void VacuumValue_PID(float VacuumValue_Set, float VacuumValue_Status,float Kp,fl
 
         error_D=(-error_AD)*Kd;
 
-        printf("error_P:%f\r\n",error_P);
-        printf("error_I:%f\r\n",error_I);
-        printf("error_D:%f\r\n",error_D);
+       // printf("error_P:%f\r\n",error_P);
+       // printf("error_I:%f\r\n",error_I);
+        //printf("error_D:%f\r\n",error_D);
 
         Input_last = VacuumValue_Status;
 
@@ -106,7 +106,7 @@ void VacuumValue_PID(float VacuumValue_Set, float VacuumValue_Status,float Kp,fl
         //
 
         Duty=D*180 +1800;
-        printf("Set Duty parameter:%f\r\n",Duty/3600.0);
+        //printf("Set Duty parameter:%f\r\n",Duty/3600.0);
         //actually we need to call pwm duty change functiobn
         //Duty's range is from 0 to 3600,So we can set our duty to 0-3600 present 0% to 100% or
         //100% to 0%

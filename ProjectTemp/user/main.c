@@ -208,6 +208,7 @@ float Duty_P=5,Duty_I=0,Duty_D=0; // we can set it later
 int main()
 {
     u8 i,j,k;
+	int sendcount=0;
     int size;
 
     float temptofun;
@@ -279,7 +280,7 @@ int main()
 
     ///////////////DAC Initial /////////////////DAC ���ֵĳ�ʼ�������ǲ��õ���DAC1  Ҳ����PA4 �ڵ����
     dma_test();                //DAC��ʼ��
-   // DAC_SetChannel1Data(DAC_Align_12b_R, 0);//��ʼֵΪ0
+    // DAC_SetChannel1Data(DAC_Align_12b_R, 0);//��ʼֵΪ0
 
 
     ///////////////Valve Status Initial/////////////
@@ -362,18 +363,19 @@ int main()
         // GPIO_SetBits(GPIOA,GPIO_Pin_11);     //IO������ߵ�ƽ
 
         LED12=1;
-        delay_ms(100);
+        //delay_ms(100);
         LED12=0;
 
         //GPIO_ResetBits(GPIOA,GPIO_Pin_11);   //IO������ߵ�ƽ
-        delay_ms(100);
+        //delay_ms(100);
+
 
 
 
 
         /////////////Update the watch dog  register//////////////////////
         IWDG_ReloadCounter();
-        printf("Watch dog in while\r\n");
+       //rintf("Watch dog in while\r\n");
 //
 
 
@@ -443,11 +445,11 @@ int main()
                 Flow_1479A_Adjustment(_1479A_FullyClose);//to make it fully close
 
 
-             //   printf("Pev_fully close:%f\r\n",PEV_FullyClose);
+                //   printf("Pev_fully close:%f\r\n",PEV_FullyClose);
                 VacuumValue_PID(PEV_FullyClose, Cavity_627D_Pressure_Status, Package_Duty_P,Package_Duty_I,Package_Duty_D);
 
 
-                printf("Valve close\r\n");
+             // printf("Valve close\r\n");
             }
             else //Open command
             {
@@ -967,9 +969,40 @@ int main()
         //Status_LCD_Update();
 
 
+        
 
 
         LED12=0; //program running
+        
+
+        FLOAT_BYTE testdata;
+		  delay_us(50); //delay 100us=0.1ms
+        if (sendcount<=40000)
+        {
+            sendcount = sendcount + 1;
+
+
+            //sprintf(str,'\r\nWelcome To YiXinElec!%d\r\n',i);
+            //sprintf(str,'%d',i);
+            //a=strlen(str);
+
+            testdata.floatData=sendcount;
+            Tx_Buffer[0]=testdata.byteData[3];
+            Tx_Buffer[1]=testdata.byteData[2];
+            Tx_Buffer[2]=testdata.byteData[1];
+            Tx_Buffer[3]=testdata.byteData[0];
+
+            Write_SOCK_Data_Buffer(0, Tx_Buffer,4);//指定Socket(0~7)发送数据处理,端口0发送23字节数据
+
+            //memcpy(Tx_Buffer, "", 23);
+            //Write_SOCK_Data_Buffer(0, Tx_Buffer, 23);//指定Socket(0~7)发送数据处理,端口0发送23字节数据
+
+            //Write_SOCK_Data_Buffer(0, Tx_Buffer,a);//指定Socket(0~7)发送数据处理,端口0发送23字节数据
+        }
+        else
+        {
+            sendcount=0;
+        }
 
 
     }
@@ -993,6 +1026,7 @@ void Process_Package_Receive()
         printf("still in the whiler\r\n");
         printf("Start Point %d\r\n",start_point);
         printf("Size  %d\r\n",size);
+
 
         switch (Rx_Buffer[start_point+1])
         {
@@ -1351,8 +1385,8 @@ void Process_Socket_Data(SOCKET s,int Package_Start,int Package_Size)
                         //  AD_Voltage_Status = AD_Conversion();
                         //AD_Voltage_Status[0 1 2]   �ֱ��ʾ1479A 627D 025d
                         // Flow_1479A_Status=1.5;
-                       // AD_temp=AD_Conversion_1479A(Package_AD_SamplingTimes);
-						AD_temp=AD_Conversion_1479A_DMA();
+                        // AD_temp=AD_Conversion_1479A(Package_AD_SamplingTimes);
+                        AD_temp=AD_Conversion_1479A_DMA();
 
                         //
                         temp = ADVoltage_2_Flow1479A(AD_temp);
@@ -2354,9 +2388,9 @@ void Status_Register_Update_DMA()
 {
     float AD_Voltage_Status[3];
     char *ValveValue_Status;
-	float ADC_Value[3];//用来保存经过转换得到的电压值
-	int sum;
-	u8 i,j;
+    float ADC_Value[3];//用来保存经过转换得到的电压值
+    int sum;
+    u8 i,j;
 
     /*
         ValveValue_Status=Gas_State_Read(); //����ʵ�ֶ�ȡIO�ڵĸߵ͵�ƽֵ
@@ -2365,11 +2399,11 @@ void Status_Register_Update_DMA()
 
         AD_Voltage_Status[1]=AD_Conversion_627D(Package_AD_SamplingTimes);
         AD_Voltage_Status[2]=AD_Conversion_025D(Package_AD_SamplingTimes);
-	
-	
-	Flow_1479A_Status=ADVoltage_2_Flow1479A(AD_Voltage_Status[0]);
-	Cavity_627D_Pressure_Status=ADVoltage_2_Pressure627D(AD_Voltage_Status[1]);
-	Cavity_025D_Pressure_Status=ADVoltage_2_Pressure025D(AD_Voltage_Status[2]);
+
+
+    Flow_1479A_Status=ADVoltage_2_Flow1479A(AD_Voltage_Status[0]);
+    Cavity_627D_Pressure_Status=ADVoltage_2_Pressure627D(AD_Voltage_Status[1]);
+    Cavity_025D_Pressure_Status=ADVoltage_2_Pressure025D(AD_Voltage_Status[2]);
 
     */
 
@@ -2385,15 +2419,15 @@ void Status_Register_Update_DMA()
 
 
     }
-	
-				 
-			printf("The current AD value =%f\r\n",AD_Voltage_Status[0]);
-			printf("The current AD value =%f\r\n",AD_Voltage_Status[1]);
-			printf("The current AD value =%f\r\n",AD_Voltage_Status[2]);
 
-        Flow_1479A_Status=ADVoltage_2_Flow1479A(AD_Voltage_Status[0]);
-        Cavity_627D_Pressure_Status=ADVoltage_2_Pressure627D(AD_Voltage_Status[1]);
-        Cavity_025D_Pressure_Status=ADVoltage_2_Pressure025D(AD_Voltage_Status[2]);
+
+    //intf("The current AD value =%f\r\n",AD_Voltage_Status[0]);
+    //intf("The current AD value =%f\r\n",AD_Voltage_Status[1]);
+    //intf("The current AD value =%f\r\n",AD_Voltage_Status[2]);
+
+    Flow_1479A_Status=ADVoltage_2_Flow1479A(AD_Voltage_Status[0]);
+    Cavity_627D_Pressure_Status=ADVoltage_2_Pressure627D(AD_Voltage_Status[1]);
+    Cavity_025D_Pressure_Status=ADVoltage_2_Pressure025D(AD_Voltage_Status[2]);
 
 
 }
@@ -2411,20 +2445,20 @@ void Status_Register_Update()
 {
     float AD_Voltage_Status[3];
     char *ValveValue_Status;
-	float ADC_Value[3];//用来保存经过转换得到的电压值
-	int sum;
+    float ADC_Value[3];//用来保存经过转换得到的电压值
+    int sum;
 
-        ValveValue_Status=Gas_State_Read(); //����ʵ�ֶ�ȡIO�ڵĸߵ͵�ƽֵ
+    ValveValue_Status=Gas_State_Read(); //����ʵ�ֶ�ȡIO�ڵĸߵ͵�ƽֵ
 
-        AD_Voltage_Status[0]=AD_Conversion_1479A(Package_AD_SamplingTimes);
+    AD_Voltage_Status[0]=AD_Conversion_1479A(Package_AD_SamplingTimes);
 
-        AD_Voltage_Status[1]=AD_Conversion_627D(Package_AD_SamplingTimes);
-        AD_Voltage_Status[2]=AD_Conversion_025D(Package_AD_SamplingTimes);
-	
-	
-	Flow_1479A_Status=ADVoltage_2_Flow1479A(AD_Voltage_Status[0]);
-	Cavity_627D_Pressure_Status=ADVoltage_2_Pressure627D(AD_Voltage_Status[1]);
-	Cavity_025D_Pressure_Status=ADVoltage_2_Pressure025D(AD_Voltage_Status[2]);
+    AD_Voltage_Status[1]=AD_Conversion_627D(Package_AD_SamplingTimes);
+    AD_Voltage_Status[2]=AD_Conversion_025D(Package_AD_SamplingTimes);
+
+
+    Flow_1479A_Status=ADVoltage_2_Flow1479A(AD_Voltage_Status[0]);
+    Cavity_627D_Pressure_Status=ADVoltage_2_Pressure627D(AD_Voltage_Status[1]);
+    Cavity_025D_Pressure_Status=ADVoltage_2_Pressure025D(AD_Voltage_Status[2]);
 
 
 }

@@ -464,7 +464,7 @@ GPIO_InitStructure.GPIO_Pin = GPIO_Pin_3;
 	SPI_InitStructure.SPI_CPOL=SPI_CPOL_Low;							//时钟悬空低
 	SPI_InitStructure.SPI_CPHA=SPI_CPHA_1Edge;							//数据捕获于第1个时钟沿
 	SPI_InitStructure.SPI_NSS=SPI_NSS_Soft;								//NSS由外部管脚管理
-	SPI_InitStructure.SPI_BaudRatePrescaler=SPI_BaudRatePrescaler_4;	//波特率预分频值为2
+	SPI_InitStructure.SPI_BaudRatePrescaler=SPI_BaudRatePrescaler_2	;	//波特率预分频值为2
 	SPI_InitStructure.SPI_FirstBit=SPI_FirstBit_MSB;					//数据传输从MSB位开始
 	SPI_InitStructure.SPI_CRCPolynomial=7;								//CRC多项式为7
 	SPI_Init(SPI3,&SPI_InitStructure);									//根据SPI_InitStruct中指定的参数初始化外设SPI3寄存器

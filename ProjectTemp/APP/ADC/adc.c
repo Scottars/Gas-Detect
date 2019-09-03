@@ -100,7 +100,7 @@ float AD_Conversion_1479A_DMA()
 	//	printf("Inside：。%f\r\n",ADC_ConvertedValue[j][i]);
 	}
 	ADValue_1479A=(float)sum/(10*4096)*3.3;//求平均值并转换成电压值
-	printf("The current ADValue_1479A value =%f\r\n",ADValue_1479A);
+//rintf("The current ADValue_1479A value =%f\r\n",ADValue_1479A);
 	return ADValue_1479A;
 }
 
@@ -120,7 +120,7 @@ float AD_Conversion_627D_DMA()
 	//	printf("Inside：。%f\r\n",ADC_ConvertedValue[j][i]);
 	}
 	ADValue_627D=(float)sum/(10*4096)*3.3;//求平均值并转换成电压值
-	printf("The currentADValue_627D value =%f\r\n",ADValue_627D);
+	//intf("The currentADValue_627D value =%f\r\n",ADValue_627D);
 	return ADValue_627D;
 		
 }
@@ -141,7 +141,7 @@ float AD_Conversion_025D_DMA()
 	//	printf("Inside：。%f\r\n",ADC_ConvertedValue[j][i]);
 	}
 	ADValue_025D=(float)sum/(10*4096)*3.3;//求平均值并转换成电压值
-	printf("The current ADValue_025D value =%f\r\n",ADValue_025D);
+	//intf("The current ADValue_025D value =%f\r\n",ADValue_025D);
 	return ADValue_025D;
 }
 
