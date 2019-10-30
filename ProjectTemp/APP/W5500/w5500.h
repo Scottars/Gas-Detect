@@ -21,7 +21,7 @@
 	#define PPPOE		0x20
 	#define MP			0x10
 
-#define IMR_w5500		0x0016
+#define IMR		0x0016
 	#define IM_IR7		0x80
 	#define IM_IR6		0x40
 	#define IM_IR5		0x20
@@ -223,6 +223,11 @@ extern unsigned char S0_Port[2];	//端口0的端口号(5000)
 extern unsigned char S0_DIP[4];		//端口0目的IP地址 
 extern unsigned char S0_DPort[2];	//端口0目的端口号(6000) 
 
+extern unsigned char S1_Port[2];	//端口0的端口号(5001) 
+extern unsigned char S1_DIP[4];		//端口0目的IP地址 
+extern unsigned char S1_DPort[2];	//端口0目的端口号(6000) 
+
+
 extern unsigned char UDP_DIPR[4];	//UDP(广播)模式,目的主机IP地址
 extern unsigned char UDP_DPORT[2];	//UDP(广播)模式,目的主机端口号
 
@@ -242,15 +247,33 @@ extern unsigned char S0_Data;		//端口0接收和发送数据的状态,1:端口接收到数据,2:端
 #define S_RECEIVE		0x01		//端口接收到一个数据包 
 #define S_TRANSMITOK	0x02		//端口发送一个数据包完成 
 
+
+/***************----- 端口的运行模式 -----***************/
+extern unsigned char S1_Mode;	//端口0的运行模式,0:TCP服务器模式,1:TCP客户端模式,2:UDP(广播)模式
+#define TCP_SERVER		0x00	//TCP服务器模式
+#define TCP_CLIENT		0x01	//TCP客户端模式 
+#define UDP_MODE		0x02	//UDP(广播)模式 
+
+/***************----- 端口的运行状态 -----***************/
+extern unsigned char S1_State;	//端口0状态记录,1:端口完成初始化,2端口完成连接(可以正常传输数据) 
+#define S_INIT			0x01	//端口完成初始化 
+#define S_CONN			0x02	//端口完成连接,可以正常传输数据 
+
+/***************----- 端口收发数据的状态 -----***************/
+extern unsigned char S1_Data;		//端口0接收和发送数据的状态,1:端口接收到数据,2:端口发送数据完成 
+#define S_RECEIVE		0x01		//端口接收到一个数据包 
+#define S_TRANSMITOK	0x02		//端口发送一个数据包完成 
+
+
+
+
 /***************----- 端口数据缓冲区 -----***************/
 extern unsigned char Rx_Buffer[2048];	//端口接收数据缓冲区 
 extern unsigned char Tx_Buffer[2048];	//端口发送数据缓冲区 
 
+
 extern unsigned char W5500_Interrupt;	//W5500中断标志(0:无中断,1:有中断)
 typedef unsigned char SOCKET;			//自定义端口号数据类型
-
-
-
 
 
 void Delay(unsigned int d);//延时函数(ms)
@@ -259,7 +282,7 @@ void W5500_NVIC_Configuration(void);//W5500 接收引脚中断优先级设置
 void SPI_Configuration(void);//W5500 SPI初始化配置(STM32 SPI1)
 void W5500_Hardware_Reset(void);//硬件复位W5500
 void W5500_Init(void);//初始化W5500寄存器函数
-unsigned char Detect_Gateway(void);//检查网关服务器
+unsigned char Detect_Gateway(SOCKET s);//检查网关服务器
 extern void Socket_Init(SOCKET s);//指定Socket(0~7)初始化
 unsigned char Socket_Connect(SOCKET s);//设置指定Socket(0~7)为客户端与远程服务器连接
 unsigned char Socket_Listen(SOCKET s);//设置指定Socket(0~7)作为服务器等待远程主机的连接
@@ -269,5 +292,4 @@ void Write_SOCK_Data_Buffer(SOCKET s, unsigned char *dat_ptr, unsigned short siz
 void W5500_Interrupt_Process(void);//W5500中断处理程序框架
 void Process_Socket_Data(SOCKET s,int Package_Start,int Package_Size);
 #endif
-
 

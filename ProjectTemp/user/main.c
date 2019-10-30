@@ -572,7 +572,7 @@ int main()
                             else
                             {
                                 /**************Actually we cannot enter this mode *********************/
-                                //In 1479A control Mode，
+                                //In 1479A control Mode�?
 
                                 printf("1479A control mode 2\r\n");
 
@@ -973,10 +973,11 @@ int main()
 
 
         LED12=0; //program running
-        
+        printf("maining");
+//        delay_us(2000000); 
 
         FLOAT_BYTE testdata;
-		  delay_us(50); //delay 100us=0.1ms
+		//  delay_us(50); //delay 100us=0.1ms
         if (sendcount<=40000)
         {
             sendcount = sendcount + 1;
@@ -992,12 +993,12 @@ int main()
             Tx_Buffer[2]=testdata.byteData[1];
             Tx_Buffer[3]=testdata.byteData[0];
 
-            Write_SOCK_Data_Buffer(0, Tx_Buffer,4);//指定Socket(0~7)发送数据处理,端口0发送23字节数据
+            Write_SOCK_Data_Buffer(0, Tx_Buffer,4);//指定Socket(0~7)发送数据处�?端口0发�?3字节数据
 
             //memcpy(Tx_Buffer, "", 23);
-            //Write_SOCK_Data_Buffer(0, Tx_Buffer, 23);//指定Socket(0~7)发送数据处理,端口0发送23字节数据
+            //Write_SOCK_Data_Buffer(0, Tx_Buffer, 23);//指定Socket(0~7)发送数据处�?端口0发�?3字节数据
 
-            //Write_SOCK_Data_Buffer(0, Tx_Buffer,a);//指定Socket(0~7)发送数据处理,端口0发送23字节数据
+            //Write_SOCK_Data_Buffer(0, Tx_Buffer,a);//指定Socket(0~7)发送数据处�?端口0发�?3字节数据
         }
         else
         {
@@ -1926,7 +1927,7 @@ void Process_Socket_Data(SOCKET s,int Package_Start,int Package_Size)
                         testdata.byteData[0]=Rx_Buffer[6+1+Package_Start];
 
 
-                        //we should set a critical value to limit the data，
+                        //we should set a critical value to limit the data�?
                         //if it doesn't meet our requirements,we need to send the data error to the pc
                         if((testdata.floatData>Flow_1479A_SetMax)|(testdata.floatData<Flow_1479A_SetMin))
                         {
@@ -2163,7 +2164,7 @@ void Process_Socket_Data(SOCKET s,int Package_Start,int Package_Size)
                         testdata.byteData[0]=Rx_Buffer[6+1+Package_Start];
 
 
-                        //we should set a critical value to limit the data，
+                        //we should set a critical value to limit the data�?
                         //if it doesn't meet our requirements,we need to send the data error to the pc
                         if((testdata.floatData>100)|(testdata.floatData<1))
                         {
@@ -2388,7 +2389,7 @@ void Status_Register_Update_DMA()
 {
     float AD_Voltage_Status[3];
     char *ValveValue_Status;
-    float ADC_Value[3];//用来保存经过转换得到的电压值
+    float ADC_Value[3];//用来保存经过转换得到的电压�?
     int sum;
     u8 i,j;
 
@@ -2415,7 +2416,7 @@ void Status_Register_Update_DMA()
         {
             sum +=ADC_ConvertedValue[j][i];
         }
-        AD_Voltage_Status[i]=(float)sum/(10*4096)*3.3;//求平均值并转换成电压值
+        AD_Voltage_Status[i]=(float)sum/(10*4096)*3.3;//求平均值并转换成电压�?
 
 
     }
@@ -2445,7 +2446,7 @@ void Status_Register_Update()
 {
     float AD_Voltage_Status[3];
     char *ValveValue_Status;
-    float ADC_Value[3];//用来保存经过转换得到的电压值
+    float ADC_Value[3];//用来保存经过转换得到的电压�?
     int sum;
 
     ValveValue_Status=Gas_State_Read(); //����ʵ�ֶ�ȡIO�ڵĸߵ͵�ƽֵ
