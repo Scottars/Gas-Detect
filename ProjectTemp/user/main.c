@@ -113,6 +113,9 @@ u8 Normal_Puff_RunningMode=0x00;
 u8 PEV_1479A_ControlMode=0x00;
 
 u8 LCD_Display_offon=0x00;
+//This is to decide whether it is okay to send data to hsdd system
+u8 hsdd_data_send_offon=0x00;
+
 
 
 ///////////////////Value to PID/////////////////
@@ -208,8 +211,11 @@ float Duty_P=5,Duty_I=0,Duty_D=0; // we can set it later
 int main()
 {
     u8 i,j,k;
-	int sendcount=0;
+
     int size;
+	int sendcount=0;
+    FLOAT_BYTE testdata;
+    CRC_BYTE crctestdata;
 
     float temptofun;
     /**************variable define part************************/
@@ -968,46 +974,94 @@ int main()
         Status_Register_Update_DMA();//we use this sentence to pid or dac adjust
         //Status_LCD_Update();
 
+		// we set a flag to control whether it is okay to send out the data 
+		hsdd_data_send_offon=0xff;
+		delay_us(1000);
+
+		if (hsdd_data_send_offon==0xff)
+		{
+			//printf("we are sending date to socket 1\r\n");
+
+			//Hsdd_Data_Send();
+	
+			
+			
+			if (sendcount<100)
+			{
+				sendcount = sendcount + 1;
+//				printf("iµÄ´óÐ¡%d",sendcount);
+				
+				
+				//sprintf(str,'\r\nWelcome To YiXinElec!%d\r\n',i);
+				//sprintf(str,'%d',i);
+				//a=strlen(str);
+			
+				 Tx_Buffer[0]=0x05; // Slave address
+				Tx_Buffer[1]=0x03;// function  code
+				Tx_Buffer[2]=0x01;// register address
+				Tx_Buffer[3]=0x04;//length of data
+				testdata.floatData=sendcount+0.5;
+				Tx_Buffer[4]=testdata.byteData[3];
+				Tx_Buffer[5]=testdata.byteData[2];
+				Tx_Buffer[6]=testdata.byteData[1];
+				Tx_Buffer[7]=testdata.byteData[0];
+				crctestdata.CrcData=GetCRC16(Tx_Buffer,8);
+				   Tx_Buffer[8]=crctestdata.byteData[0];
+					Tx_Buffer[9]=crctestdata.byteData[1];
+				
+				Write_SOCK_Data_Buffer(1, Tx_Buffer,10);//Ö¸¶¨Socket(0~7)·¢ËÍÊý¾Ý´¦Àí,¶Ë¿Ú0·¢ËÍ23×Ö½ÚÊý¾Ý
+
+//				delay_us(1);
+
+				
+				Tx_Buffer[0]=0x05; // Slave address
+				   Tx_Buffer[1]=0x03;// function  code
+				   Tx_Buffer[2]=0x02;// register address
+				   Tx_Buffer[3]=0x04;//length of data
+				   testdata.floatData=sendcount+1.5;
+				   Tx_Buffer[4]=testdata.byteData[3];
+				   Tx_Buffer[5]=testdata.byteData[2];
+				   Tx_Buffer[6]=testdata.byteData[1];
+				   Tx_Buffer[7]=testdata.byteData[0];
+				   crctestdata.CrcData=GetCRC16(Tx_Buffer,8);
+					  Tx_Buffer[8]=crctestdata.byteData[0];
+					   Tx_Buffer[9]=crctestdata.byteData[1];
+				   
+				   Write_SOCK_Data_Buffer(1, Tx_Buffer,10);//Ö¸¶¨Socket(0~7)·¢ËÍÊý¾Ý´¦Àí,¶Ë¿Ú0·¢ËÍ23×Ö½ÚÊý¾Ý
+				
+				
+
+				//Write_SOCK_Data_Buffer(0, Tx_Buffer,10);//Ö¸¶¨Socket(0~7)·¢ËÍÊý¾Ý´¦Àí,¶Ë¿Ú0·¢ËÍ23×Ö½ÚÊý¾Ý
+				//printf("·¢ËÍsocket0 Ö®ºó");
+			
+				
+				//memcpy(Tx_Buffer, "", 23);	
+				//Write_SOCK_Data_Buffer(0, Tx_Buffer, 23);//Ö¸¶¨Socket(0~7)·¢ËÍÊý¾Ý´¦Àí,¶Ë¿Ú0·¢ËÍ23×Ö½ÚÊý¾Ý
+				
+				//Write_SOCK_Data_Buffer(0, Tx_Buffer,a);//Ö¸¶¨Socket(0~7)·¢ËÍÊý¾Ý´¦Àí,¶Ë¿Ú0·¢ËÍ23×Ö½ÚÊý¾Ý
+			}
+			else
+			{
+				sendcount=0;
+			}
+			
+			
+		}
+
 
         
 
 
         LED12=0; //program running
-        printf("maining");
+   
 //        delay_us(2000000); 
 
-        FLOAT_BYTE testdata;
-		//  delay_us(50); //delay 100us=0.1ms
-        if (sendcount<=40000)
-        {
-            sendcount = sendcount + 1;
-
-
-            //sprintf(str,'\r\nWelcome To YiXinElec!%d\r\n',i);
-            //sprintf(str,'%d',i);
-            //a=strlen(str);
-
-            testdata.floatData=sendcount;
-            Tx_Buffer[0]=testdata.byteData[3];
-            Tx_Buffer[1]=testdata.byteData[2];
-            Tx_Buffer[2]=testdata.byteData[1];
-            Tx_Buffer[3]=testdata.byteData[0];
-
-            Write_SOCK_Data_Buffer(0, Tx_Buffer,4);//æŒ‡å®šSocket(0~7)å‘é€æ•°æ®å¤„ç?ç«¯å£0å‘é€?3å­—èŠ‚æ•°æ®
-
-            //memcpy(Tx_Buffer, "", 23);
-            //Write_SOCK_Data_Buffer(0, Tx_Buffer, 23);//æŒ‡å®šSocket(0~7)å‘é€æ•°æ®å¤„ç?ç«¯å£0å‘é€?3å­—èŠ‚æ•°æ®
-
-            //Write_SOCK_Data_Buffer(0, Tx_Buffer,a);//æŒ‡å®šSocket(0~7)å‘é€æ•°æ®å¤„ç?ç«¯å£0å‘é€?3å­—èŠ‚æ•°æ®
-        }
-        else
-        {
-            sendcount=0;
-        }
 
 
     }
 }
+
+
 
 void Process_Package_Receive()
 {

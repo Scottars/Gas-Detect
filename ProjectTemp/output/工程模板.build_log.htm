@@ -27,7 +27,7 @@ Project File Date:  08/01/2019
 <h2>Output:</h2>
 *** Using Compiler 'V5.05 update 1 (build 106)', folder: 'D:\Program Files\Keil5\ARM\ARMCC\Bin'
 Build target 'Target 1'
-compiling w5500.c...
+compiling main.c...
 .\APP\ADC\adc.h(5): warning:  #1295-D: Deprecated declaration adc10_init - give arg types
   void adc10_init();
 .\APP\ADC\adc.h(6): warning:  #1295-D: Deprecated declaration adc11_init - give arg types
@@ -36,11 +36,93 @@ compiling w5500.c...
   void adc12_init();
 .\APP\ADC\adc.h(23): warning:  #1295-D: Deprecated declaration dma_test - give arg types
   void dma_test();
-APP\W5500\w5500.c: 4 warnings, 0 errors
+user\main.c(321): warning:  #223-D: function "System_Initialization" declared implicitly
+      System_Initialization();    //STM32系统初始化函数(初始化STM32时钟及外设)
+user\main.c(322): warning:  #223-D: function "Load_Net_Parameters" declared implicitly
+      Load_Net_Parameters();      //装载网络参数
+user\main.c(324): warning:  #223-D: function "W5500_Initialization" declared implicitly
+      W5500_Initialization();     //W5500 intial set
+user\main.c(390): warning:  #223-D: function "W5500_Socket_Set" declared implicitly
+          W5500_Socket_Set();//W5500 port initial , we set the w5500 to tcp server mode
+user\main.c(423): warning:  #167-D: argument of type "char *" is incompatible with parameter of type "u8 *"
+                  ValveStateChange(Valve_Operation_Status_Set);
+user\main.c(449): warning:  #167-D: argument of type "char *" is incompatible with parameter of type "u8 *"
+                  ValveStateChange(Valve_Operation_Status_Set);
+user\main.c(466): warning:  #167-D: argument of type "char *" is incompatible with parameter of type "u8 *"
+                  ValveStateChange(Valve_Operation_Status_Set);
+user\main.c(563): warning:  #167-D: argument of type "char *" is incompatible with parameter of type "u8 *"
+                              ValveStateChange(Valve_Operation_Status_Set);
+user\main.c(624): warning:  #167-D: argument of type "char *" is incompatible with parameter of type "u8 *"
+                              ValveStateChange(Valve_Operation_Status_Set);
+user\main.c(650): warning:  #167-D: argument of type "char *" is incompatible with parameter of type "u8 *"
+                              ValveStateChange(Valve_Operation_Status_Set);
+user\main.c(746): warning:  #167-D: argument of type "char *" is incompatible with parameter of type "u8 *"
+                              ValveStateChange(Valve_Operation_Status_Set);
+user\main.c(768): warning:  #167-D: argument of type "char *" is incompatible with parameter of type "u8 *"
+                              ValveStateChange(Valve_Operation_Status_Set);
+user\main.c(853): warning:  #167-D: argument of type "char *" is incompatible with parameter of type "u8 *"
+                              ValveStateChange(Valve_Operation_Status_Set);
+user\main.c(911): warning:  #167-D: argument of type "char *" is incompatible with parameter of type "u8 *"
+                  ValveStateChange(Valve_Operation_Status_Set);
+user\main.c(930): warning:  #167-D: argument of type "char *" is incompatible with parameter of type "u8 *"
+                  ValveStateChange(Valve_Operation_Status_Set);
+user\main.c(952): warning:  #167-D: argument of type "char *" is incompatible with parameter of type "u8 *"
+                  ValveStateChange(Valve_Operation_Status_Set);
+user\main.c(213): warning:  #177-D: variable "i" was declared but never referenced
+      u8 i,j,k;
+user\main.c(213): warning:  #177-D: variable "j" was declared but never referenced
+      u8 i,j,k;
+user\main.c(213): warning:  #177-D: variable "k" was declared but never referenced
+      u8 i,j,k;
+user\main.c(215): warning:  #177-D: variable "size" was declared but never referenced
+      int size;
+user\main.c(220): warning:  #177-D: variable "temptofun" was declared but never referenced
+      float temptofun;
+user\main.c(1444): warning:  #223-D: function "AD_Conversion_1479A_DMA" declared implicitly
+                          AD_temp=AD_Conversion_1479A_DMA();
+user\main.c(1484): warning:  #223-D: function "AD_Conversion_627D_DMA" declared implicitly
+                          AD_temp=AD_Conversion_627D_DMA();
+user\main.c(1617): warning:  #111-D: statement is unreachable
+                          break;
+user\main.c(1276): warning:  #177-D: variable "floattest" was declared but never referenced
+      char floattest[10];
+user\main.c(1277): warning:  #177-D: variable "test1" was declared but never referenced
+      char test1[4];
+user\main.c(1278): warning:  #177-D: variable "size" was declared but never referenced
+      unsigned short size;//接收到的buffer 的大小
+user\main.c(1282): warning:  #177-D: variable "ValveValue_Set" was declared but never referenced
+      u8 ValveValue_Set[12];  //来自网络传入过来的信号
+user\main.c(1287): warning:  #177-D: variable "Kp" was declared but never referenced
+      float Kp,Ki,Kd;
+user\main.c(1287): warning:  #177-D: variable "Ki" was declared but never referenced
+      float Kp,Ki,Kd;
+user\main.c(1287): warning:  #177-D: variable "Kd" was declared but never referenced
+      float Kp,Ki,Kd;
+user\main.c(1291): warning:  #177-D: variable "CRC_Mid" was declared but never referenced
+      unsigned int CRC_Mid;
+user\main.c(1294): warning:  #177-D: variable "AD_Voltage_Status" was declared but never referenced
+      float *AD_Voltage_Status;
+user\main.c(1300): warning:  #177-D: variable "Actual_size" was declared but never referenced
+      unsigned short Actual_size;
+user\main.c(2445): warning:  #177-D: variable "ValveValue_Status" was declared but never referenced
+      char *ValveValue_Status;
+user\main.c(2446): warning:  #177-D: variable "ADC_Value" was declared but never referenced
+      float ADC_Value[3];//鐢ㄦ潵淇濆瓨缁忚繃杞崲寰楀埌鐨勭數鍘嬪�?
+user\main.c(2502): warning:  #550-D: variable "ValveValue_Status" was set but never used
+      char *ValveValue_Status;
+user\main.c(2503): warning:  #177-D: variable "ADC_Value" was declared but never referenced
+      float ADC_Value[3];//鐢ㄦ潵淇濆瓨缁忚繃杞崲寰楀埌鐨勭數鍘嬪�?
+user\main.c(2504): warning:  #177-D: variable "sum" was declared but never referenced
+      int sum;
+user\main.c(2550): warning:  #167-D: argument of type "char *" is incompatible with parameter of type "u8 *"
+      Gas_StateLayerUpdate(ValveValue_Status_LCD);
+user\main.c(2543): warning:  #550-D: variable "ValveValue_Status" was set but never used
+      char *ValveValue_Status;
+user\main.c: 45 warnings, 0 errors
 linking...
-Program Size: Code=29512 RO-data=9436 RW-data=316 ZI-data=5212  
+Program Size: Code=30096 RO-data=9436 RW-data=324 ZI-data=5212  
 FromELF: creating hex file...
-".\output\工程模板.axf" - 0 Error(s), 4 Warning(s).
+".\output\工程模板.axf" - 0 Error(s), 45 Warning(s).
 
 <h2>Collection of Component include folders:</h2>
   E:\MasterWork\Master1\1.pcb\keilcode\Codesum\_2DAC_ADC_printf_LCD_w5500\current-project\ProjectTemp\RTE

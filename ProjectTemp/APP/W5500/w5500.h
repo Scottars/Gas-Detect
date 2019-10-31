@@ -291,5 +291,6 @@ unsigned short Read_SOCK_Data_Buffer(SOCKET s, unsigned char *dat_ptr);//指定Soc
 void Write_SOCK_Data_Buffer(SOCKET s, unsigned char *dat_ptr, unsigned short size); //指定Socket(0~7)发送数据处理
 void W5500_Interrupt_Process(void);//W5500中断处理程序框架
 void Process_Socket_Data(SOCKET s,int Package_Start,int Package_Size);
+void Hsdd_Data_Send(SOCKET s);
 #endif
 

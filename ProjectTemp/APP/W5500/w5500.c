@@ -56,6 +56,30 @@ unsigned char S0_Data;		//¶Ë¿Ú0½ÓÊÕºÍ·¢ËÍÊı¾İµÄ×´Ì¬,1:¶Ë¿Ú½ÓÊÕµ½Êı¾İ,2:¶Ë¿Ú·¢ËÍÊ
 #define S_RECEIVE	 0x01	//¶Ë¿Ú½ÓÊÕµ½Ò»¸öÊı¾İ°ü 
 #define S_TRANSMITOK 0x02	//¶Ë¿Ú·¢ËÍÒ»¸öÊı¾İ°üÍê³É 
 
+
+/***************----- ¶Ë¿ÚµÄÔËĞĞÄ£Ê½ -----***************/
+unsigned char S1_Mode =3;	//¶Ë¿Ú0µÄÔËĞĞÄ£Ê½,0:TCP·şÎñÆ÷Ä£Ê½,1:TCP¿Í»§¶ËÄ£Ê½,2:UDP(¹ã²¥)Ä£Ê½
+#define TCP_SERVER	0x00	//TCP·şÎñÆ÷Ä£Ê½
+#define TCP_CLIENT	0x01	//TCP¿Í»§¶ËÄ£Ê½ 
+#define UDP_MODE	0x02	//UDP(¹ã²¥)Ä£Ê½ 
+
+/***************----- ¶Ë¿ÚµÄÔËĞĞ×´Ì¬ -----***************/
+unsigned char S1_State =0;	//¶Ë¿Ú0×´Ì¬¼ÇÂ¼,1:¶Ë¿ÚÍê³É³õÊ¼»¯,2¶Ë¿ÚÍê³ÉÁ¬½Ó(¿ÉÒÔÕı³£´«ÊäÊı¾İ) 
+#define S_INIT		0x01	//¶Ë¿ÚÍê³É³õÊ¼»¯ 
+#define S_CONN		0x02	//¶Ë¿ÚÍê³ÉÁ¬½Ó,¿ÉÒÔÕı³£´«ÊäÊı¾İ 
+
+/***************----- ¶Ë¿ÚÊÕ·¢Êı¾İµÄ×´Ì¬ -----***************/
+unsigned char S1_Data;		//¶Ë¿Ú0½ÓÊÕºÍ·¢ËÍÊı¾İµÄ×´Ì¬,1:¶Ë¿Ú½ÓÊÕµ½Êı¾İ,2:¶Ë¿Ú·¢ËÍÊı¾İÍê³É 
+#define S_RECEIVE	 0x01	//¶Ë¿Ú½ÓÊÕµ½Ò»¸öÊı¾İ°ü 
+#define S_TRANSMITOK 0x02	//¶Ë¿Ú·¢ËÍÒ»¸öÊı¾İ°üÍê³É 
+
+
+
+
+
+
+
+
 /***************----- ¶Ë¿ÚÊı¾İ»º³åÇø -----***************/
 unsigned char Rx_Buffer[2048];	//¶Ë¿Ú½ÓÊÕÊı¾İ»º³åÇø 
 unsigned char Tx_Buffer[2048];	//¶Ë¿Ú·¢ËÍÊı¾İ»º³åÇø 
@@ -284,7 +308,7 @@ void Load_Net_Parameters(void)
 	Gateway_IP[0] = 192;//¼ÓÔØÍø¹Ø²ÎÊı
 	Gateway_IP[1] = 168;
 	Gateway_IP[2] = 127;
-	Gateway_IP[3] = 1;
+	Gateway_IP[3] = 254;
 
 	Sub_Mask[0]=255;//¼ÓÔØ×ÓÍøÑÚÂë
 	Sub_Mask[1]=255;
@@ -305,10 +329,16 @@ void Load_Net_Parameters(void)
 
 	S0_Port[0] = 0x13;//¼ÓÔØ¶Ë¿Ú0µÄ¶Ë¿ÚºÅ5000 
 	S0_Port[1] = 0x88;
+	S0_Mode=TCP_SERVER;//¼ÓÔØ¶Ë¿Ú0µÄ¹¤×÷Ä£Ê½,TCP·şÎñ¶ËÄ£Ê½
 
 
-	S0_Port[0] = 0x13;//¼ÓÔØ¶Ë¿Ú0µÄ¶Ë¿ÚºÅ5000 
-	S0_Port[1] = 0x89;
+
+
+
+	S1_Port[0] = 0x13;//¼ÓÔØ¶Ë¿Ú0µÄ¶Ë¿ÚºÅ5001 
+	S1_Port[1] = 0x89;
+	S1_Mode=TCP_SERVER;//¼ÓÔØ¶Ë¿Ú0µÄ¹¤×÷Ä£Ê½,TCP·şÎñ¶ËÄ£Ê½
+
 
 //	S0_DIP[0]=192;//¼ÓÔØ¶Ë¿Ú0µÄÄ¿µÄIPµØÖ·
 //	S0_DIP[1]=168;
@@ -318,8 +348,9 @@ void Load_Net_Parameters(void)
 //	S0_DPort[0] = 0x17;//¼ÓÔØ¶Ë¿Ú0µÄÄ¿µÄ¶Ë¿ÚºÅ6000
 //	S0_DPort[1] = 0x70;
 
-	S0_Mode=TCP_SERVER;//¼ÓÔØ¶Ë¿Ú0µÄ¹¤×÷Ä£Ê½,TCP·şÎñ¶ËÄ£Ê½
+
 }
+
 
 /*******************************************************************************
 * º¯ÊıÃû  : W5500_Socket_Set
@@ -356,6 +387,30 @@ void W5500_Socket_Set(void)
 				S0_State=0;
 		}
 	}
+	if(S1_State==0)//¶Ë¿Ú0³õÊ¼»¯ÅäÖÃ
+	{
+		if(S1_Mode==TCP_SERVER)//TCP·şÎñÆ÷Ä£Ê½ 
+		{
+			if(Socket_Listen(1)==TRUE)
+				S1_State=S_INIT;
+			else
+				S1_State=0;
+		}
+		else if(S1_Mode==TCP_CLIENT)//TCP¿Í»§¶ËÄ£Ê½ 
+		{
+			if(Socket_Connect(1)==TRUE)
+				S1_State=S_INIT;
+			else
+				S1_State=0;
+		}
+		else//UDPÄ£Ê½ 
+		{
+			if(Socket_UDP(1)==TRUE)
+				S1_State=S_INIT|S_CONN;
+			else
+				S1_State=0;
+		}
+	}	
 }
 
 
@@ -1132,7 +1187,7 @@ unsigned char Socket_UDP(SOCKET s)
 *******************************************************************************/
 void W5500_Interrupt_Process(void)
 {
-	unsigned char i,j;
+unsigned char i,j;
 
 IntDispose:
 	W5500_Interrupt=0;//ÇåÁãÖĞ¶Ï±êÖ¾
@@ -1149,7 +1204,7 @@ IntDispose:
 		//×Ô¼ºÌí¼Ó´úÂë
 	}
 
-	i=Read_W5500_1Byte(SIR);//¶ÁÈ¡¶Ë¿ÚÖĞ¶Ï±êÖ¾¼Ä´æÆ÷	
+	i=Read_W5500_1Byte(SIR);//¶ÁÈ¡¶Ë¿ÚÖĞ¶Ï±êÖ¾¼Ä´æÆ÷ 
 	if((i & S0_INT) == S0_INT)//Socket0ÊÂ¼ş´¦Àí 
 	{
 		j=Read_W5500_SOCK_1Byte(0,Sn_IR);//¶ÁÈ¡Socket0ÖĞ¶Ï±êÖ¾¼Ä´æÆ÷
@@ -1162,7 +1217,7 @@ IntDispose:
 		{
 			printf("tcpmodeÏÂ£¬¶Ï¿ªÁ¬½Ó´¦ÀíÖĞ¶Ï");
 			Write_W5500_SOCK_1Byte(0,Sn_CR,CLOSE);//¹Ø±Õ¶Ë¿Ú,µÈ´ıÖØĞÂ´ò¿ªÁ¬½Ó 
-			Socket_Init(0);		//Ö¸¶¨Socket(0~7)³õÊ¼»¯,³õÊ¼»¯¶Ë¿Ú0
+			Socket_Init(0); 	//Ö¸¶¨Socket(0~7)³õÊ¼»¯,³õÊ¼»¯¶Ë¿Ú0
 			S0_State=0;//ÍøÂçÁ¬½Ó×´Ì¬0x00,¶Ë¿ÚÁ¬½ÓÊ§°Ü
 		}
 		if(j&IR_SEND_OK)//Socket0Êı¾İ·¢ËÍÍê³É,¿ÉÒÔÔÙ´ÎÆô¶¯S_tx_process()º¯Êı·¢ËÍÊı¾İ 
@@ -1177,13 +1232,47 @@ IntDispose:
 		{
 			printf("timeout");
 			Write_W5500_SOCK_1Byte(0,Sn_CR,CLOSE);// ¹Ø±Õ¶Ë¿Ú,µÈ´ıÖØĞÂ´ò¿ªÁ¬½Ó 
-			Socket_Init(0);		//Ö¸¶¨Socket(0~7)³õÊ¼»¯,³õÊ¼»¯¶Ë¿Ú0
+			Socket_Init(0); 	//Ö¸¶¨Socket(0~7)³õÊ¼»¯,³õÊ¼»¯¶Ë¿Ú0
 			S0_State=0;//ÍøÂçÁ¬½Ó×´Ì¬0x00,¶Ë¿ÚÁ¬½ÓÊ§°Ü
+		}
+	}
+
+	 
+	if((i & S1_INT) == S1_INT)//Socket1¼ş´¦Àí 
+	{
+		j=Read_W5500_SOCK_1Byte(1,Sn_IR);//¶ÁÈ¡Socket0ÖĞ¶Ï±êÖ¾¼Ä´æÆ÷
+		Write_W5500_SOCK_1Byte(1,Sn_IR,j);
+		if(j&IR_CON)//ÔÚTCPÄ£Ê½ÏÂ,Socket0³É¹¦Á¬½Ó 
+		{
+			S1_State|=S_CONN;//ÍøÂçÁ¬½Ó×´Ì¬0x02,¶Ë¿ÚÍê³ÉÁ¬½Ó£¬¿ÉÒÔÕı³£´«ÊäÊı¾İ
+		}
+		if(j&IR_DISCON)//ÔÚTCPÄ£Ê½ÏÂSocket¶Ï¿ªÁ¬½Ó´¦Àí
+		{
+			printf("tcpmodeÏÂ£¬¶Ï¿ªÁ¬½Ó´¦ÀíÖĞ¶Ï1");
+			Write_W5500_SOCK_1Byte(1,Sn_CR,CLOSE);//¹Ø±Õ¶Ë¿Ú,µÈ´ıÖØĞÂ´ò¿ªÁ¬½Ó 
+			Socket_Init(1); 	//Ö¸¶¨Socket(0~7)³õÊ¼»¯,³õÊ¼»¯¶Ë¿Ú0
+			S1_State=0;//ÍøÂçÁ¬½Ó×´Ì¬0x00,¶Ë¿ÚÁ¬½ÓÊ§°Ü
+		}
+		if(j&IR_SEND_OK)//Socket0Êı¾İ·¢ËÍÍê³É,¿ÉÒÔÔÙ´ÎÆô¶¯S_tx_process()º¯Êı·¢ËÍÊı¾İ 
+		{
+			S1_Data|=S_TRANSMITOK;//¶Ë¿Ú·¢ËÍÒ»¸öÊı¾İ°üÍê³É 
+		}
+		if(j&IR_RECV)//Socket½ÓÊÕµ½Êı¾İ,¿ÉÒÔÆô¶¯S_rx_process()º¯Êı 
+		{
+			S1_Data|=S_RECEIVE;//¶Ë¿Ú½ÓÊÕµ½Ò»¸öÊı¾İ°ü
+		}
+		if(j&IR_TIMEOUT)//SocketÁ¬½Ó»òÊı¾İ´«Êä³¬Ê±´¦Àí 
+		{
+			printf("timeout1");
+			Write_W5500_SOCK_1Byte(1,Sn_CR,CLOSE);// ¹Ø±Õ¶Ë¿Ú,µÈ´ıÖØĞÂ´ò¿ªÁ¬½Ó 
+			Socket_Init(1); 	//Ö¸¶¨Socket(0~7)³õÊ¼»¯,³õÊ¼»¯¶Ë¿Ú0
+			S1_State=0;//ÍøÂçÁ¬½Ó×´Ì¬0x00,¶Ë¿ÚÁ¬½ÓÊ§°Ü
 		}
 	}
 
 	if(Read_W5500_1Byte(SIR) != 0) 
 		goto IntDispose;
+
 }
 
 
