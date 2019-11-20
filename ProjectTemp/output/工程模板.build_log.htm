@@ -76,53 +76,65 @@ user\main.c(213): warning:  #177-D: variable "k" was declared but never referenc
       u8 i,j,k;
 user\main.c(215): warning:  #177-D: variable "size" was declared but never referenced
       int size;
+user\main.c(216): warning:  #177-D: variable "sendcount" was declared but never referenced
+        int sendcount=0;
+user\main.c(217): warning:  #177-D: variable "testdata" was declared but never referenced
+      FLOAT_BYTE testdata;
+user\main.c(218): warning:  #177-D: variable "crctestdata" was declared but never referenced
+      CRC_BYTE crctestdata;
 user\main.c(220): warning:  #177-D: variable "temptofun" was declared but never referenced
       float temptofun;
-user\main.c(1444): warning:  #223-D: function "AD_Conversion_1479A_DMA" declared implicitly
+user\main.c(1109): warning:  #223-D: function "AD_Conversion_627D_DMA" declared implicitly
+      temp=AD_Conversion_627D_DMA();
+user\main.c(1303): warning:  #9-D: nested comment is not allowed
+        /*
+user\main.c(1071): warning:  #177-D: variable "ValveValue_Status" was declared but never referenced
+        char *ValveValue_Status;
+user\main.c(1724): warning:  #223-D: function "AD_Conversion_1479A_DMA" declared implicitly
                           AD_temp=AD_Conversion_1479A_DMA();
-user\main.c(1484): warning:  #223-D: function "AD_Conversion_627D_DMA" declared implicitly
+user\main.c(1764): warning:  #223-D: function "AD_Conversion_627D_DMA" declared implicitly
                           AD_temp=AD_Conversion_627D_DMA();
-user\main.c(1617): warning:  #111-D: statement is unreachable
+user\main.c(1897): warning:  #111-D: statement is unreachable
                           break;
-user\main.c(1276): warning:  #177-D: variable "floattest" was declared but never referenced
+user\main.c(1556): warning:  #177-D: variable "floattest" was declared but never referenced
       char floattest[10];
-user\main.c(1277): warning:  #177-D: variable "test1" was declared but never referenced
+user\main.c(1557): warning:  #177-D: variable "test1" was declared but never referenced
       char test1[4];
-user\main.c(1278): warning:  #177-D: variable "size" was declared but never referenced
+user\main.c(1558): warning:  #177-D: variable "size" was declared but never referenced
       unsigned short size;//接收到的buffer 的大小
-user\main.c(1282): warning:  #177-D: variable "ValveValue_Set" was declared but never referenced
+user\main.c(1562): warning:  #177-D: variable "ValveValue_Set" was declared but never referenced
       u8 ValveValue_Set[12];  //来自网络传入过来的信号
-user\main.c(1287): warning:  #177-D: variable "Kp" was declared but never referenced
+user\main.c(1567): warning:  #177-D: variable "Kp" was declared but never referenced
       float Kp,Ki,Kd;
-user\main.c(1287): warning:  #177-D: variable "Ki" was declared but never referenced
+user\main.c(1567): warning:  #177-D: variable "Ki" was declared but never referenced
       float Kp,Ki,Kd;
-user\main.c(1287): warning:  #177-D: variable "Kd" was declared but never referenced
+user\main.c(1567): warning:  #177-D: variable "Kd" was declared but never referenced
       float Kp,Ki,Kd;
-user\main.c(1291): warning:  #177-D: variable "CRC_Mid" was declared but never referenced
+user\main.c(1571): warning:  #177-D: variable "CRC_Mid" was declared but never referenced
       unsigned int CRC_Mid;
-user\main.c(1294): warning:  #177-D: variable "AD_Voltage_Status" was declared but never referenced
+user\main.c(1574): warning:  #177-D: variable "AD_Voltage_Status" was declared but never referenced
       float *AD_Voltage_Status;
-user\main.c(1300): warning:  #177-D: variable "Actual_size" was declared but never referenced
+user\main.c(1580): warning:  #177-D: variable "Actual_size" was declared but never referenced
       unsigned short Actual_size;
-user\main.c(2445): warning:  #177-D: variable "ValveValue_Status" was declared but never referenced
+user\main.c(2725): warning:  #177-D: variable "ValveValue_Status" was declared but never referenced
       char *ValveValue_Status;
-user\main.c(2446): warning:  #177-D: variable "ADC_Value" was declared but never referenced
+user\main.c(2726): warning:  #177-D: variable "ADC_Value" was declared but never referenced
       float ADC_Value[3];//鐢ㄦ潵淇濆瓨缁忚繃杞崲寰楀埌鐨勭數鍘嬪�?
-user\main.c(2502): warning:  #550-D: variable "ValveValue_Status" was set but never used
+user\main.c(2782): warning:  #550-D: variable "ValveValue_Status" was set but never used
       char *ValveValue_Status;
-user\main.c(2503): warning:  #177-D: variable "ADC_Value" was declared but never referenced
+user\main.c(2783): warning:  #177-D: variable "ADC_Value" was declared but never referenced
       float ADC_Value[3];//鐢ㄦ潵淇濆瓨缁忚繃杞崲寰楀埌鐨勭數鍘嬪�?
-user\main.c(2504): warning:  #177-D: variable "sum" was declared but never referenced
+user\main.c(2784): warning:  #177-D: variable "sum" was declared but never referenced
       int sum;
-user\main.c(2550): warning:  #167-D: argument of type "char *" is incompatible with parameter of type "u8 *"
+user\main.c(2830): warning:  #167-D: argument of type "char *" is incompatible with parameter of type "u8 *"
       Gas_StateLayerUpdate(ValveValue_Status_LCD);
-user\main.c(2543): warning:  #550-D: variable "ValveValue_Status" was set but never used
+user\main.c(2823): warning:  #550-D: variable "ValveValue_Status" was set but never used
       char *ValveValue_Status;
-user\main.c: 45 warnings, 0 errors
+user\main.c: 51 warnings, 0 errors
 linking...
-Program Size: Code=30096 RO-data=9436 RW-data=324 ZI-data=5212  
+Program Size: Code=30880 RO-data=9436 RW-data=348 ZI-data=5212  
 FromELF: creating hex file...
-".\output\工程模板.axf" - 0 Error(s), 45 Warning(s).
+".\output\工程模板.axf" - 0 Error(s), 51 Warning(s).
 
 <h2>Collection of Component include folders:</h2>
   E:\MasterWork\Master1\1.pcb\keilcode\Codesum\_2DAC_ADC_printf_LCD_w5500\current-project\ProjectTemp\RTE

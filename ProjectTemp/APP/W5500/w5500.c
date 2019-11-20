@@ -36,47 +36,45 @@ unsigned char S1_Port[2];	//端口0的端口号(5000)
 unsigned char S1_DIP[4];	//端口0目的IP地址 
 unsigned char S1_DPort[2];	//端口0目的端口号(6000) 
 
+unsigned char S2_Port[2];	//端口0的端口号(5000) 
+unsigned char S2_DIP[4];	//端口0目的IP地址 
+unsigned char S2_DPort[2];	//端口0目的端口号(6000) 
+
+unsigned char S3_Port[2];	//端口0的端口号(5000) 
+unsigned char S3_DIP[4];	//端口0目的IP地址 
+unsigned char S3_DPort[2];	//端口0目的端口号(6000) 
+
+
+
+
 
 unsigned char UDP_DIPR[4];	//UDP(广播)模式,目的主机IP地址
 unsigned char UDP_DPORT[2];	//UDP(广播)模式,目的主机端口号
 
 /***************----- 端口的运行模式 -----***************/
 unsigned char S0_Mode =3;	//端口0的运行模式,0:TCP服务器模式,1:TCP客户端模式,2:UDP(广播)模式
+unsigned char S1_Mode =3;	//端口0的运行模式,0:TCP服务器模式,1:TCP客户端模式,2:UDP(广播)模式
+unsigned char S2_Mode =3;	//端口0的运行模式,0:TCP服务器模式,1:TCP客户端模式,2:UDP(广播)模式
+unsigned char S3_Mode =3;	//端口0的运行模式,0:TCP服务器模式,1:TCP客户端模式,2:UDP(广播)模式
 #define TCP_SERVER	0x00	//TCP服务器模式
 #define TCP_CLIENT	0x01	//TCP客户端模式 
 #define UDP_MODE	0x02	//UDP(广播)模式 
 
 /***************----- 端口的运行状态 -----***************/
 unsigned char S0_State =0;	//端口0状态记录,1:端口完成初始化,2端口完成连接(可以正常传输数据) 
+unsigned char S1_State =0;	//端口0状态记录,1:端口完成初始化,2端口完成连接(可以正常传输数据) 
+unsigned char S2_State =0;	//端口0状态记录,1:端口完成初始化,2端口完成连接(可以正常传输数据) 
+unsigned char S3_State =0;	//端口0状态记录,1:端口完成初始化,2端口完成连接(可以正常传输数据) 
 #define S_INIT		0x01	//端口完成初始化 
 #define S_CONN		0x02	//端口完成连接,可以正常传输数据 
 
 /***************----- 端口收发数据的状态 -----***************/
 unsigned char S0_Data;		//端口0接收和发送数据的状态,1:端口接收到数据,2:端口发送数据完成 
-#define S_RECEIVE	 0x01	//端口接收到一个数据包 
-#define S_TRANSMITOK 0x02	//端口发送一个数据包完成 
-
-
-/***************----- 端口的运行模式 -----***************/
-unsigned char S1_Mode =3;	//端口0的运行模式,0:TCP服务器模式,1:TCP客户端模式,2:UDP(广播)模式
-#define TCP_SERVER	0x00	//TCP服务器模式
-#define TCP_CLIENT	0x01	//TCP客户端模式 
-#define UDP_MODE	0x02	//UDP(广播)模式 
-
-/***************----- 端口的运行状态 -----***************/
-unsigned char S1_State =0;	//端口0状态记录,1:端口完成初始化,2端口完成连接(可以正常传输数据) 
-#define S_INIT		0x01	//端口完成初始化 
-#define S_CONN		0x02	//端口完成连接,可以正常传输数据 
-
-/***************----- 端口收发数据的状态 -----***************/
 unsigned char S1_Data;		//端口0接收和发送数据的状态,1:端口接收到数据,2:端口发送数据完成 
+unsigned char S2_Data;		//端口0接收和发送数据的状态,1:端口接收到数据,2:端口发送数据完成 
+unsigned char S3_Data;		//端口0接收和发送数据的状态,1:端口接收到数据,2:端口发送数据完成 
 #define S_RECEIVE	 0x01	//端口接收到一个数据包 
 #define S_TRANSMITOK 0x02	//端口发送一个数据包完成 
-
-
-
-
-
 
 
 
@@ -285,11 +283,14 @@ void Delay(unsigned int d)
 		printf("非要等到连接网线？");
 		Detect_Gateway(0);	//检查网关服务器 
 		Detect_Gateway(1);	//检查网关服务器 
+		Detect_Gateway(2);	//检查网关服务器 
+		Detect_Gateway(3);	//检查网关服务器 
 		printf("非要等到连接网线？1");
 	
 		Socket_Init(0); 	//指定Socket(0~7)初始化,初始化端口0
 		Socket_Init(1); 	//指定Socket(0~7)初始化,初始化端口1
-	
+		Socket_Init(2); 	//指定Socket(0~7)初始化,初始化端口0
+		Socket_Init(3); 	//指定Socket(0~7)初始化,初始化端口0
 			printf("非要等到连接网线？2");
 			LED0=1;////////////////////////////////////////////////////////////////////////////////
 	
@@ -338,6 +339,16 @@ void Load_Net_Parameters(void)
 	S1_Port[0] = 0x13;//加载端口0的端口号5001 
 	S1_Port[1] = 0x89;
 	S1_Mode=TCP_SERVER;//加载端口0的工作模式,TCP服务端模式
+
+	S2_Port[0] = 0x13;//加载端口0的端口号5002
+	S2_Port[1] = 0x8a;
+	S2_Mode=TCP_SERVER;//加载端口0的工作模式,TCP服务端模式
+
+	S3_Port[0] = 0x13;//加载端口0的端口号5003 
+	S3_Port[1] = 0x8b;
+	S3_Mode=TCP_SERVER;//加载端口0的工作模式,TCP服务端模式
+
+
 
 
 //	S0_DIP[0]=192;//加载端口0的目的IP地址
@@ -411,6 +422,57 @@ void W5500_Socket_Set(void)
 				S1_State=0;
 		}
 	}	
+	if(S2_State==0)//端口0初始化配置
+		{
+			if(S2_Mode==TCP_SERVER)//TCP服务器模式 
+			{
+				if(Socket_Listen(2)==TRUE)
+					S2_State=S_INIT;
+				else
+					S2_State=0;
+			}
+			else if(S2_Mode==TCP_CLIENT)//TCP客户端模式 
+			{
+				if(Socket_Connect(2)==TRUE)
+					S2_State=S_INIT;
+				else
+					S2_State=0;
+			}
+			else//UDP模式 
+			{
+				if(Socket_UDP(2)==TRUE)
+					S2_State=S_INIT|S_CONN;
+				else
+					S2_State=0;
+			}
+		}
+	if(S3_State==0)//端口0初始化配置
+	{
+		if(S3_Mode==TCP_SERVER)//TCP服务器模式 
+		{
+			if(Socket_Listen(3)==TRUE)
+				S3_State=S_INIT;
+			else
+				S3_State=0;
+		}
+		else if(S3_Mode==TCP_CLIENT)//TCP客户端模式 
+		{
+			if(Socket_Connect(3)==TRUE)
+				S3_State=S_INIT;
+			else
+				S3_State=0;
+		}
+		else//UDP模式 
+		{
+			if(Socket_UDP(3)==TRUE)
+				S3_State=S_INIT|S_CONN;
+			else
+				S3_State=0;
+		}
+	}	
+
+
+	
 }
 
 
@@ -977,9 +1039,11 @@ void W5500_Init(void)
 	//IMR_CONFLICT是IP地址冲突异常中断,IMR_UNREACH是UDP通信时，地址无法到达的异常中断
 	//其它是Socket事件中断，根据需要添加
 	Write_W5500_1Byte(IMR,IM_IR7 | IM_IR6);
-	Write_W5500_1Byte(SIMR,S0_IMR | S1_IMR);
+	Write_W5500_1Byte(SIMR,S0_IMR | S1_IMR |S2_IMR | S3_IMR);
 	Write_W5500_SOCK_1Byte(0, Sn_IMR, IMR_SENDOK | IMR_TIMEOUT | IMR_RECV | IMR_DISCON | IMR_CON);
 	Write_W5500_SOCK_1Byte(1, Sn_IMR, IMR_SENDOK | IMR_TIMEOUT | IMR_RECV | IMR_DISCON | IMR_CON);
+	Write_W5500_SOCK_1Byte(2, Sn_IMR, IMR_SENDOK | IMR_TIMEOUT | IMR_RECV | IMR_DISCON | IMR_CON);
+	Write_W5500_SOCK_1Byte(3, Sn_IMR, IMR_SENDOK | IMR_TIMEOUT | IMR_RECV | IMR_DISCON | IMR_CON);
 
 }
 
@@ -1068,9 +1132,17 @@ void Socket_Init(SOCKET s)
 			break;
 
 		case 2:
+			Write_W5500_SOCK_2Byte(2, Sn_PORT, S2_Port[0]*256+S2_Port[1]);	
+
+		
+
 			break;
 
 		case 3:
+			Write_W5500_SOCK_2Byte(3, Sn_PORT, S3_Port[0]*256+S3_Port[1]);	
+
+		
+
 			break;
 
 		case 4:
@@ -1267,6 +1339,68 @@ IntDispose:
 			Write_W5500_SOCK_1Byte(1,Sn_CR,CLOSE);// 关闭端口,等待重新打开连接 
 			Socket_Init(1); 	//指定Socket(0~7)初始化,初始化端口0
 			S1_State=0;//网络连接状态0x00,端口连接失败
+		}
+	}
+	if((i & S2_INT) == S2_INT)//Socket1件处理 
+		{
+		j=Read_W5500_SOCK_1Byte(2,Sn_IR);//读取Socket0中断标志寄存器
+		Write_W5500_SOCK_1Byte(2,Sn_IR,j);
+		if(j&IR_CON)//在TCP模式下,Socket0成功连接 
+		{
+			S2_State|=S_CONN;//网络连接状态0x02,端口完成连接，可以正常传输数据
+		}
+		if(j&IR_DISCON)//在TCP模式下Socket断开连接处理
+		{
+			printf("tcpmode下，断开连接处理中断1");
+			Write_W5500_SOCK_1Byte(2,Sn_CR,CLOSE);//关闭端口,等待重新打开连接 
+			Socket_Init(2); 	//指定Socket(0~7)初始化,初始化端口0
+			S2_State=0;//网络连接状态0x00,端口连接失败
+		}
+		if(j&IR_SEND_OK)//Socket0数据发送完成,可以再次启动S_tx_process()函数发送数据 
+		{
+			S2_Data|=S_TRANSMITOK;//端口发送一个数据包完成 
+		}
+		if(j&IR_RECV)//Socket接收到数据,可以启动S_rx_process()函数 
+		{
+			S2_Data|=S_RECEIVE;//端口接收到一个数据包
+		}
+		if(j&IR_TIMEOUT)//Socket连接或数据传输超时处理 
+		{
+			printf("timeout1");
+			Write_W5500_SOCK_1Byte(2,Sn_CR,CLOSE);// 关闭端口,等待重新打开连接 
+			Socket_Init(2); 	//指定Socket(0~7)初始化,初始化端口0
+			S2_State=0;//网络连接状态0x00,端口连接失败
+		}
+	}
+	if((i & S3_INT) == S3_INT)//Socket1件处理 
+		{
+		j=Read_W5500_SOCK_1Byte(3,Sn_IR);//读取Socket0中断标志寄存器
+		Write_W5500_SOCK_1Byte(3,Sn_IR,j);
+		if(j&IR_CON)//在TCP模式下,Socket0成功连接 
+		{
+			S2_State|=S_CONN;//网络连接状态0x02,端口完成连接，可以正常传输数据
+		}
+		if(j&IR_DISCON)//在TCP模式下Socket断开连接处理
+		{
+			printf("tcpmode下，断开连接处理中断3");
+			Write_W5500_SOCK_1Byte(3,Sn_CR,CLOSE);//关闭端口,等待重新打开连接 
+			Socket_Init(3); 	//指定Socket(0~7)初始化,初始化端口0
+			S3_State=0;//网络连接状态0x00,端口连接失败
+		}
+		if(j&IR_SEND_OK)//Socket0数据发送完成,可以再次启动S_tx_process()函数发送数据 
+		{
+			S3_Data|=S_TRANSMITOK;//端口发送一个数据包完成 
+		}
+		if(j&IR_RECV)//Socket接收到数据,可以启动S_rx_process()函数 
+		{
+			S3_Data|=S_RECEIVE;//端口接收到一个数据包
+		}
+		if(j&IR_TIMEOUT)//Socket连接或数据传输超时处理 
+		{
+			printf("timeout1");
+			Write_W5500_SOCK_1Byte(3,Sn_CR,CLOSE);// 关闭端口,等待重新打开连接 
+			Socket_Init(3); 	//指定Socket(0~7)初始化,初始化端口0
+			S3_State=0;//网络连接状态0x00,端口连接失败
 		}
 	}
 

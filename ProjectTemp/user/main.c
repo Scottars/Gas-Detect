@@ -982,10 +982,10 @@ int main()
 		{
 			//printf("we are sending date to socket 1\r\n");
 
-			//Hsdd_Data_Send();
+			Hsdd_Data_Send(1);
 	
 			
-			
+		/*	
 			if (sendcount<100)
 			{
 				sendcount = sendcount + 1;
@@ -1044,7 +1044,7 @@ int main()
 			{
 				sendcount=0;
 			}
-			
+			*/
 			
 		}
 
@@ -1062,6 +1062,286 @@ int main()
 }
 
 
+void Hsdd_Data_Send(SOCKET s)
+{
+	int sendcount=0;
+    FLOAT_BYTE testdata;
+    CRC_BYTE crctestdata;
+	float temp;
+	char *ValveValue_Status;
+	
+
+
+
+
+	//05  03 01 	
+	//delay_us(1000);
+	Tx_Buffer[0]=0x05; // Slave address
+	Tx_Buffer[1]=0x03;// function  code
+	Tx_Buffer[2]=0x01;// register address
+	Tx_Buffer[3]=0x04;//length of data
+	testdata.floatData=sendcount+0.5;
+	Tx_Buffer[4]=testdata.byteData[3];
+	Tx_Buffer[5]=testdata.byteData[2];
+	Tx_Buffer[6]=testdata.byteData[1];
+	Tx_Buffer[7]=testdata.byteData[0];
+	crctestdata.CrcData=GetCRC16(Tx_Buffer,8);
+	Tx_Buffer[8]=crctestdata.byteData[0];
+	Tx_Buffer[9]=crctestdata.byteData[1];
+	
+	Write_SOCK_Data_Buffer(1, Tx_Buffer,10);//指定Socket(0~7)发送数据处理,端口0发送23字节数据
+
+
+	//05 03 02  //Read 627D pressure value
+	//delay_us(100);
+
+	Tx_Buffer[0]=0x05; // Slave address
+    Tx_Buffer[1]=0x03;// function  code
+    Tx_Buffer[2]=0x02;// register address
+    Tx_Buffer[3]=0x04;//length of data
+
+    //Ad conversion
+    //AD_Voltage_Status = AD_Conversion();
+
+    // Cavity_627D_Pressure_Status=AD_Voltage_Status[1];
+
+    //AD_Voltage_Status[0 1 2]   分别表示1479A 627D 025d
+    temp=AD_Conversion_627D_DMA();
+
+    //
+    temp = ADVoltage_2_Pressure627D(temp);
+//    printf("INternet 627D Actual value:%f\r\n",temp);
+
+    //float value to hex
+    testdata.floatData=temp;
+
+    Tx_Buffer[4]=testdata.byteData[3];
+    Tx_Buffer[5]=testdata.byteData[2];
+    Tx_Buffer[6]=testdata.byteData[1];
+    Tx_Buffer[7]=testdata.byteData[0];
+
+    //GetCRC16
+    crctestdata.CrcData=GetCRC16(Tx_Buffer,8);
+
+
+    Tx_Buffer[8]=crctestdata.byteData[0];
+    Tx_Buffer[9]=crctestdata.byteData[1];
+
+    //  Tx_Buffer[0]=0xff;
+
+    Write_SOCK_Data_Buffer(1, Tx_Buffer, 10);
+
+	//05 03 03: //Read CDG025D  vacuum value
+	//delay_us(100);
+
+    Tx_Buffer[0]=0x05; // Slave address
+    Tx_Buffer[1]=0x03;// function  code
+    Tx_Buffer[2]=0x03;// register address
+    Tx_Buffer[3]=0x04;//length of data
+    //ad conbersion
+    //  AD_Voltage_Status = AD_Conversion();
+
+
+    //AD_Voltage_Status[0 1 2]   分别表示1479A 627D 025d
+    temp=AD_Conversion_025D_DMA();
+
+    //
+    temp = ADVoltage_2_Pressure025D(temp);
+//    printf("INternet	025D Actual value:%f\r\n",temp);
+
+    //float to hex
+    testdata.floatData=temp;
+
+
+    Tx_Buffer[4]=testdata.byteData[3];
+    Tx_Buffer[5]=testdata.byteData[2];
+    Tx_Buffer[6]=testdata.byteData[1];
+    Tx_Buffer[7]=testdata.byteData[0];
+
+    //GetCRC16
+    crctestdata.CrcData=GetCRC16(Tx_Buffer,8);
+
+
+    Tx_Buffer[8]=crctestdata.byteData[0];
+    Tx_Buffer[9]=crctestdata.byteData[1];
+
+    //  Tx_Buffer[0]=0xff;
+/*
+    Write_SOCK_Data_Buffer(1, Tx_Buffer, 10);
+
+    //05 03 04://Read Gas Feed value Status
+	//delay_us(100);
+	Tx_Buffer[0]=0x05; // Slave address
+    Tx_Buffer[1]=0x03;// function  code
+    Tx_Buffer[2]=0x04;// register address
+    Tx_Buffer[3]=0x02;//length of data
+    //read gas valve status
+
+    ValveValue_Status=Gas_State_Read();
+    Tx_Buffer[4]=ValveValue_Status[0];
+    Tx_Buffer[5]=ValveValue_Status[1];
+
+    //GetCRC16
+    crctestdata.CrcData=GetCRC16(Tx_Buffer,6);
+
+    Tx_Buffer[6]=crctestdata.byteData[0];
+    Tx_Buffer[7]=crctestdata.byteData[1];
+
+    Write_SOCK_Data_Buffer(1, Tx_Buffer, 8);
+
+	
+	//05  03  14: //read whether pressure is okay  for puff
+	delay_us(100);
+
+    Tx_Buffer[0]=0x05; // Slave address
+    Tx_Buffer[1]=0x03;// function  code
+    Tx_Buffer[2]=0x14;// register address
+    Tx_Buffer[3]=0x01;
+    //read gas valve status
+    //printf("Read if we are ready to inspire \r\n");
+    ValveValue_Status=Gas_State_Read();
+    Tx_Buffer[4]=Pressure_Okay;
+
+    //GetCRC16
+    crctestdata.CrcData=GetCRC16(Tx_Buffer,5);
+
+    Tx_Buffer[5]=crctestdata.byteData[0];
+    Tx_Buffer[6]=crctestdata.byteData[1];
+
+    Write_SOCK_Data_Buffer(1, Tx_Buffer, 7);
+
+
+    //05 03  15: //Read VacuumValue set
+	delay_us(100);
+
+    Tx_Buffer[0]=0x05; // Slave address
+    Tx_Buffer[1]=0x03;// function  code
+    Tx_Buffer[2]=0x15;// register address
+    Tx_Buffer[3]=0x04;//length of data
+    //read gas valve status
+    //printf("Read Vacuum value set\r\n");
+
+    testdata.floatData=Package_Cavity_627D_Pressure_Set;
+
+
+    Tx_Buffer[4]=testdata.byteData[3];
+    Tx_Buffer[5]=testdata.byteData[2];
+    Tx_Buffer[6]=testdata.byteData[1];
+    Tx_Buffer[7]=testdata.byteData[0];
+
+    //GetCRC16
+    crctestdata.CrcData=GetCRC16(Tx_Buffer,8);
+
+
+    Tx_Buffer[8]=crctestdata.byteData[0];
+    Tx_Buffer[9]=crctestdata.byteData[1];
+
+    //  Tx_Buffer[0]=0xff;
+
+    Write_SOCK_Data_Buffer(1, Tx_Buffer, 10);
+
+
+	//05  03 16://read 1479A flow value (it is stable part set )
+	delay_us(100);
+
+    Tx_Buffer[0]=0x05; // Slave address
+    Tx_Buffer[1]=0x03;// function  code
+    Tx_Buffer[2]=0x16;// register address
+    Tx_Buffer[3]=0x04;//length of data
+    //read gas valve status
+   // printf("Read 1479A flow  value set\r\n");
+
+    testdata.floatData=Package_Flow_1479A_Set;
+
+
+    Tx_Buffer[4]=testdata.byteData[3];
+    Tx_Buffer[5]=testdata.byteData[2];
+    Tx_Buffer[6]=testdata.byteData[1];
+    Tx_Buffer[7]=testdata.byteData[0];
+
+    //GetCRC16
+    crctestdata.CrcData=GetCRC16(Tx_Buffer,8);
+
+
+    Tx_Buffer[8]=crctestdata.byteData[0];
+    Tx_Buffer[9]=crctestdata.byteData[1];
+
+    //  Tx_Buffer[0]=0xff;
+
+    Write_SOCK_Data_Buffer(s, Tx_Buffer, 10);
+
+
+	//05 03 17: //read puff value set .we actually have two puff set
+	delay_us(100);
+
+    Tx_Buffer[0]=0x05; // Slave address
+    Tx_Buffer[1]=0x03;// function  code
+    Tx_Buffer[2]=0x17;// register address
+    Tx_Buffer[3]=0x04;//length of data
+
+    //printf("Read puff  value set\r\n");
+
+    testdata.floatData=Package_Cavity_627D_Puff_Set;
+
+
+    Tx_Buffer[4]=testdata.byteData[3];
+    Tx_Buffer[5]=testdata.byteData[2];
+    Tx_Buffer[6]=testdata.byteData[1];
+    Tx_Buffer[7]=testdata.byteData[0];
+
+    //GetC RC16
+    crctestdata.CrcData=GetCRC16(Tx_Buffer,8);
+
+
+    Tx_Buffer[8]=crctestdata.byteData[0];
+    Tx_Buffer[9]=crctestdata.byteData[1];
+
+    //  Tx_Buffer[0]=0xff;
+
+    Write_SOCK_Data_Buffer(s, Tx_Buffer, 10);
+
+	/*
+	//05 03 18://read pid parameters set
+	delay_us(1000);
+
+	Tx_Buffer[0]=0x05; // Slave address
+    Tx_Buffer[1]=0x03;// function  code
+    Tx_Buffer[2]=0x18;// register address
+    Tx_Buffer[3]=0x0c;//length of data
+    //read gas valve status
+  //  printf("Read pid parameters \r\n");
+    testdata.floatData=Package_Duty_P;
+    Tx_Buffer[4]=testdata.byteData[3];
+    Tx_Buffer[5]=testdata.byteData[2];
+    Tx_Buffer[6]=testdata.byteData[1];
+    Tx_Buffer[7]=testdata.byteData[0];
+
+    testdata.floatData=Package_Duty_I;
+
+    Tx_Buffer[8]=testdata.byteData[3];
+    Tx_Buffer[9]=testdata.byteData[2];
+    Tx_Buffer[10]=testdata.byteData[1];
+    Tx_Buffer[11]=testdata.byteData[0];
+
+    testdata.floatData=Package_Duty_D;
+
+    Tx_Buffer[12]=testdata.byteData[3];
+    Tx_Buffer[13]=testdata.byteData[2];
+    Tx_Buffer[14]=testdata.byteData[1];
+    Tx_Buffer[15]=testdata.byteData[0];
+
+    //GetCRC16
+    crctestdata.CrcData=GetCRC16(Tx_Buffer,16);
+
+
+    Tx_Buffer[16]=crctestdata.byteData[0];
+    Tx_Buffer[17]=crctestdata.byteData[1];
+
+    Write_SOCK_Data_Buffer(s, Tx_Buffer, 18);
+	
+*/
+
+}
 
 void Process_Package_Receive()
 {
