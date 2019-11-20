@@ -33,3 +33,4 @@
 .\output\stm32f10x_it.o: .\APP\printf\printf.h
 .\output\stm32f10x_it.o: D:\Program Files\Keil5\ARM\ARMCC\Bin\..\include\stdio.h
 .\output\stm32f10x_it.o: .\APP\smg\smg.h
+.\output\stm32f10x_it.o: .\APP\W5500\w5500.h

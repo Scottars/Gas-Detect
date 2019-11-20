@@ -48,3 +48,4 @@
 .\output\main.o: .\APP\PWM\pwm.h
 .\output\main.o: .\APP\IWDG\iwdg.h
 .\output\main.o: .\APP\exit\exti.h
+.\output\main.o: .\APP\time\time.h

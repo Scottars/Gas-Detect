@@ -26,6 +26,7 @@
 #include "systick.h"
 #include "printf.h"
 #include "smg.h"
+#include "w5500.h"
 
 
 
@@ -144,13 +145,43 @@ void USART2_IRQHandler(void)	//485通信中断函数
 		GPIO_ResetBits(GPIOG,GPIO_Pin_3);
 	}
 }
-
+/****************************************************************************
+* Function Name  : TIM3_IRQHandler
+* Description    : PWM timer 使用
+* Input          : None
+* Output         : None
+* Return         : None
+****************************************************************************/
 
 void TIM3_IRQHandler()	  //定时器3中断函数
 {
 	TIM_ClearITPendingBit(TIM3,TIM_IT_Update);
 	
 }
+
+/****************************************************************************
+* Function Name  : TIM4_IRQHandler
+* Description    : PWM timer 使用
+* Input          : None
+* Output         : None
+* Return         : None
+****************************************************************************/
+	
+void TIM4_IRQHandler()	  //定时器3中断函数
+{
+	if(TIM_GetITStatus(TIM4, TIM_IT_Update)!= RESET)
+	{
+		TIM_ClearITPendingBit(TIM4,TIM_IT_Update);
+//		printf("每隔1s刷新一次\r\n");
+		Hsdd_Data_Send(1);
+
+		
+		
+	
+	}
+	
+}
+
 
 /**
   * @brief  This function handles Memory Manage exception.

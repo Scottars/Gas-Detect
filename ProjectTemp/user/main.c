@@ -31,6 +31,7 @@
 
 #include "iwdg.h"
 #include "exti.h"
+#include "time.h"
 
 
 /****************************************************************************
@@ -295,10 +296,14 @@ int main()
 
 
 
+
+
     ////////////////LCD Intial ///////////////////
     LCD_Init();    //液晶屏初始化
     GridLayer();  //显示屏的网络框架层
     Gas_StateLayer();//显示屏 供气阀状态初始化部分
+
+
 
     //////////////////网络初始化//////////////////////
 
@@ -339,6 +344,8 @@ int main()
     //      EXTI->IMR = EXTI_IMR_MR1;
     //EXTI->RTSR = EXTI_RTSR_TR0;
 
+	/////////////////定时器部分的初始化///////////////
+	time_init(); // 定时器4 的初始化部分
 
 
 
@@ -455,7 +462,7 @@ int main()
                 VacuumValue_PID(PEV_FullyClose, Cavity_627D_Pressure_Status, Package_Duty_P,Package_Duty_I,Package_Duty_D);
 
 
-             // printf("Valve close\r\n");
+             	printf("Valve close\r\n");
             }
             else //Open command
             {
@@ -976,13 +983,13 @@ int main()
 
 		// we set a flag to control whether it is okay to send out the data 
 		hsdd_data_send_offon=0xff;
-		delay_us(1000);
+		
 
 		if (hsdd_data_send_offon==0xff)
 		{
 			//printf("we are sending date to socket 1\r\n");
 
-			Hsdd_Data_Send(1);
+			//Hsdd_Data_Send(1);
 	
 			
 		/*	
@@ -1075,7 +1082,7 @@ void Hsdd_Data_Send(SOCKET s)
 
 
 	//05  03 01 	
-	//delay_us(1000);
+	//delay_us(10);
 	Tx_Buffer[0]=0x05; // Slave address
 	Tx_Buffer[1]=0x03;// function  code
 	Tx_Buffer[2]=0x01;// register address
@@ -1093,7 +1100,7 @@ void Hsdd_Data_Send(SOCKET s)
 
 
 	//05 03 02  //Read 627D pressure value
-	//delay_us(100);
+	//delay_us(10);
 
 	Tx_Buffer[0]=0x05; // Slave address
     Tx_Buffer[1]=0x03;// function  code
@@ -1132,7 +1139,7 @@ void Hsdd_Data_Send(SOCKET s)
     Write_SOCK_Data_Buffer(1, Tx_Buffer, 10);
 
 	//05 03 03: //Read CDG025D  vacuum value
-	//delay_us(100);
+	//delay_us(10);
 
     Tx_Buffer[0]=0x05; // Slave address
     Tx_Buffer[1]=0x03;// function  code
@@ -1166,11 +1173,10 @@ void Hsdd_Data_Send(SOCKET s)
     Tx_Buffer[9]=crctestdata.byteData[1];
 
     //  Tx_Buffer[0]=0xff;
-/*
     Write_SOCK_Data_Buffer(1, Tx_Buffer, 10);
 
     //05 03 04://Read Gas Feed value Status
-	//delay_us(100);
+//	delay_us(10);
 	Tx_Buffer[0]=0x05; // Slave address
     Tx_Buffer[1]=0x03;// function  code
     Tx_Buffer[2]=0x04;// register address
@@ -1191,7 +1197,7 @@ void Hsdd_Data_Send(SOCKET s)
 
 	
 	//05  03  14: //read whether pressure is okay  for puff
-	delay_us(100);
+//	delay_us(10);
 
     Tx_Buffer[0]=0x05; // Slave address
     Tx_Buffer[1]=0x03;// function  code
@@ -1212,8 +1218,8 @@ void Hsdd_Data_Send(SOCKET s)
 
 
     //05 03  15: //Read VacuumValue set
-	delay_us(100);
-
+	//delay_us(10);
+//
     Tx_Buffer[0]=0x05; // Slave address
     Tx_Buffer[1]=0x03;// function  code
     Tx_Buffer[2]=0x15;// register address
@@ -1242,7 +1248,7 @@ void Hsdd_Data_Send(SOCKET s)
 
 
 	//05  03 16://read 1479A flow value (it is stable part set )
-	delay_us(100);
+	//delay_us(10);
 
     Tx_Buffer[0]=0x05; // Slave address
     Tx_Buffer[1]=0x03;// function  code
@@ -1272,7 +1278,7 @@ void Hsdd_Data_Send(SOCKET s)
 
 
 	//05 03 17: //read puff value set .we actually have two puff set
-	delay_us(100);
+	//delay_us(10);
 
     Tx_Buffer[0]=0x05; // Slave address
     Tx_Buffer[1]=0x03;// function  code
@@ -1302,7 +1308,7 @@ void Hsdd_Data_Send(SOCKET s)
 
 	/*
 	//05 03 18://read pid parameters set
-	delay_us(1000);
+	//delay_us(10);
 
 	Tx_Buffer[0]=0x05; // Slave address
     Tx_Buffer[1]=0x03;// function  code

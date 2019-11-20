@@ -310,6 +310,7 @@ void Load_Net_Parameters(void)
 	Gateway_IP[1] = 168;
 	Gateway_IP[2] = 127;
 	Gateway_IP[3] = 254;
+	
 
 	Sub_Mask[0]=255;//加载子网掩码
 	Sub_Mask[1]=255;
@@ -1287,7 +1288,7 @@ IntDispose:
 		}
 		if(j&IR_DISCON)//在TCP模式下Socket断开连接处理
 		{
-			printf("tcpmode下，断开连接处理中断");
+//			printf("tcpmode下，断开连接处理中断");
 			Write_W5500_SOCK_1Byte(0,Sn_CR,CLOSE);//关闭端口,等待重新打开连接 
 			Socket_Init(0); 	//指定Socket(0~7)初始化,初始化端口0
 			S0_State=0;//网络连接状态0x00,端口连接失败
@@ -1302,7 +1303,7 @@ IntDispose:
 		}
 		if(j&IR_TIMEOUT)//Socket连接或数据传输超时处理 
 		{
-			printf("timeout");
+		//	printf("timeout");
 			Write_W5500_SOCK_1Byte(0,Sn_CR,CLOSE);// 关闭端口,等待重新打开连接 
 			Socket_Init(0); 	//指定Socket(0~7)初始化,初始化端口0
 			S0_State=0;//网络连接状态0x00,端口连接失败
@@ -1320,7 +1321,7 @@ IntDispose:
 		}
 		if(j&IR_DISCON)//在TCP模式下Socket断开连接处理
 		{
-			printf("tcpmode下，断开连接处理中断1");
+			//printf("tcpmode下，断开连接处理中断1");
 			Write_W5500_SOCK_1Byte(1,Sn_CR,CLOSE);//关闭端口,等待重新打开连接 
 			Socket_Init(1); 	//指定Socket(0~7)初始化,初始化端口0
 			S1_State=0;//网络连接状态0x00,端口连接失败
@@ -1335,7 +1336,7 @@ IntDispose:
 		}
 		if(j&IR_TIMEOUT)//Socket连接或数据传输超时处理 
 		{
-			printf("timeout1");
+			//printf("timeout1");
 			Write_W5500_SOCK_1Byte(1,Sn_CR,CLOSE);// 关闭端口,等待重新打开连接 
 			Socket_Init(1); 	//指定Socket(0~7)初始化,初始化端口0
 			S1_State=0;//网络连接状态0x00,端口连接失败
@@ -1351,7 +1352,7 @@ IntDispose:
 		}
 		if(j&IR_DISCON)//在TCP模式下Socket断开连接处理
 		{
-			printf("tcpmode下，断开连接处理中断1");
+			//printf("tcpmode下，断开连接处理中断1");
 			Write_W5500_SOCK_1Byte(2,Sn_CR,CLOSE);//关闭端口,等待重新打开连接 
 			Socket_Init(2); 	//指定Socket(0~7)初始化,初始化端口0
 			S2_State=0;//网络连接状态0x00,端口连接失败
@@ -1366,7 +1367,7 @@ IntDispose:
 		}
 		if(j&IR_TIMEOUT)//Socket连接或数据传输超时处理 
 		{
-			printf("timeout1");
+			//printf("timeout1");
 			Write_W5500_SOCK_1Byte(2,Sn_CR,CLOSE);// 关闭端口,等待重新打开连接 
 			Socket_Init(2); 	//指定Socket(0~7)初始化,初始化端口0
 			S2_State=0;//网络连接状态0x00,端口连接失败
@@ -1382,7 +1383,7 @@ IntDispose:
 		}
 		if(j&IR_DISCON)//在TCP模式下Socket断开连接处理
 		{
-			printf("tcpmode下，断开连接处理中断3");
+			//printf("tcpmode下，断开连接处理中断3");
 			Write_W5500_SOCK_1Byte(3,Sn_CR,CLOSE);//关闭端口,等待重新打开连接 
 			Socket_Init(3); 	//指定Socket(0~7)初始化,初始化端口0
 			S3_State=0;//网络连接状态0x00,端口连接失败
@@ -1397,7 +1398,7 @@ IntDispose:
 		}
 		if(j&IR_TIMEOUT)//Socket连接或数据传输超时处理 
 		{
-			printf("timeout1");
+			//printf("timeout1");
 			Write_W5500_SOCK_1Byte(3,Sn_CR,CLOSE);// 关闭端口,等待重新打开连接 
 			Socket_Init(3); 	//指定Socket(0~7)初始化,初始化端口0
 			S3_State=0;//网络连接状态0x00,端口连接失败
