@@ -172,7 +172,7 @@ void TIM4_IRQHandler()	  //定时器3中断函数
 	if(TIM_GetITStatus(TIM4, TIM_IT_Update)!= RESET)
 	{
 		TIM_ClearITPendingBit(TIM4,TIM_IT_Update);
-//		printf("每隔1s刷新一次\r\n");
+//		printf("IN\r\n");
 		Hsdd_Data_Send(1);
 
 		

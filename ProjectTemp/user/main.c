@@ -480,7 +480,7 @@ int main()
                 if (PEV_1479A_ControlMode==0x00) //PEV control Mode 1
                 {
                     //PEV,Default to PEV control
-                    printf("PEV_Control Mode 1 \r\n");
+                   // printf("PEV_Control Mode 1 \r\n");
 
                     //Default Set
                     // Set 1479A to fully open , we can use it fully open command   or use the DAC control to make it the biggest
@@ -495,8 +495,8 @@ int main()
                     //we have set our default value to  Package_P  I D
                     //we should also check the number's reasonable value
                     //execute the PID function to set the new pwm duty ratio
-                    printf("Package_Cavity_627D_Pressure_Set%f\r\n",Package_Cavity_627D_Pressure_Set);
-                    printf("Cavity_627D_Pressure_Set%f\r\n",Cavity_627D_Pressure_Set);
+                 //   printf("Package_Cavity_627D_Pressure_Set%f\r\n",Package_Cavity_627D_Pressure_Set);
+                   // printf("Cavity_627D_Pressure_Set%f\r\n",Cavity_627D_Pressure_Set);
                     VacuumValue_PID(Cavity_627D_Pressure_Set, Cavity_627D_Pressure_Status, Package_Duty_P,Package_Duty_I,Package_Duty_D);
                     //Cavity_627D_Pressure_Set
                     ///////////////if we can switch to the puff mode /////////////////
@@ -519,7 +519,7 @@ int main()
                     }
                     if (Command_Timing_TriggerMode==0x00) //Command trigger
                     {
-                        printf("Command  Trigger Mode\r\n");
+                    //    printf("Command  Trigger Mode\r\n");
                         //all the mode needs to be default
                         //Only set to unpuff mode
 
@@ -536,7 +536,7 @@ int main()
                         {
 
                             //this just like that, we open the puff mode
-                            printf("Unpuff Mode\r\n");
+                     //       printf("Unpuff Mode\r\n");
 
                             /*Switch those value to unpuff value, so that we can make it happen, during next pid adjustment*/
                             // valve to normal
