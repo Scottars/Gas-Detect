@@ -227,6 +227,16 @@ extern unsigned char S1_Port[2];	//端口0的端口号(5001)
 extern unsigned char S1_DIP[4];		//端口0目的IP地址 
 extern unsigned char S1_DPort[2];	//端口0目的端口号(6000) 
 
+extern unsigned char S2_Port[2];	//端口0的端口号(5001) 
+extern unsigned char S2_DIP[4];		//端口0目的IP地址 
+extern unsigned char S2_DPort[2];	//端口0目的端口号(6000) 
+
+extern unsigned char S3_Port[2];	//端口0的端口号(5001) 
+extern unsigned char S3_DIP[4];		//端口0目的IP地址 
+extern unsigned char S3_DPort[2];	//端口0目的端口号(6000) 
+
+
+
 
 extern unsigned char UDP_DIPR[4];	//UDP(广播)模式,目的主机IP地址
 extern unsigned char UDP_DPORT[2];	//UDP(广播)模式,目的主机端口号
@@ -263,6 +273,38 @@ extern unsigned char S1_State;	//端口0状态记录,1:端口完成初始化,2端口完成连接(可
 extern unsigned char S1_Data;		//端口0接收和发送数据的状态,1:端口接收到数据,2:端口发送数据完成 
 #define S_RECEIVE		0x01		//端口接收到一个数据包 
 #define S_TRANSMITOK	0x02		//端口发送一个数据包完成 
+
+/***************----- 端口的运行模式 -----***************/
+extern unsigned char S2_Mode;	//端口0的运行模式,0:TCP服务器模式,1:TCP客户端模式,2:UDP(广播)模式
+#define TCP_SERVER		0x00	//TCP服务器模式
+#define TCP_CLIENT		0x01	//TCP客户端模式 
+#define UDP_MODE		0x02	//UDP(广播)模式 
+
+/***************----- 端口的运行状态 -----***************/
+extern unsigned char S2_State;	//端口0状态记录,1:端口完成初始化,2端口完成连接(可以正常传输数据) 
+#define S_INIT			0x01	//端口完成初始化 
+#define S_CONN			0x02	//端口完成连接,可以正常传输数据 
+
+/***************----- 端口收发数据的状态 -----***************/
+extern unsigned char S2_Data;		//端口0接收和发送数据的状态,1:端口接收到数据,2:端口发送数据完成 
+#define S_RECEIVE		0x01		//端口接收到一个数据包 
+#define S_TRANSMITOK	0x02		//端口发送一个数据包完成 
+/***************----- 端口的运行模式 -----***************/
+extern unsigned char S3_Mode;	//端口0的运行模式,0:TCP服务器模式,1:TCP客户端模式,2:UDP(广播)模式
+#define TCP_SERVER		0x00	//TCP服务器模式
+#define TCP_CLIENT		0x01	//TCP客户端模式 
+#define UDP_MODE		0x02	//UDP(广播)模式 
+
+/***************----- 端口的运行状态 -----***************/
+extern unsigned char S3_State;	//端口0状态记录,1:端口完成初始化,2端口完成连接(可以正常传输数据) 
+#define S_INIT			0x01	//端口完成初始化 
+#define S_CONN			0x02	//端口完成连接,可以正常传输数据 
+
+/***************----- 端口收发数据的状态 -----***************/
+extern unsigned char S3_Data;		//端口0接收和发送数据的状态,1:端口接收到数据,2:端口发送数据完成 
+#define S_RECEIVE		0x01		//端口接收到一个数据包 
+#define S_TRANSMITOK	0x02		//端口发送一个数据包完成 
+
 
 
 
